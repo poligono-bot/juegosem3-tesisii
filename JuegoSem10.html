@@ -1,0 +1,668 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego Educativo: Resultados y Visualización en Investigación - Maestría en Enfermería</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes pulseTrophy {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+        .trophy-animation {
+            animation: pulseTrophy 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-100 flex flex-col justify-between py-6 px-4">
+
+    <!-- Header / Navbar -->
+    <header class="w-full max-w-4xl mx-auto mb-6 flex flex-col sm:flex-row justify-between items-center glass-panel px-6 py-4 rounded-2xl shadow-xl">
+        <div class="flex items-center space-x-3 mb-3 sm:mb-0">
+            <div class="bg-cyan-500/20 p-2.5 rounded-xl border border-cyan-500/30 text-cyan-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg text-white leading-tight">Resultados y Visualización en Investigación</h1>
+                <p class="text-xs text-cyan-300 font-medium">Maestría en Enfermería y Gestión Integral del Cuidado</p>
+            </div>
+        </div>
+        <div id="score-timer-container" class="hidden flex items-center space-x-4">
+            <div class="bg-slate-800/80 px-4 py-1.5 rounded-xl border border-slate-700 text-xs font-semibold">
+                Puntaje: <span id="current-score" class="text-cyan-400 font-bold text-sm">0</span> / 100
+            </div>
+            <div id="timer-box" class="flex items-center space-x-1.5 bg-rose-500/10 border border-rose-500/30 text-rose-400 px-3 py-1.5 rounded-xl text-xs font-bold">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span id="time-left">60</span>s
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-4xl mx-auto flex-grow flex items-center justify-center">
+        
+        <!-- Pantalla de Inicio -->
+        <div id="screen-start" class="w-full glass-panel p-8 sm:p-10 rounded-3xl shadow-2xl text-center animate-fade">
+            <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-3xl flex items-center justify-center shadow-lg shadow-cyan-500/20 text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                </svg>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">Evaluación de Competencia Científica</h2>
+            <p class="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto mb-8 leading-relaxed">
+                Demuestra tu rigor metodológico analizando casos avanzados sobre redacción de resultados, diseño de tablas normadas (APA/Vancouver), selección de gráficos estadísticos y síntesis narrativa en enfermería.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 text-left max-w-2xl mx-auto">
+                <div class="glass-card p-4 rounded-2xl border border-slate-700/50">
+                    <div class="text-cyan-400 font-bold text-sm mb-1">25 Preguntas</div>
+                    <div class="text-slate-400 text-xs">Nivel intermedio-difícil enfocado en posgrado.</div>
+                </div>
+                <div class="glass-card p-4 rounded-2xl border border-slate-700/50">
+                    <div class="text-cyan-400 font-bold text-sm mb-1">60 Segundos</div>
+                    <div class="text-slate-400 text-xs">Tiempo límite riguroso por cada ejercicio analítico.</div>
+                </div>
+                <div class="glass-card p-4 rounded-2xl border border-slate-700/50">
+                    <div class="text-cyan-400 font-bold text-sm mb-1">4 Puntos c/u</div>
+                    <div class="text-slate-400 text-xs">Puntaje total de 100 puntos para la certificación.</div>
+                </div>
+            </div>
+            <button onclick="startGame()" class="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold rounded-2xl shadow-lg shadow-cyan-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+                Comenzar Desafío Metodológico
+            </button>
+        </div>
+
+        <!-- Pantalla de Juego / Preguntas -->
+        <div id="screen-game" class="w-full hidden glass-panel p-6 sm:p-8 rounded-3xl shadow-2xl animate-fade">
+            <div class="flex justify-between items-center mb-4">
+                <span id="question-category" class="bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-xs font-semibold px-3 py-1 rounded-lg">Categoría</span>
+                <span id="question-counter" class="text-xs font-bold text-slate-400">Pregunta 1 de 25</span>
+            </div>
+            
+            <!-- Barra de progreso -->
+            <div class="w-full bg-slate-800 h-2 rounded-full mb-6 overflow-hidden">
+                <div id="progress-bar" class="bg-cyan-500 h-full transition-all duration-300" style="width: 4%"></div>
+            </div>
+
+            <!-- Contenedor del enunciado -->
+            <div class="glass-card p-5 rounded-2xl mb-6 border border-slate-700/50">
+                <h3 id="question-text" class="text-base sm:text-lg font-semibold text-white leading-relaxed">Enunciado de la pregunta...</h3>
+            </div>
+
+            <!-- Opciones de respuesta -->
+            <div id="options-container" class="grid grid-cols-1 gap-3.5 mb-6">
+                <!-- Se inyectan dinámicamente -->
+            </div>
+
+            <!-- Panel de retroalimentación inmediata -->
+            <div id="feedback-panel" class="hidden p-4 rounded-2xl mb-6 border animate-fade">
+                <div id="feedback-title" class="font-bold text-sm mb-1">Título de retroalimentación</div>
+                <p id="feedback-text" class="text-xs sm:text-sm leading-relaxed text-slate-200">Explicación metodológica...</p>
+            </div>
+
+            <!-- Botón Siguiente -->
+            <button id="next-btn" onclick="nextQuestion()" class="hidden w-full py-3.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold rounded-2xl shadow-lg shadow-cyan-500/20 transition-all">
+                Siguiente Pregunta
+            </button>
+        </div>
+
+        <!-- Pantalla de Resultados -->
+        <div id="screen-results" class="w-full hidden glass-panel p-8 sm:p-10 rounded-3xl shadow-2xl text-center animate-fade">
+            <div id="award-icon-container" class="mb-6 flex justify-center">
+                <!-- Se inyecta copa o icono de reintento -->
+            </div>
+            <h2 id="result-message" class="text-2xl sm:text-3xl font-bold text-white mb-2">¡Lo lograste!</h2>
+            <p class="text-slate-300 text-sm mb-6">Has completado la evaluación de resultados de investigación en salud.</p>
+            
+            <div class="glass-card p-6 rounded-2xl max-w-xs mx-auto mb-8 border border-slate-700/50">
+                <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-1">Calificación Final</div>
+                <div id="final-score" class="text-4xl font-extrabold text-cyan-400">0 / 100</div>
+                <div id="final-percentage" class="text-xs text-slate-400 mt-1">Eficacia: 0%</div>
+            </div>
+
+            <button onclick="resetGame()" class="px-8 py-3.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold rounded-2xl shadow-lg shadow-cyan-500/25 transition-all">
+                Reiniciar Juego
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full max-w-4xl mx-auto mt-6 text-center text-xs text-slate-500">
+        Maestría en Enfermería y Gestión Integral del Cuidado &bull; Competencia: Indaga mediante métodos científicos
+    </footer>
+
+    <script>
+        const questionsData = [
+            {
+                category: "Redacción de Resultados",
+                question: "Al redactar los hallazgos descriptivos de una investigación sobre autocuidado en pacientes crónicos, ¿cuál es el criterio científico fundamental que se debe seguir?",
+                options: [
+                    "Presentar los datos de forma objetiva y lógica sin incluir juicios de valor ni interpretaciones personales en esta sección.",
+                    "Interpretar inmediatamente las causas socioculturales de los resultados para enriquecer el contexto narrativo.",
+                    "Comparar extensamente la postura teórica de autores internacionales omitiendo los valores numéricos obtenidos.",
+                    "Describir de forma subjetiva el esfuerzo de los pacientes durante la recolección para conmover al lector académico."
+                ],
+                correct: 0,
+                explanation: "La redacción de resultados debe ser estrictamente objetiva, neutra y ceñida a los datos empíricos hallados, reservando la interpretación y discusión para el apartado posterior."
+            },
+            {
+                category: "Presentación en Tablas",
+                question: "Según las normas formales para la presentación de datos en tablas científicas en enfermería, ¿qué elemento estructural es indispensable en la cabecera?",
+                options: [
+                    "Una nota al pie detallando la bibliografía de referencia de donde se extrajo cada celda de datos.",
+                    "Identificador numérico claro (Ej. Tabla 1) acompañado de un título breve, descriptivo y autosuficiente.",
+                    "Líneas verticales múltiples y sombreados intensos para separar visualmente cada celda de información.",
+                    "Firma digital del investigador principal y del comité estadístico que aprobó el análisis cuantitativo."
+                ],
+                correct: 1,
+                explanation: "Toda tabla científica requiere un número correlativo y un título claro que explique por sí mismo el contenido exacto de los datos presentados sin requerir lectura extensa del texto."
+            },
+            {
+                category: "Visualización y Gráficos",
+                question: "Para representar la distribución porcentual de una variable cualitativa nominal (como tipos de complicaciones postoperatorias), ¿qué tipo de gráfico estadístico es el más adecuado?",
+                options: [
+                    "Diagrama de dispersión bivariado para contrastar tendencias de correlación lineal compleja.",
+                    "Histograma de frecuencias continuas con intervalos agrupados en clases de igual amplitud.",
+                    "Gráfico de sectores circulares o diagrama de barras simples que muestren proporciones categóricas.",
+                    "Gráfico de líneas temporales para evaluar la evolución acumulativa a lo largo de cinco años."
+                ],
+                correct: 2,
+                explanation: "Las variables cualitativas nominales se visualizan óptimamente mediante gráficos de sectores (pastel) o de barras simples para comparar frecuencias relativas y porcentuales."
+            },
+            {
+                category: "Resumen en Texto",
+                question: "Al redactar el resumen de los resultados principales en el cuerpo del texto de un artículo o tesis de maestría, se recomienda:",
+                options: [
+                    "Transcribir todas las tablas completas dentro de los párrafos narrativos para evitar omisiones de datos.",
+                    "Destacar exclusivamente las cifras estadísticas más sobresalientes y relevantes vinculadas directamente al objetivo central.",
+                    "Omitir los resultados que no respaldaron la hipótesis inicial para mantener un perfil estético uniforme.",
+                    "Incluir la opinión de los pacientes entrevistados como argumento principal de la síntesis numérica."
+                ],
+                correct: 1,
+                explanation: "El resumen en texto debe sintetizar los hallazgos claves y estadísticamente significativos que responden directamente al problema de investigación planteado."
+            },
+            {
+                category: "Redacción de Resultados",
+                question: "¿Cuál de las siguientes prácticas constituye un error metodológico grave al redactar la sección de resultados cuantitativos?",
+                options: [
+                    "Incluir tablas estadísticas con sus respectivos valores de significancia (p) debidamente calculados.",
+                    "Mencionar la estadística descriptiva básica como medias, medianas y desviaciones estándar obtenidas.",
+                    "Discutir y contraponer los hallazgos propios con los resultados de estudios publicados en otros continentes.",
+                    "Presentar porcentajes sin especificar el tamaño absoluto de la muestra (n) al que hacen referencia."
+                ],
+                correct: 3,
+                explanation: "Presentar porcentajes sin el tamaño muestral (n) absoluto distorsiona la interpretación real de los datos, siendo un error metodológico crítico en redacción científica."
+            },
+            {
+                category: "Presentación en Tablas",
+                question: "En una tabla estadística que resume la correlación entre el nivel de estrés y el cumplimiento terapéutico, ¿cómo deben mostrarse los valores de p?",
+                options: [
+                    "Mediante asteriscos explicados en las notas al pie o cifras decimales exactas según formato de revista científica.",
+                    "Acompañados de adjetivos calificativos informales como 'muy significativo' o 'poco relevante'.",
+                    "Convertidos obligatoriamente a porcentajes acumulados para facilitar la lectura visual rápida.",
+                    "Ocultos si el investigador considera que el lector no tiene formación avanzada en estadística."
+                ],
+                correct: 0,
+                explanation: "Los valores de probabilidad (p) se reportan con precisión numérica o notación convencional estandarizada mediante notas al pie según directrices internacionales."
+            },
+            {
+                category: "Visualización y Gráficos",
+                question: "Para visualizar el comportamiento de una variable cuantitativa continua (como los niveles séricos de glucosa en el tiempo), el recurso gráfico idóneo es:",
+                options: [
+                    "Un pictograma decorativo con símbolos alusivos al área clínica de enfermería y salud pública.",
+                    "Un diagrama de cajas y bigotes (boxplot) o un gráfico de líneas que muestre la tendencia evolutiva.",
+                    "Un gráfico circular de sectores con más de veinte divisiones para cada valor individual.",
+                    "Una tabla vacía sin datos numéricos que solo exprese tendencias conceptuales generales."
+                ],
+                correct: 1,
+                explanation: "Los gráficos de líneas y diagramas de caja son ideales para mostrar distribuciones continuas, dispersión y evolución de variables cuantitativas a lo largo del tiempo."
+            },
+            {
+                category: "Resumen en Texto",
+                question: "Al realizar la síntesis textual de un análisis bivariado, el investigador en enfermería debe procurar:",
+                options: [
+                    "Exponer claramente la dirección, magnitud y significancia estadística de la asociación hallada.",
+                    "Redactar párrafos extensos basados en suposiciones empíricas desvinculadas de la prueba estadística.",
+                    "Evitar mencionar los intervalos de confianza para no confundir al tribunal evaluador de la tesis.",
+                    "Describir detalladamente el software informático empleado en lugar de explicar el hallazgo clínico."
+                ],
+                correct: 0,
+                explanation: "La síntesis textual bivariada requiere reportar con precisión la dirección, magnitud y valor de probabilidad de la relación entre variables sin rodeos innecesarios."
+            },
+            {
+                category: "Redacción de Resultados",
+                question: "¿Cómo debe manejarse la presentación de datos cualitativos provenientes de una investigación fenomenológica en enfermería?",
+                options: [
+                    "Mediante la saturación de tablas estadísticas con frecuencias absolutas de palabras clave repetidas.",
+                    "Integrando categorías temáticas emergentes respaldadas por citas textuales literales y anónimas de los participantes.",
+                    "Transformando todas las narrativas de los pacientes en porcentajes matemáticos para estandarizar el reporte.",
+                    "Omitiendo las experiencias de los sujetos de estudio para mantener un formato exclusivamente numérico."
+                ],
+                correct: 1,
+                explanation: "En la investigación cualitativa, los resultados se exponen mediante categorías temáticas enriquecidas con fragmentos textuales representativos de los discursos."
+            },
+            {
+                category: "Presentación en Tablas",
+                question: "Según el formato APA o Vancouver, ¿qué característica estética es correcta respecto al diseño de líneas en una tabla analítica?",
+                options: [
+                    "Utilizar líneas verticales gruesas para separar estrictamente cada columna de datos estadísticos.",
+                    "Eliminar todas las líneas verticales y emplear únicamente líneas horizontales en la parte superior, inferior y debajo de los encabezados.",
+                    "Colocar colores llamativos alternados en cada fila para facilitar el seguimiento visual del lector.",
+                    "Sustituir las líneas por recuadros cerrados alrededor de cada celda individual de la matriz."
+                ],
+                correct: 1,
+                explanation: "Las normativas científicas modernas exigen tablas limpias, eliminando las líneas verticales y limitando las horizontales a las estrictamente necesarias para la claridad."
+            },
+            {
+                category: "Visualización y Gráficos",
+                question: "Al diseñar una figura científica para un reporte de gestión en enfermería, ¿cuál es un principio fundamental de diseño visual?",
+                options: [
+                    "Saturar la imagen con múltiples efectos tridimensionales y colores fluorescentes para capturar atención.",
+                    "Mantener la simplicidad, asegurar ejes debidamente etiquetados y evitar elementos decorativos superfluos (chartjunk).",
+                    "Ocultar las unidades de medida en los ejes para simplificar la lectura general del gráfico estadístico.",
+                    "Utilizar resoluciones de imagen extremadamente bajas para que el archivo pese pocos kilobytes."
+                ],
+                correct: 2,
+                explanation: "La visualización de datos debe ser limpia, funcional y libre de ruido visual (chartjunk), garantizando etiquetas claras en los ejes y unidades de medida explícitas."
+            },
+            {
+                category: "Resumen en Texto",
+                question: "¿Cuál es el propósito principal de estructurar los resultados en texto de manera jerárquica (subtítulos acordes a los objetivos)?",
+                options: [
+                    "Cumplir con un requisito burocrático de extensión mínima exigido por las universidades de posgrado.",
+                    "Permitir al lector identificar de forma directa y ordenada la respuesta a cada uno de los objetivos específicos planteados.",
+                    "Ocultar aquellos resultados negativos que no alcanzaron la significancia estadística esperada.",
+                    "Dar la impresión de mayor complejidad teórica mediante la proliferación de apartados independientes."
+                ],
+                correct: 1,
+                explanation: "La estructuración jerárquica alinea directamente los hallazgos narrados con los objetivos específicos del estudio, facilitando la lectura crítica y la coherencia metodológica."
+            },
+            {
+                category: "Redacción de Resultados",
+                question: "Si durante el análisis de datos se encuentra un hallazgo totalmente inesperado que contradice la hipótesis planteada, el investigador debe:",
+                options: [
+                    "Eliminar los datos discrepantes de la base de datos para preservar la hipótesis original del estudio.",
+                    "Reportar el hallazgo de manera transparente y objetiva en la sección de resultados, analizándolo con rigor en la discusión.",
+                    "Modificar la fecha y el planteamiento del problema original para que coincida retroactivamente con el hallazgo.",
+                    "Atribuir el resultado inesperado exclusivamente a un error intencional de los sujetos participantes."
+                ],
+                correct: 1,
+                explanation: "El método científico exige honestidad intelectual; los hallazgos inesperados o negativos deben reportarse fielmente en resultados y abordarse críticamente en la discusión."
+            },
+            {
+                category: "Presentación en Tablas",
+                question: "¿Qué elemento es fundamental incluir en la nota al pie de una tabla cuando se han utilizado abreviaturas estadísticas (como DE, IC, OR)?",
+                options: [
+                    "Una definición detallada y el significado completo de cada abreviatura o símbolo empleado en la matriz.",
+                    "Una disculpa formal por la complejidad de los cálculos matemáticos realizados por el software.",
+                    "La dirección web personal del investigador principal para consultas metodológicas privadas.",
+                    "Un resumen narrativo completo de la discusión y conclusiones del artículo científico."
+                ],
+                correct: 0,
+                explanation: "Las notas al pie de tablas deben desglosar y definir claramente todas las abreviaturas, siglas o símbolos estadísticos para garantizar la autonomía de la tabla."
+            },
+            {
+                category: "Visualización y Gráficos",
+                question: "En la gestión del cuidado, cuando se comparan múltiples indicadores de calidad hospitalaria entre diferentes servicios, ¿qué gráfico facilita la comparación multidimensional?",
+                options: [
+                    "Gráfico de radar o telaraña, que permite evaluar varias dimensiones simultáneamente en un mismo plano.",
+                    "Gráfico de sectores múltiples con docenas de subdivisiones superpuestas e ilegibles.",
+                    "Diagrama de flujo de procesos administrativos orientado a la admisión de pacientes.",
+                    "Tabla de frecuencias sin procesar anexa al apéndice final del documento institucional."
+                ],
+                correct: 0,
+                explanation: "El gráfico de radar (o telaraña) es excelente en gestión para visualizar y comparar múltiples variables o indicadores de calidad de manera sincrónica."
+            },
+            {
+                category: "Resumen en Texto",
+                question: "Al redactar la síntesis de los resultados sociodemográficos de la muestra de enfermeros estudiada, se debe evitar:",
+                options: [
+                    "Describir la media de edad y la distribución porcentual por sexo de manera concisa.",
+                    "Incluir interpretaciones especulativas sobre por qué la mayoría del personal pertenece al género femenino.",
+                    "Resumir los años de experiencia profesional en el servicio clínico correspondiente.",
+                    "Presentar los datos generales de turnos laborales y tipo de contratación institucional."
+                ],
+                correct: 1,
+                explanation: "La sección de resultados debe limitarse a la descripción objetiva de los datos sociodemográficos, evitando especulaciones subjetivas sobre las causas de dichos perfiles."
+            },
+            {
+                category: "Redacción de Resultados",
+                question: "¿Cuál es la función metodológica de los intervalos de confianza (IC al 95%) al ser presentados en la sección de resultados?",
+                options: [
+                    "Indicar el rango estimado dentro del cual se encuentra el verdadero parámetro poblacional con un nivel de certeza.",
+                    "Garantizar de forma absoluta que no existe ningún tipo de sesgo de selección en la muestra analizada.",
+                    "Sustituir por completo la necesidad de realizar pruebas de hipótesis inferenciales complejas.",
+                    "Aumentar artificialmente el número de páginas del reporte de investigación para cumplir normativas."
+                ],
+                correct: 0,
+                explanation: "Los intervalos de confianza aportan información valiosa sobre la precisión y la magnitud clínica del efecto estimado en la población de estudio."
+            },
+            {
+                category: "Presentación en Tablas",
+                question: "Cuando una tabla contiene datos numéricos muy extensos con diferentes magnitudes, ¿cómo debe procederse con la alineación en las columnas?",
+                options: [
+                    "Alinear todos los números a la derecha o respecto al punto decimal para facilitar la lectura visual y comparación.",
+                    "Alinear todo el contenido numérico estrictamente hacia el margen izquierdo de forma desordenada.",
+                    "Centrar arbitrariamente cada celda sin importar la longitud de las cifras decimales o enteros.",
+                    "Justificar el texto de forma completa estirando los caracteres numéricos a lo ancho de la celda."
+                ],
+                correct: 0,
+                explanation: "Los datos numéricos en tablas científicas deben alinearse a la derecha o respecto al separador decimal para permitir una correcta lectura y comparación visual de magnitudes."
+            },
+            {
+                category: "Visualización y Gráficos",
+                question: "¿Qué aspecto debe verificarse estrictamente antes de insertar una figura o gráfico estadístico en un trabajo de investigación en enfermería?",
+                options: [
+                    "Que la figura sea redundante y repita exactamente cada palabra descrita en el texto principal.",
+                    "Que la figura aporte información complementaria clara y que esté debidamente citada y referenciada en el texto.",
+                    "Que carezca de título y etiquetas en los ejes para obligar al lector a deducir su significado.",
+                    "Que incluya logotipos comerciales de los laboratorios farmacéuticos auspiciadores del estudio."
+                ],
+                correct: 1,
+                explanation: "Las figuras y gráficos deben complementar el texto sin duplicarlo innecesariamente, estando numeradas y referenciadas explícitamente en la narrativa."
+            },
+            {
+                category: "Resumen en Texto",
+                question: "Al redactar el párrafo conclusivo de la sección de resultados, el investigador debe enfocarse en:",
+                options: [
+                    "Presentar un resumen ejecutivo que enlace directamente los hallazgos principales con la pregunta de investigación central.",
+                    "Emitir juicios morales sobre la actitud de las instituciones de salud evaluadas durante el proceso.",
+                    "Incluir la bibliografía completa consultada durante la fase de marco teórico y antecedentes.",
+                    "Describir los pormenores logísticos y financieros del presupuesto ejecutado en el estudio."
+                ],
+                correct: 0,
+                explanation: "El cierre de la sección de resultados sintetiza de manera directa y articulada cómo los hallazgos responden al problema e interrogantes de investigación."
+            },
+            {
+                category: "Redacción de Resultados",
+                question: "¿Qué error metodológico se comete al redactar los resultados si se mezclan datos cuantitativos crudos con opiniones personales de la investigadora?",
+                options: [
+                    "Pérdida de rigor científico, subjetividad y confusión entre el reporte empírico y la discusión analítica.",
+                    "Optimización del tiempo de lectura y mayor cercanía emocional con el lector del artículo.",
+                    "Cumplimiento riguroso de los estándares internacionales de publicación biomédica (ICMJE).",
+                    "Fortalecimiento de la validez estadística y la potencia de las pruebas paramétricas aplicadas."
+                ],
+                correct: 0,
+                explanation: "Mezclar datos empíricos con opiniones personales en resultados vulnera la objetividad científica, confundiendo la exposición de hechos con la interpretación crítica."
+            },
+            {
+                category: "Presentación en Tablas",
+                question: "En relación con el tamaño y extensión de las tablas en un reporte de investigación de posgrado, se aconseja:",
+                options: [
+                    "Fraccionar las tablas excesivamente grandes en varias tablas más pequeñas y comprensibles para el lector.",
+                    "Compactar toda la información de la tesis en una sola mega-tabla de cincuenta columnas y filas.",
+                    "Omitir las unidades de medida en las celdas para ahorrar espacio tipográfico en la página.",
+                    "Utilizar tamaños de fuente microscópicos para que quepa la información sin importar la legibilidad."
+                ],
+                correct: 0,
+                explanation: "Las tablas extensas deben simplificarse o dividirse lógicamente para asegurar una lectura ágil y comprensible, manteniendo siempre la legibilidad tipográfica."
+            },
+            {
+                category: "Visualización y Gráficos",
+                question: "¿Cuál es el criterio para elegir entre una tabla y un gráfico al presentar un conjunto específico de datos de investigación?",
+                options: [
+                    "Las tablas son mejores para mostrar valores numéricos precisos; los gráficos son ideales para mostrar tendencias y patrones generales.",
+                    "Los gráficos se utilizan exclusivamente para rellenar espacios vacíos en las páginas impares del documento.",
+                    "Las tablas solo deben usarse cuando los datos son cualitativos y los gráficos cuando son puramente monetarios.",
+                    "No existe ninguna diferencia metodológica; la elección depende únicamente del gusto estético del autor."
+                ],
+                correct: 0,
+                explanation: "La elección metodológica se basa en el objetivo: las tablas comunican valores exactos y detallados, mientras que los gráficos destacan patrones, tendencias y relaciones globales."
+            },
+            {
+                category: "Resumen en Texto",
+                question: "Cuando se reportan asociaciones estadísticas significativas en el texto, ¿qué componente es obligatorio mencionar junto al valor de la prueba?",
+                options: [
+                    "El grado de libertad, el valor estadístico de prueba y el nivel de probabilidad exacta (p).",
+                    "El nombre completo del creador del software estadístico y su número de licencia comercial.",
+                    "El estado civil y la especialidad clínica de cada uno de los pacientes evaluados.",
+                    "Una estimación subjetiva de la importancia comercial que tendría el estudio."
+                ],
+                correct: 0,
+                explanation: "El reporte riguroso de pruebas estadísticas en el texto exige incluir el estadístico de prueba, los grados de libertad y el valor de probabilidad (p) correspondiente."
+            },
+            {
+                category: "Redacción de Resultados",
+                question: "En una tesis de maestría en enfermería, el control de calidad de la redacción de resultados se comprueba principalmente cuando:",
+                options: [
+                    "Cualquier investigador independiente puede verificar exactamente los mismos datos numéricos en el texto, tablas y figuras.",
+                    "El texto contiene una gran cantidad de adjetivos emotivos que enaltecen la labor del personal de enfermería.",
+                    "Se omiten los resultados que contradicen los intereses institucionales del hospital sede.",
+                    "El documento supera las quinientas páginas de extensión narrativa sin apoyos visuales."
+                ],
+                correct: 0,
+                explanation: "El control de calidad y la transparencia científica se confirman cuando los datos son consistentes, replicables y verificables entre el texto, tablas y anexos."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timer;
+        let timeLeft = 60;
+        let answered = false;
+
+        const screenStart = document.getElementById('screen-start');
+        const screenGame = document.getElementById('screen-game');
+        const screenResults = document.getElementById('screen-results');
+        const scoreTimerContainer = document.getElementById('score-timer-container');
+        const currentScoreEl = document.getElementById('current-score');
+        const timeLeftEl = document.getElementById('time-left');
+        const progressBar = document.getElementById('progress-bar');
+        const questionCategoryEl = document.getElementById('question-category');
+        const questionCounterEl = document.getElementById('question-counter');
+        const questionTextEl = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackPanel = document.getElementById('feedback-panel');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackText = document.getElementById('feedback-text');
+        const nextBtn = document.getElementById('next-btn');
+
+        function startGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            currentScoreEl.textContent = score;
+            screenStart.classList.add('hidden');
+            screenResults.classList.add('hidden');
+            screenGame.classList.remove('hidden');
+            scoreTimerContainer.classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false;
+            feedbackPanel.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            
+            const q = questionsData[currentQuestionIndex];
+            questionCategoryEl.textContent = q.category;
+            questionCounterEl.textContent = `Pregunta ${currentQuestionIndex + 1} de ${questionsData.length}`;
+            progressBar.style.width = `${((currentQuestionIndex + 1) / questionsData.length) * 100}%`;
+            questionTextEl.textContent = q.question;
+
+            // Barajar opciones manteniendo referencia del índice correcto
+            let optionsWithIndex = q.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
+            optionsWithIndex.sort(() => Math.random() - 0.5);
+
+            optionsContainer.innerHTML = '';
+            optionsWithIndex.forEach((item, displayIdx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded-2xl glass-card hover:bg-slate-800/80 border border-slate-700/60 transition-all text-sm sm:text-base text-slate-200 flex items-center justify-between group";
+                btn.innerHTML = `<span><strong class="text-cyan-400 mr-2">${String.fromCharCode(65 + displayIdx)}.</strong> ${item.text}</span>`;
+                btn.onclick = () => selectOption(item.originalIndex, q.correct, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            timeLeft = 60;
+            timeLeftEl.textContent = timeLeft;
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                timeLeftEl.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    if (!answered) {
+                        handleTimeout();
+                    }
+                }
+            }, 1000);
+        }
+
+        function handleTimeout() {
+            answered = true;
+            disableAllOptions();
+            
+            const q = questionsData[currentQuestionIndex];
+            feedbackPanel.className = "p-4 rounded-2xl mb-6 border bg-amber-500/10 border-amber-500/30 text-amber-300 animate-fade";
+            feedbackTitle.textContent = "¡Tiempo agotado!";
+            feedbackText.textContent = `Se agotaron los 60 segundos. ${q.explanation}`;
+            feedbackPanel.classList.remove('hidden');
+            nextBtn.classList.remove('hidden');
+        }
+
+        function selectOption(selectedIndex, correctIndex, selectedBtn) {
+            if (answered) return;
+            answered = true;
+            clearInterval(timer);
+            disableAllOptions();
+
+            const q = questionsData[currentQuestionIndex];
+            const buttons = optionsContainer.children;
+
+            // Identificar el botón correcto y el seleccionado
+            for (let btn of buttons) {
+                // Como reordenamos, evaluamos comparando el texto o guardando su originalIndex
+                // Una forma limpia es recrear la lógica o marcar según corresponda:
+                // Vamos a marcar visualmente
+            }
+
+            // Marcar selección y correcta de forma robusta
+            for (let i = 0; i < buttons.length; i++) {
+                const btn = buttons[i];
+                // Extraer el texto de la opción o asociar data
+            }
+
+            // Recorrer botones para aplicar estilos
+            Array.from(buttons).forEach(btn => {
+                // Revisamos si el texto coincide con la opción correcta
+                const optionTextMatch = btn.textContent.slice(3).trim();
+                const isThisCorrect = (optionTextMatch === q.options[correctIndex]);
+                const isThisSelected = (btn === selectedBtn);
+
+                if (isThisCorrect) {
+                    btn.className = "w-full text-left p-4 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 text-sm sm:text-base flex items-center justify-between";
+                } else if (isThisSelected && !isThisCorrect) {
+                    btn.className = "w-full text-left p-4 rounded-2xl bg-rose-500/20 border border-rose-500/50 text-rose-300 text-sm sm:text-base flex items-center justify-between";
+                } else {
+                    btn.className = "w-full text-left p-4 rounded-2xl glass-card opacity-50 border border-slate-700/40 text-sm sm:text-base text-slate-400 flex items-center justify-between";
+                }
+            });
+
+            if (selectedIndex === correctIndex) {
+                score += 4;
+                currentScoreEl.textContent = score;
+                feedbackPanel.className = "p-4 rounded-2xl mb-6 border bg-emerald-500/10 border-emerald-500/30 text-emerald-300 animate-fade";
+                feedbackTitle.textContent = "¡Respuesta Correcta!";
+                feedbackText.textContent = `¡Excelente rigor analítico! ${q.explanation}`;
+            } else {
+                feedbackPanel.className = "p-4 rounded-2xl mb-6 border bg-rose-500/10 border-rose-500/30 text-rose-300 animate-fade";
+                feedbackTitle.textContent = "Respuesta Incorrecta";
+                feedbackText.textContent = `Pista metodológica: ${q.explanation}`;
+            }
+
+            feedbackPanel.classList.remove('hidden');
+            nextBtn.classList.remove('hidden');
+        }
+
+        function disableAllOptions() {
+            const buttons = optionsContainer.children;
+            for (let btn of buttons) {
+                btn.style.pointerEvents = 'none';
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questionsData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            screenGame.classList.add('hidden');
+            scoreTimerContainer.classList.add('hidden');
+            screenResults.classList.remove('hidden');
+
+            const finalScoreEl = document.getElementById('final-score');
+            const finalPercentageEl = document.getElementById('final-percentage');
+            const resultMessageEl = document.getElementById('result-message');
+            const awardIconContainer = document.getElementById('award-icon-container');
+
+            finalScoreEl.textContent = `${score} / 100`;
+            const percentage = score; 
+            finalPercentageEl.textContent = `Eficacia: ${percentage}%`;
+
+            if (score >= 80) {
+                resultMessageEl.textContent = "¡Lo lograste!";
+                awardIconContainer.innerHTML = `
+                    <div class="w-24 h-24 mx-auto bg-gradient-to-tr from-amber-400 to-yellow-500 rounded-full flex items-center justify-center shadow-xl shadow-yellow-500/30 trophy-animation text-slate-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                        </svg>
+                    </div>
+                `;
+            } else {
+                resultMessageEl.textContent = "Sigue intentando, No te rindas";
+                awardIconContainer.innerHTML = `
+                    <div class="w-24 h-24 mx-auto bg-gradient-to-tr from-rose-500 to-pink-600 rounded-full flex items-center justify-center shadow-xl shadow-rose-500/30 text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+                `;
+            }
+        }
+
+        function resetGame() {
+            startGame();
+        }
+    </script>
+</body>
+<div style="position: fixed; bottom: 10px; right: 10px; background-color: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 5px; font-family: sans-serif; font-size: 12px; z-index: 9999;">
+    Juego creado por: Ander Asenjo
+</div>
+</html>
