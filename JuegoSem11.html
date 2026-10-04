@@ -1,0 +1,744 @@
+﻿<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investigación Científica en Enfermería - Maestría</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef8ff',
+                            100: '#d9f0ff',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            800: '#0c4a6e',
+                            900: '#082f49',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(1.02); }
+        }
+        .animate-pulse-slow {
+            animation: pulse-slow 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="h-full bg-slate-900 text-slate-100 flex flex-col font-sans selection:bg-brand-500 selection:text-white">
+
+    <header class="bg-slate-800/80 backdrop-blur-md border-b border-slate-700/60 sticky top-0 z-50 px-4 py-3 shadow-md">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-brand-500/30">
+                    <i class="fa-solid fa-stethoscope text-white text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2">
+                        <span>Gestión y Cuidado Basado en Evidencia</span>
+                        <span class="text-xs bg-brand-500/20 text-brand-300 px-2 py-0.5 rounded-full border border-brand-500/30 hidden sm:inline-block">Maestría</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">Indagación Científica en Enfermería</p>
+                </div>
+            </div>
+            <div id="header-stats" class="hidden items-center space-x-4 text-sm">
+                <div class="bg-slate-700/50 px-3 py-1 rounded-lg border border-slate-600/50 flex items-center gap-2">
+                    <i class="fa-solid fa-trophy text-amber-400"></i>
+                    <span>Puntuación: <strong id="current-score" class="text-white">0</strong> / 100</span>
+                </div>
+                <div class="bg-slate-700/50 px-3 py-1 rounded-lg border border-slate-600/50 flex items-center gap-2">
+                    <i class="fa-solid fa-bookmark text-cyan-400"></i>
+                    <span>Pregunta: <strong id="current-q-num" class="text-white">1</strong> / 25</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 max-w-4xl w-full mx-auto">
+
+        <!-- WELCOME SCREEN -->
+        <div id="screen-welcome" class="w-full bg-slate-800/90 border border-slate-700/80 rounded-2xl shadow-2xl p-6 sm:p-10 text-center space-y-6 backdrop-blur-sm">
+            <div class="inline-flex p-4 rounded-3xl bg-brand-500/10 border border-brand-500/20 text-brand-400 mb-2 shadow-inner">
+                <i class="fa-solid fa-microscope text-5xl"></i>
+            </div>
+            <div class="space-y-2 max-w-2xl mx-auto">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Simulador de Investigación Científica en Enfermería</h2>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                    Evaluación avanzada para estudiantes de Maestría orientada a la competencia: <em>«Indaga mediante métodos científicos para construir sus conocimientos»</em>. Opciones equilibradas y rigurosas para evaluar discusión, limitaciones y conclusiones.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto py-2 text-left">
+                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50 flex items-start space-x-3">
+                    <div class="text-cyan-400 mt-1"><i class="fa-solid fa-list-check"></i></div>
+                    <div>
+                        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-300">25 Preguntas</h3>
+                        <p class="text-xs text-slate-400">Opciones equiparadas</p>
+                    </div>
+                </div>
+                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50 flex items-start space-x-3">
+                    <div class="text-amber-400 mt-1"><i class="fa-solid fa-clock"></i></div>
+                    <div>
+                        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-300">60 Segundos</h3>
+                        <p class="text-xs text-slate-400">Por cada reactivo</p>
+                    </div>
+                </div>
+                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50 flex items-start space-x-3">
+                    <div class="text-emerald-400 mt-1"><i class="fa-solid fa-award"></i></div>
+                    <div>
+                        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-300">4 Puntos c/u</h3>
+                        <p class="text-xs text-slate-400">Meta: 80+ para Trofeo</p>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="startGame()" class="inline-flex items-center justify-center space-x-3 bg-gradient-to-r from-brand-600 to-cyan-600 hover:from-brand-500 hover:to-cyan-500 text-white font-semibold px-8 py-4 rounded-xl shadow-lg shadow-brand-600/30 transition transform hover:-translate-y-0.5 active:translate-y-0 text-base">
+                <span>Comenzar Evaluación</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- GAME SCREEN -->
+        <div id="screen-game" class="w-full bg-slate-800/90 border border-slate-700/80 rounded-2xl shadow-2xl p-5 sm:p-8 space-y-6 hidden backdrop-blur-sm">
+            
+            <!-- Top bar within game -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-slate-700/60">
+                <div class="flex items-center gap-3">
+                    <span id="question-category-badge" class="px-3 py-1 rounded-lg text-xs font-semibold uppercase tracking-wide bg-brand-500/20 text-brand-300 border border-brand-500/30">
+                        Categoría
+                    </span>
+                    <span class="text-xs text-slate-400 font-medium">Reactivo <span id="q-idx">1</span> de 25</span>
+                </div>
+                <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                    <div class="flex items-center gap-2 text-sm text-slate-300 font-medium bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-700">
+                        <i class="fa-regular fa-clock text-cyan-400 animate-pulse"></i>
+                        <span>Tiempo: <span id="timer-display" class="font-bold text-white">60</span>s</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timer Progress Bar -->
+            <div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden border border-slate-700/50">
+                <div id="timer-bar" class="bg-gradient-to-r from-cyan-500 to-brand-500 h-full w-full transition-all duration-1000 ease-linear"></div>
+            </div>
+
+            <!-- Visual Graphic / SVG Container -->
+            <div id="visual-container" class="w-full bg-slate-900/70 p-4 rounded-xl border border-slate-700/50 flex items-center gap-4">
+                <div class="w-12 h-12 rounded-lg bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400 text-xl shrink-0">
+                    <i id="visual-icon" class="fa-solid fa-chart-line"></i>
+                </div>
+                <div class="text-xs sm:text-sm text-slate-300" id="visual-description">
+                    Contextualización metodológica para el análisis crítico en investigación de enfermería.
+                </div>
+            </div>
+
+            <!-- Question Statement -->
+            <div class="space-y-3">
+                <h3 id="question-text" class="text-base sm:text-lg font-semibold text-white leading-snug">
+                    Pregunta cargándose...
+                </h3>
+            </div>
+
+            <!-- Options Container -->
+            <div id="options-container" class="grid grid-cols-1 gap-3">
+                <!-- Dynamically injected options -->
+            </div>
+
+            <!-- Feedback Box (Hidden initially) -->
+            <div id="feedback-box" class="hidden p-4 rounded-xl border transition-all">
+                <div class="flex items-start gap-3">
+                    <div id="feedback-icon" class="text-xl mt-0.5"></div>
+                    <div class="space-y-1">
+                        <h4 id="feedback-title" class="font-bold text-sm"></h4>
+                        <p id="feedback-text" class="text-xs sm:text-sm text-slate-300 leading-relaxed"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Button Next -->
+            <div class="flex justify-end pt-2">
+                <button id="btn-next" onclick="nextQuestion()" class="hidden bg-brand-600 hover:bg-brand-500 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md transition items-center gap-2 text-sm">
+                    <span>Siguiente Pregunta</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- RESULTS SCREEN -->
+        <div id="screen-results" class="w-full bg-slate-800/90 border border-slate-700/80 rounded-2xl shadow-2xl p-6 sm:p-10 text-center space-y-6 hidden backdrop-blur-sm">
+            <div id="result-trophy-container" class="inline-flex p-5 rounded-3xl bg-amber-500/10 border border-amber-500/30 text-amber-400 mb-2 shadow-inner animate-bounce">
+                <i id="result-icon-el" class="fa-solid fa-trophy text-6xl"></i>
+            </div>
+            
+            <div class="space-y-3 max-w-xl mx-auto">
+                <h2 id="result-main-message" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">¡Lo lograste!</h2>
+                <div class="inline-block bg-slate-900/80 px-6 py-3 rounded-2xl border border-slate-700">
+                    <p class="text-sm text-slate-400">Puntaje Final Obtendido</p>
+                    <p class="text-3xl sm:text-4xl font-black text-white mt-1"><span id="final-score-val">0</span> <span class="text-lg font-normal text-slate-400">/ 100 pts</span></p>
+                </div>
+                <p id="result-sub-message" class="text-slate-300 text-sm sm:text-base leading-relaxed pt-2">
+                    Has demostrado un excelente dominio metodológico en gestión y cuidado basado en evidencia.
+                </p>
+            </div>
+
+            <div class="pt-4 flex flex-col sm:flex-row justify-center gap-4">
+                <button onclick="restartGame()" class="bg-brand-600 hover:bg-brand-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-sm">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Volver a Intentar</span>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Question Bank with balanced option lengths across all 25 questions
+        const questionBank = [
+            {
+                category: "Redacción de la Discusión y Conclusiones",
+                icon: "fa-pen-nib",
+                visual: "Estructura de la Discusión: Del hallazgo específico a la generalización teórica.",
+                question: "¿Cuál es el propósito metodológico principal al redactar la sección de discusión en una investigación de enfermería?",
+                options: [
+                    { text: "Copiar de forma detallada tablas y valores estadísticos del apartado inicial de resultados.", correct: false },
+                    { text: "Interpretar los hallazgos explicándolos a la luz del marco teórico y estudios previos.", correct: true },
+                    { text: "Añadir nuevos datos clínicos y pacientes omitidos durante la fase de campo.", correct: false },
+                    { text: "Establecer la aprobación ética institucional definitiva otorgada al protocolo.", correct: false }
+                ],
+                explanation: "La discusión interpreta el significado de los resultados, contrastándolos con la teoría y explicando su relevancia para la gestión del cuidado."
+            },
+            {
+                category: "Contraste de Antecedentes",
+                icon: "fa-scale-balanced",
+                visual: "Matriz de contraste: Coincidencias y divergencias con la literatura científica previa.",
+                question: "Al contrastar los resultados sobre adherencia al tratamiento con los antecedentes, ¿cómo debe manejarse una divergencia?",
+                options: [
+                    { text: "Ocultar el resultado divergente para evitar observaciones críticas del tribunal evaluador.", correct: false },
+                    { text: "Atribuir el error exclusivamente a fallas metodológicas directas de los sujetos.", correct: false },
+                    { text: "Analizar críticamente las diferencias contextuales o metodológicas que explican la discrepancia.", correct: true },
+                    { text: "Modificar la bibliografía original citada para que coincida plenamente con el nuevo hallazgo.", correct: false }
+                ],
+                explanation: "Las discrepancias con la literatura son oportunidades de análisis profundo sobre variables contextuales, diferencias metodológicas o sesgos."
+            },
+            {
+                category: "Limitaciones del Estudio",
+                icon: "fa-shield-halved",
+                visual: "Análisis de amenazas a la validez interna y externa en diseños de enfermería.",
+                question: "En un estudio sobre UPP, se identifica como limitación la alta rotación del personal. ¿Qué estrategia minimiza su impacto?",
+                options: [
+                    { text: "Ignorar la rotación asumiendo que el sesgo se distribuye aleatoriamente en la muestra clínica.", correct: false },
+                    { text: "Implementar un programa intensivo y continuo de capacitación a turnos rotativos y auditorías.", correct: true },
+                    { text: "Despedir de manera inmediata al personal que no complete el protocolo de prevención local.", correct: false },
+                    { text: "Ampliar la muestra total de pacientes sin capacitar al personal de nueva incorporación.", correct: false }
+                ],
+                explanation: "Las limitaciones metodológicas o operativas deben reconocerse explícitamente junto con las estrategias de control aplicadas."
+            },
+            {
+                category: "Redacción de Conclusiones",
+                icon: "fa-bullseye",
+                visual: "Alineación estricta: Problema de investigación $\\rightarrow$ Objetivos $\\rightarrow$ Conclusiones.",
+                question: "Desde la perspectiva científica, ¿qué característica es indispensable en la redacción de las conclusiones de una tesis?",
+                options: [
+                    { text: "Incluir extensas reflexiones personales subjetivas del investigador sobre la salud pública.", correct: false },
+                    { text: "Derivarse estrictamente de los resultados obtenidos y responder directamente a los objetivos.", correct: true },
+                    { text: "Proponer presupuestos financieros detallados para el hospital donde se efectuó el estudio.", correct: false },
+                    { text: "Formular nuevas hipótesis complejas que no fueron evaluadas durante el estudio.", correct: false }
+                ],
+                explanation: "Las conclusiones guardan estricta congruencia metodológica con los objetivos de investigación y la evidencia empírica demostrada."
+            },
+            {
+                category: "Redacción de Recomendaciones",
+                icon: "fa-lightbulb",
+                visual: "Traducción del conocimiento: De la evidencia científica a la práctica y política de salud.",
+                question: "Al redactar las recomendaciones de un estudio sobre gestión del cuidado, ¿hacia dónde deben estar orientadas?",
+                options: [
+                    { text: "A la mejora de la práctica clínica asistencial, la gestión institucional y futuras líneas.", correct: true },
+                    { text: "A criticar severamente la administración previa registrada en la institución de salud.", correct: false },
+                    { text: "A la creación de una marca comercial exclusiva de insumos médicos patentados.", correct: false },
+                    { text: "A resumir los antecedentes históricos de la enfermería moderna y su evolución.", correct: false }
+                ],
+                explanation: "Las recomendaciones deben ser aplicables, prácticas y orientadas a transformar la toma de decisiones clínicas y futuras investigaciones."
+            },
+            {
+                category: "Redacción de la Discusión y Conclusiones",
+                icon: "fa-file-invoice",
+                visual: "Jerarquía analítica: Del dato crudo a la implicación clínica en enfermería.",
+                question: "Cuando un investigador discute la significancia clínica frente a la estadística, ¿a qué se refiere fundamentalmente?",
+                options: [
+                    { text: "A que un resultado estadístico no siempre implica un cambio relevante para el cuidado clínico.", correct: true },
+                    { text: "A que las estadísticas médicas siempre superan por completo el juicio profesional práctico.", correct: false },
+                    { text: "A que los valores de probabilidad no tienen ninguna utilidad en revistas de alto impacto.", correct: false },
+                    { text: "A la obligación de realizar pruebas paramétricas complejas en poblaciones pequeñas.", correct: false }
+                ],
+                explanation: "La significancia clínica valora el impacto real del resultado en la salud y bienestar del paciente, más allá del valor numérico de p."
+            },
+            {
+                category: "Contraste de Antecedentes",
+                icon: "fa-book-bookmark",
+                visual: "Sintetizador bibliográfico: Contraste con la teoría de Dorothea Orem u otros teóricos.",
+                question: "Al contrastar los resultados sobre autocuidado con la teoría de Dorothea Orem, el investigador logra:",
+                options: [
+                    { text: "Invalidar por completo la teoría de enfermería debido al avance tecnológico médico.", correct: false },
+                    { text: "Validar, refinar o contextualizar los constructos teóricos abstractos con evidencia local.", correct: true },
+                    { text: "Transformar un estudio de tipo cuantitativo en una investigación estrictamente histórica.", correct: false },
+                    { text: "Justificar la omisión total de la revisión sistemática de literatura previa realizada.", correct: false }
+                ],
+                explanation: "El contraste con marcos conceptuales y modelos de enfermería dota de solidez disciplinar e interpretativa a los hallazgos."
+            },
+            {
+                category: "Limitaciones del Estudio",
+                icon: "fa-shield-halved",
+                visual: "Mapa de sesgos: Control de variables confusoras y sesgo de selección.",
+                question: "Si un estudio sobre clima laboral presenta un sesgo de deseabilidad social, ¿cómo se debió minimizar?",
+                options: [
+                    { text: "Aplicando los instrumentos de manera anónima y garantizando la estricta confidencialidad.", correct: true },
+                    { text: "Obligando a todo el personal operativo a firmar las encuestas con su nombre completo.", correct: false },
+                    { text: "Realizando las entrevistas personales frente a los jefes directos de cada servicio.", correct: false },
+                    { text: "Eliminando todos los cuestionarios que presenten puntajes altos en satisfacción.", correct: false }
+                ],
+                explanation: "El anonimato y la confidencialidad protegen al encuestador y reducen el sesgo de respuesta por temor a represalias laborales."
+            },
+            {
+                category: "Redacción de Conclusiones",
+                icon: "fa-check-double",
+                visual: "Sintetizador de conclusiones: Evidencia directa frente a inferencias excesivas.",
+                question: "¿Cuál error metodológico debe evitarse categóricamente al redactar las conclusiones de un estudio cuantitativo?",
+                options: [
+                    { text: "Establecer relaciones causales directas basándose únicamente en un diseño correlacional.", correct: true },
+                    { text: "Mencionar de forma explícita el cumplimiento o no del objetivo general inicial.", correct: false },
+                    { text: "Sintetizar los hallazgos numéricos más relevantes obtenidos en el análisis estadístico.", correct: false },
+                    { text: "Destacar de manera sobria el aporte del estudio al desarrollo de la disciplina.", correct: false }
+                ],
+                explanation: "Los diseños transversales o correlacionales miden asociación, no causalidad; inferir causa directa es un error metodológico grave."
+            },
+            {
+                category: "Redacción de Recomendaciones",
+                icon: "fa-hands-bound",
+                visual: "Ruta de implementación: Viabilidad institucional y réplica metodológica.",
+                question: "Una recomendación metodológica adecuada para futuras investigaciones derivada de limitaciones muestrales sería:",
+                options: [
+                    { text: "Sugerir que futuros estudios repliquen el trabajo en muestras multicéntricas amplias.", correct: true },
+                    { text: "Exigir que las universidades suspendan tesis de maestría con menos de mil sujetos.", correct: false },
+                    { text: "Recomendar que no se investigue más sobre gestión debido a la falta de presupuesto.", correct: false },
+                    { text: "Prohibir totalmente la utilización de cuestionarios autoadministrados en hospitales.", correct: false }
+                ],
+                explanation: "Las recomendaciones metodológicas suelen sugerir la ampliación de muestras, estudios multicéntricos o diseños longitudinales."
+            },
+            {
+                category: "Redacción de la Discusión y Conclusiones",
+                icon: "fa-comments",
+                visual: "Triangulación de datos: Consistencia entre enfoque cuantitativo y cualitativo.",
+                question: "En un estudio de métodos mixtos sobre humanización del cuidado, la discusión debe caracterizarse por:",
+                options: [
+                    { text: "Presentar los resultados numéricos y narrativos por separado sin establecer conexión.", correct: false },
+                    { text: "Triangular e integrar ambos tipos de datos para explicar las convergencias halladas.", correct: true },
+                    { text: "Dar prioridad absoluta a la estadística descartando por completo la narrativa.", correct: false },
+                    { text: "Reducir la discusión a un párrafo breve debido a la complejidad de los datos.", correct: false }
+                ],
+                explanation: "La triangulación en estudios mixtos enriquece la discusión al contrastar la estadística con la vivencia subjetiva del cuidado."
+            },
+            {
+                category: "Contraste de Antecedentes",
+                icon: "fa-book-open-reader",
+                visual: "Evolución temporal del conocimiento científico en salud.",
+                question: "Al contrastar antecedentes recientes con un estudio clásico de hace 30 años, el investigador busca:",
+                options: [
+                    { text: "Demostrar la evolución histórica del paradigma del cuidado frente al fenómeno estudiado.", correct: true },
+                    { text: "Rellenar páginas del documento de tesis para cumplir con el requisito de extensión.", correct: false },
+                    { text: "Demostrar que los autores antiguos cometieron errores metodológicos imperdonables.", correct: false },
+                    { text: "Evitar citar literatura internacional que esté redactada en idiomas distintos.", correct: false }
+                ],
+                explanation: "El contraste histórico-conceptual permite visualizar la evolución paradigmática de la disciplina de enfermería."
+            },
+            {
+                category: "Limitaciones del Estudio",
+                icon: "fa-magnifying-glass-chart",
+                visual: "Validez externa: Limitaciones de generalización geográfica o institucional.",
+                question: "Un estudio sobre liderazgo se realizó en un único hospital privado. ¿Cuál es su limitación de generalización?",
+                options: [
+                    { text: "Baja validez externa, limitando su extrapolación automática a centros públicos rurales.", correct: true },
+                    { text: "Nula validez interna, invalidando por completo la recolección de encuestas aplicadas.", correct: false },
+                    { text: "Sesgo grave de atenuación psicométrica por falta de calibración de software.", correct: false },
+                    { text: "Imposibilidad absoluta de calcular medias aritméticas y desviaciones estándar.", correct: false }
+                ],
+                explanation: "La muestra institucional única limita la validez externa o transferibilidad de los resultados a contextos diferentes."
+            },
+            {
+                category: "Redacción de Conclusiones",
+                icon: "fa-file-circle-check",
+                visual: "Estructura sintética: Claridad, concisión y ausencia de redundancias.",
+                question: "Respecto a la extensión y estilo de redacción de las conclusiones en la tesis de maestría, se recomienda:",
+                options: [
+                    { text: "Ser concisas, directas y organizadas en correspondencia directa con los objetivos.", correct: true },
+                    { text: "Redactar un ensayo filosófico extenso sin división estructurada por viñetas.", correct: false },
+                    { text: "Incluir tablas de contingencia y gráficos estadísticos adicionales en este apartado.", correct: false },
+                    { text: "Copiar de forma literal el resumen ejecutivo redactado en la introducción.", correct: false }
+                ],
+                explanation: "Las conclusiones deben ser directas, claras y estructuradas en relación directa con los objetivos específicos planteados."
+            },
+            {
+                category: "Redacción de Recomendaciones",
+                icon: "fa-clipboard-list",
+                visual: "Viabilidad de la propuesta: Impacto operativo en la gestión hospitalaria.",
+                question: "Para que una recomendación de gestión clínica sea efectiva en una organización de salud, debe:",
+                options: [
+                    { text: "Ser de cumplimiento imposible a corto plazo para presionar políticamente al ministerio.", correct: false },
+                    { text: "Incluir una propuesta clara sobre quién debe implementarla y bajo qué enfoque.", correct: true },
+                    { text: "Basarse exclusivamente en opiniones subjetivas de personal sin sustento empírico.", correct: false },
+                    { text: "Centrarse únicamente en la compra de tecnología costosa sin importar personal.", correct: false }
+                ],
+                explanation: "Las recomendaciones operativas requieren viabilidad, especificidad de actores y alineación con los recursos institucionales."
+            },
+            {
+                category: "Redacción de la Discusión y Conclusiones",
+                icon: "fa-chart-pie",
+                visual: "Análisis crítico: Justificación de hallazgos inesperados o anómalos.",
+                question: "Si se obtiene un resultado opuesto a la hipótesis inicial, en la sección de discusión el autor debe:",
+                options: [
+                    { text: "Ocultar el resultado y reportar únicamente los datos que apoyaban la hipótesis.", correct: false },
+                    { text: "Analizar con rigor científico por qué se produjo, revisando variables y literatura.", correct: true },
+                    { text: "Modificar la fecha de la tesis para que coincida con la época de la hipótesis.", correct: false },
+                    { text: "Descalificar por completo el software estadístico por procesar mal los datos.", correct: false }
+                ],
+                explanation: "Los hallazgos inesperados enriquecen la ciencia; la discusión debe analizarlos honestamente a la luz de nuevos marcos explicativos."
+            },
+            {
+                category: "Contraste de Antecedentes",
+                icon: "fa-network-wired",
+                visual: "Mapa conceptual de antecedentes empíricos nacionales e internacionales.",
+                question: "Al estructurar el contraste con antecedentes internacionales en la discusión, el investigador debe destacar:",
+                options: [
+                    { text: "Las similitudes y diferencias en modelos de atención entre los sistemas comparados.", correct: true },
+                    { text: "La moneda extranjera utilizada en los presupuestos de investigación ajenos.", correct: false },
+                    { text: "La biografía personal detallada de los autores extranjeros citados en el texto.", correct: false },
+                    { text: "La obligación metodológica de descartar artículos escritos en idioma inglés.", correct: false }
+                ],
+                explanation: "El contexto normativo, cultural y de sistemas de salud de cada país influye directamente en las similitudes o divergencias de los resultados."
+            },
+            {
+                category: "Limitaciones del Estudio",
+                icon: "fa-user-shield",
+                visual: "Control de sesgos de información y errores de medición instrumental.",
+                question: "Cuando un instrumento psicométrico presenta un alfa de Cronbach bajo (0.55), esto representa:",
+                options: [
+                    { text: "Una limitación de validez interna y confiabilidad instrumental que debe declararse.", correct: true },
+                    { text: "Un caso grave de mortalidad experimental de pacientes en el servicio clínico.", correct: false },
+                    { text: "Un problema de iluminación deficiente en las salas durante la recolección.", correct: false },
+                    { text: "La total ausencia de permisos formales emitidos por el comité de bioética.", correct: false }
+                ],
+                explanation: "La baja confiabilidad (consistencia interna) del instrumento afecta la precisión de la medición y debe declararse como limitación."
+            },
+            {
+                category: "Redacción de Conclusiones",
+                icon: "fa-stamp",
+                visual: "Consistencia formal: Rigor científico en la síntesis final.",
+                question: "¿Cuál frase ejemplifica una correcta conclusión científica en una tesis de gestión del cuidado?",
+                options: [
+                    { text: "«Considero personalmente que las enfermeras están muy cansadas y fallan siempre.»", correct: false },
+                    { text: "«El programa incrementó de forma significativa la adherencia a la lista quirúrgica.»", correct: true },
+                    { text: "«Quizás en el futuro se descubra que los pacientes mejoran sin intervención alguna.»", correct: false },
+                    { text: "«Los datos numéricos están en la tabla cuatro y no requieren mayor explicación.»", correct: false }
+                ],
+                explanation: "Una conclusión científica es asertiva, basada en la evidencia y respaldada por los datos empíricos analizados."
+            },
+            {
+                category: "Redacción de Recomendaciones",
+                icon: "fa-hospital-user",
+                visual: "Impacto asistencial: Traducción del conocimiento a protocolos hospitalarios.",
+                question: "Una recomendación orientada a la práctica asistencial derivada de un estudio sobre caídas debe proponer:",
+                options: [
+                    { text: "Actualizar protocolos institucionales de valoración de riesgo e incorporar rondas.", correct: true },
+                    { text: "Suspender la atención a pacientes adultos mayores para evitar estadísticas bajas.", correct: false },
+                    { text: "Exigir que los pacientes caminen solos sin asistencia para fomentar su autonomía.", correct: false },
+                    { text: "Adquirir computadoras de última generación exclusiva para la dirección general.", correct: false }
+                ],
+                explanation: "Las recomendaciones prácticas deben incidir directamente en guías, protocolos o intervenciones de seguridad del paciente."
+            },
+            {
+                category: "Redacción de la Discusión y Conclusiones",
+                icon: "fa-glasses",
+                visual: "Mirada crítica: Análisis de implicaciones éticas y legales en los hallazgos.",
+                question: "Al discutir hallazgos sobre eventos adversos en medicación, el investigador de maestría debe integrar:",
+                options: [
+                    { text: "Seguridad del paciente, cultura de reporte y responsabilidad ético-legal del equipo.", correct: true },
+                    { text: "Estrategias comerciales de marketing farmacéutico e internacionalización.", correct: false },
+                    { text: "Conceptos avanzados de astronomía médica y climatología hospitalaria local.", correct: false },
+                    { text: "Presupuestos para aumentos salariales automáticos del personal administrativo.", correct: false }
+                ],
+                explanation: "La gestión integral del cuidado exige interpretar los eventos adversos bajo el marco de la seguridad del paciente y la cultura justa."
+            },
+            {
+                category: "Contraste de Antecedentes",
+                icon: "fa-cubes",
+                visual: "Sintaxis bibliográfica: Consistencia teórica y empírica.",
+                question: "El contraste riguroso con los antecedentes teóricos evita que la investigación en enfermería caiga en:",
+                options: [
+                    { text: "El aislamiento científico y la reinvención innecesaria de fenómenos ya estudiados.", correct: true },
+                    { text: "El uso excesivo e injustificado de pruebas estadísticas paramétricas avanzadas.", correct: false },
+                    { text: "La obligatoriedad de tener que realizar estudios experimentales con animales.", correct: false },
+                    { text: "La publicación de artículos científicos en revistas de acceso abierto global.", correct: false }
+                ],
+                explanation: "Conocer y contrastar la literatura evita duplicar esfuerzos y sitúa la investigación dentro acumulativa del conocimiento."
+            },
+            {
+                category: "Limitaciones del Estudio",
+                icon: "fa-bars-progress",
+                visual: "Control de sesgos temporales en diseños longitudinales.",
+                question: "En un estudio longitudinal de cohorte sobre sobrecarga laboral, una limitación común es la pérdida de sujetos. Se denomina:",
+                options: [
+                    { text: "Fallecimiento de pacientes por negligencia dentro del servicio de internamiento.", correct: false },
+                    { text: "Mortalidad experimental o deserción de participantes durante el seguimiento temporal.", correct: true },
+                    { text: "Descomposición imprevista de los equipos biomédicos de medición clínica.", correct: false },
+                    { text: "Renuncia voluntaria de los miembros del comité editorial de la revista.", correct: false }
+                ],
+                explanation: "La mortalidad experimental se refiere a la pérdida de sujetos durante estudios de seguimiento o longitudinales, afectando la muestra final."
+            },
+            {
+                category: "Redacción de Conclusiones",
+                icon: "fa-signature",
+                visual: "Integridad científica: Conclusiones libres de sesgos y extrapolaciones.",
+                question: "¿Qué criterio asegura que una conclusión sobre gestión del cuidado sea metodológicamente sólida?",
+                options: [
+                    { text: "Basarse exclusivamente en los hallazgos empíricos sin especulaciones ajenas a datos.", correct: true },
+                    { text: "Incluir citas bibliográficas extensas tomadas de manuales publicados hace siglos.", correct: false },
+                    { text: "Garantizar formalmente que todos los porcentajes analizados sumen quinientos.", correct: false },
+                    { text: "Evitar por completo mencionar los objetivos específicos planteados en la tesis.", correct: false }
+                ],
+                explanation: "Las conclusiones deben emanar directamente de los resultados analizados, manteniendo rigor y prudencia científica."
+            },
+            {
+                category: "Redacción de Recomendaciones",
+                icon: "fa-route",
+                visual: "Hoja de ruta para la gobernanza y gestión integral del cuidado.",
+                question: "Al redactar recomendaciones dirigidas a tomadores de decisiones políticas, el investigador debe asegurar que sean:",
+                options: [
+                    { text: "Factibles, basadas en evidencia científica y orientadas a optimizar recursos de salud.", correct: true },
+                    { text: "Demandas sindicales exclusivas de incremento salarial y beneficios gremiales.", correct: false },
+                    { text: "Órdenes de carácter coercitivo orientadas a clausurar hospitales públicos.", correct: false },
+                    { text: "Resúmenes bibliográficos extensos extraídos de tesis doctorales extranjeras.", correct: false }
+                ],
+                explanation: "Las recomendaciones de política sanitaria deben ser viables, fundamentadas y orientadas a mejorar la eficiencia y calidad del sistema."
+            }
+        ];
+
+        // Game State Variables
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timer = null;
+        let timeLeft = 60;
+        let isAnswered = false;
+
+        // DOM Elements
+        const screenWelcome = document.getElementById('screen-welcome');
+        const screenGame = document.getElementById('screen-game');
+        const screenResults = document.getElementById('screen-results');
+        const headerStats = document.getElementById('header-stats');
+        
+        const currentScoreEl = document.getElementById('current-score');
+        const currentQNumEl = document.getElementById('current-q-num');
+        const qIdxEl = document.getElementById('q-idx');
+        const categoryBadge = document.getElementById('question-category-badge');
+        const timerDisplay = document.getElementById('timer-display');
+        const timerBar = document.getElementById('timer-bar');
+        
+        const visualIcon = document.getElementById('visual-icon');
+        const visualDescription = document.getElementById('visual-description');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        
+        const feedbackBox = document.getElementById('feedback-box');
+        const feedbackIcon = document.getElementById('feedback-icon');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackText = document.getElementById('feedback-text');
+        const btnNext = document.getElementById('btn-next');
+
+        const finalScoreVal = document.getElementById('final-score-val');
+        const resultMainMessage = document.getElementById('result-main-message');
+        const resultSubMessage = document.getElementById('result-sub-message');
+        const resultTrophyContainer = document.getElementById('result-trophy-container');
+        const resultIconEl = document.getElementById('result-icon-el');
+
+        function startGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            screenWelcome.classList.add('hidden');
+            screenResults.classList.add('hidden');
+            screenGame.classList.remove('hidden');
+            headerStats.classList.remove('hidden');
+            headerStats.classList.add('flex');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= questionBank.length) {
+                endGame();
+                return;
+            }
+
+            isAnswered = false;
+            feedbackBox.classList.add('hidden');
+            btnNext.classList.add('hidden');
+
+            const q = questionBank[currentQuestionIndex];
+            currentQNumEl.textContent = currentQuestionIndex + 1;
+            qIdxEl.textContent = currentQuestionIndex + 1;
+            currentScoreEl.textContent = score;
+
+            categoryBadge.textContent = q.category;
+            visualIcon.className = `fa-solid ${q.icon}`;
+            visualDescription.textContent = q.visual;
+            questionText.textContent = q.question;
+
+            // Shuffle options to prevent predictable positions
+            let shuffledOptions = [...q.options];
+            shuffleArray(shuffledOptions);
+
+            optionsContainer.innerHTML = '';
+            shuffledOptions.forEach((opt, idx) => {
+                const button = document.createElement('button');
+                button.className = `w-full text-left p-4 rounded-xl border border-slate-700 bg-slate-900/60 hover:bg-slate-700/60 hover:border-brand-500/50 transition flex items-start space-x-3 group cursor-pointer text-sm sm:text-base`;
+                button.innerHTML = `
+                    <span class="w-6 h-6 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-slate-400 group-hover:bg-brand-600 group-hover:text-white group-hover:border-brand-500 shrink-0 mt-0.5 transition">${String.fromCharCode(65 + idx)}</span>
+                    <span class="text-slate-200 leading-snug flex-1">${opt.text}</span>
+                `;
+                button.onclick = () => selectOption(opt.correct, button, q.explanation);
+                optionsContainer.appendChild(button);
+            });
+
+            startTimer();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            timeLeft = 60;
+            timerDisplay.textContent = timeLeft;
+            timerBar.style.width = '100%';
+
+            timer = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+                const percentage = (timeLeft / 60) * 100;
+                timerBar.style.width = `${percentage}%`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function handleTimeout() {
+            if (isAnswered) return;
+            isAnswered = true;
+            disableAllOptions();
+
+            feedbackBox.className = "p-4 rounded-xl border bg-amber-950/40 border-amber-500/50 text-amber-200";
+            feedbackIcon.innerHTML = '<i class="fa-solid fa-hourglass-end text-amber-400"></i>';
+            feedbackTitle.textContent = "¡Tiempo agotado!";
+            feedbackText.textContent = "No respondiste dentro de los 60 segundos establecidos. Se ha marcado como incorrecto (0 puntos).";
+            feedbackBox.classList.remove('hidden');
+            btnNext.classList.remove('hidden');
+            btnNext.classList.add('flex');
+        }
+
+        function selectOption(isCorrect, selectedButton, explanation) {
+            if (isAnswered) return;
+            isAnswered = true;
+            clearInterval(timer);
+            disableAllOptions();
+
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(btn => {
+                btn.style.pointerEvents = 'none';
+            });
+
+            if (isCorrect) {
+                score += 4;
+                currentScoreEl.textContent = score;
+                selectedButton.className = "w-full text-left p-4 rounded-xl border bg-emerald-950/50 border-emerald-500 text-emerald-100 flex items-start space-x-3 transition";
+                selectedButton.querySelector('span').className = "w-6 h-6 rounded-lg bg-emerald-600 border border-emerald-500 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5";
+
+                feedbackBox.className = "p-4 rounded-xl border bg-emerald-950/40 border-emerald-500/50 text-emerald-200";
+                feedbackIcon.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
+                feedbackTitle.textContent = "¡Excelente! Respuesta Correcta (+4 pts)";
+                feedbackText.textContent = explanation;
+            } else {
+                selectedButton.className = "w-full text-left p-4 rounded-xl border bg-rose-950/50 border-rose-500 text-rose-100 flex items-start space-x-3 transition";
+                selectedButton.querySelector('span').className = "w-6 h-6 rounded-lg bg-rose-600 border border-rose-500 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5";
+
+                feedbackBox.className = "p-4 rounded-xl border bg-rose-950/40 border-rose-500/50 text-rose-200";
+                feedbackIcon.innerHTML = '<i class="fa-solid fa-circle-xmark text-rose-400"></i>';
+                feedbackTitle.textContent = "Respuesta Incorrecta (0 pts)";
+                feedbackText.textContent = "Pista analítica: " + explanation;
+            }
+
+            feedbackBox.classList.remove('hidden');
+            btnNext.classList.remove('hidden');
+            btnNext.classList.add('flex');
+        }
+
+        function disableAllOptions() {
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(btn => btn.style.pointerEvents = 'none');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        function endGame() {
+            clearInterval(timer);
+            screenGame.classList.add('hidden');
+            headerStats.classList.add('hidden');
+            headerStats.classList.remove('flex');
+            screenResults.classList.remove('hidden');
+
+            finalScoreVal.textContent = score;
+
+            if (score >= 80 && score <= 100) {
+                resultTrophyContainer.className = "inline-flex p-5 rounded-3xl bg-amber-500/10 border border-amber-500/30 text-amber-400 mb-2 shadow-inner animate-bounce";
+                resultIconEl.className = "fa-solid fa-trophy text-6xl text-amber-400";
+                resultMainMessage.textContent = "¡Lo lograste!";
+                resultSubMessage.textContent = `¡Felicitaciones! Obtuviste ${score} puntos. Has demostrado un dominio sobresaliente en la competencia de indagación científica, discusión, limitaciones y conclusiones en la gestión integral del cuidado en enfermería.`;
+            } else {
+                resultTrophyContainer.className = "inline-flex p-5 rounded-3xl bg-slate-700/50 border border-slate-600 text-slate-400 mb-2 shadow-inner";
+                resultIconEl.className = "fa-solid fa-book-open-reader text-6xl text-slate-400";
+                resultMainMessage.textContent = "Sigue intentando, No te rindas";
+                resultSubMessage.textContent = `Obtuviste ${score} puntos. La maestría exige un puntaje mínimo de 80 puntos para la certificación de excelencia. Repasa los apartados de discusión, limitaciones y contraste de antecedentes metodológicos y vuelve a intentarlo.`;
+            }
+        }
+
+        function restartGame() {
+            startGame();
+        }
+    </script>
+</body><div style="position: fixed; bottom: 10px; right: 10px; background-color: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 5px; font-family: sans-serif; font-size: 12px; z-index: 9999;">
+    Juego creado por: Ander Asenjo
+</div>
+
+</html>
