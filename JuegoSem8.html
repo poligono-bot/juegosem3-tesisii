@@ -1,0 +1,717 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego Educativo: Plan de Análisis de Datos en Enfermería</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0b0f19',
+                        cardBg: '#131c31',
+                        accentEmerald: '#10b981',
+                        accentPurple: '#a855f7',
+                        accentCyan: '#06b6d4',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .glass-panel {
+            background: rgba(19, 28, 49, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(16, 185, 129, 0.6); }
+        }
+        .glow-effect { animation: pulseGlow 3s infinite; }
+    </style>
+</head>
+<body class="bg-darkBg text-slate-100 min-h-screen flex flex-col justify-between selection:bg-accentEmerald selection:text-black">
+
+    <!-- Header / Navbar -->
+    <header class="glass-panel border-b border-slate-800 py-4 px-6 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-accentEmerald to-accentCyan p-2.5 rounded-xl text-darkBg font-bold text-xl shadow-lg">
+                    📈
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight text-white">Plan de Análisis de Datos en Salud</h1>
+                    <p class="text-xs text-slate-400">Maestría en Enfermería y Gestión Integral del Cuidado</p>
+                </div>
+            </div>
+            <div id="game-stats" class="hidden flex items-center space-x-6 text-sm font-medium">
+                <div class="flex items-center space-x-2 bg-slate-900/60 px-4 py-1.5 rounded-full border border-slate-800">
+                    <span class="text-slate-400">Pregunta:</span>
+                    <span id="current-q-num" class="text-accentEmerald font-bold">1</span><span class="text-slate-500">/25</span>
+                </div>
+                <div class="flex items-center space-x-2 bg-slate-900/60 px-4 py-1.5 rounded-full border border-slate-800">
+                    <span class="text-slate-400">Puntaje:</span>
+                    <span id="current-score" class="text-accentCyan font-bold">0</span><span class="text-slate-500">/100</span>
+                </div>
+                <div id="timer-container" class="flex items-center space-x-2 bg-slate-900/60 px-4 py-1.5 rounded-full border border-slate-800">
+                    <span class="text-slate-400">⏱️ Tiempo:</span>
+                    <span id="timer-display" class="text-amber-400 font-bold">60s</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow flex items-center justify-center p-4 sm:p-6">
+        <div class="w-full max-w-4xl mx-auto">
+
+            <!-- Pantalla de Inicio -->
+            <section id="screen-start" class="glass-panel p-8 sm:p-12 rounded-3xl shadow-2xl text-center space-y-6 glow-effect">
+                <div class="inline-block p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-4xl mb-2">
+                    📊📐
+                </div>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+                    Simulador: Plan de Análisis Estadístico
+                </h2>
+                <p class="text-slate-300 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+                    Fortalece la competencia <strong class="text-accentEmerald">«Indaga mediante métodos científicos para construir sus conocimientos»</strong>. Pon a prueba tus saberes avanzados en tamaño muestral, simulaciones, análisis descriptivo, visualización gráfica, bivariado, multivariado y software estadístico en enfermería.
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left max-w-2xl mx-auto py-2">
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <span class="text-accentEmerald font-bold text-lg">25</span>
+                        <p class="text-xs text-slate-400">Reactivos especializados de posgrado</p>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <span class="text-accentCyan font-bold text-lg">60 Seg</span>
+                        <p class="text-xs text-slate-400">Límite por cada pregunta</p>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <span class="text-purple-400 font-bold text-lg">4 Pts</span>
+                        <p class="text-xs text-slate-400">Valor individual (Máx 100)</p>
+                    </div>
+                </div>
+                <button onclick="startGame()" class="mt-4 px-8 py-4 bg-gradient-to-r from-accentEmerald to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-darkBg font-bold text-lg rounded-2xl shadow-xl transition transform hover:scale-105 active:scale-95">
+                    Iniciar Desafío Estadístico 🚀
+                </button>
+            </section>
+
+            <!-- Pantalla del Juego / Preguntas -->
+            <section id="screen-game" class="hidden glass-panel p-6 sm:p-10 rounded-3xl shadow-2xl space-y-6">
+                <!-- Barra de progreso del tiempo -->
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div id="timer-bar" class="bg-accentEmerald h-full transition-all duration-1000" style="width: 100%;"></div>
+                </div>
+
+                <!-- Contenedor Visual Opcional (Organizadores SVG Estadísticos) -->
+                <div id="question-visual" class="hidden bg-slate-900/80 p-4 rounded-2xl border border-slate-800 flex justify-center items-center">
+                    <!-- Dinámico vía JS -->
+                </div>
+
+                <!-- Enunciado de la Pregunta -->
+                <div>
+                    <span id="question-category" class="text-xs font-semibold uppercase tracking-wider px-3 py-1 bg-purple-500/10 text-purple-400 rounded-full border border-purple-500/20"></span>
+                    <h3 id="question-text" class="text-lg sm:text-xl font-semibold text-white mt-3 leading-snug"></h3>
+                </div>
+
+                <!-- Opciones de Respuesta -->
+                <div id="options-container" class="space-y-3">
+                    <!-- Dinámico vía JS -->
+                </div>
+
+                <!-- Panel de Retroalimentación -->
+                <div id="feedback-panel" class="hidden p-4 sm:p-5 rounded-2xl border transition-all">
+                    <div id="feedback-title" class="font-bold text-base mb-1"></div>
+                    <p id="feedback-text" class="text-sm text-slate-300 leading-relaxed"></p>
+                    <button id="next-btn" onclick="nextQuestion()" class="mt-4 px-6 py-2.5 bg-slate-100 hover:bg-white text-darkBg font-bold rounded-xl text-sm transition shadow">
+                        Siguiente Pregunta ➡️
+                    </button>
+                </div>
+            </section>
+
+            <!-- Pantalla de Resultados Finales -->
+            <section id="screen-result" class="hidden glass-panel p-8 sm:p-12 rounded-3xl shadow-2xl text-center space-y-6">
+                <div id="result-icon-container" class="inline-block p-6 rounded-3xl bg-slate-900/80 border border-slate-800 text-6xl shadow-inner">
+                    <!-- Icono o Copa -->
+                </div>
+                <h2 id="result-title" class="text-2xl sm:text-3xl font-extrabold text-white"></h2>
+                <div class="text-4xl sm:text-5xl font-black text-accentEmerald" id="final-score-text">0 / 100</div>
+                <p id="result-message" class="text-base sm:text-lg text-slate-300 max-w-md mx-auto"></p>
+                <div class="pt-4">
+                    <button onclick="restartGame()" class="px-8 py-3.5 bg-gradient-to-r from-accentEmerald to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-darkBg font-bold rounded-2xl shadow-xl transition transform hover:scale-105">
+                        Volver a Intentar 🔄
+                    </button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-900">
+        Maestría en Enfermería y Gestión Integral del Cuidado • Módulo de Plan de Análisis de Datos
+    </footer>
+
+    <!-- Script Principal del Juego -->
+    <script>
+        const questionsData = [
+            {
+                category: "Plan de Análisis de Datos",
+                text: "¿Qué propósito metodológico fundamental cumple la redacción del 'Plan de Análisis de Datos' en el protocolo de investigación cuantitativa en enfermería?",
+                visualType: "svg-plan-intro",
+                options: [
+                    { text: "Establecer de antemano las técnicas estadísticas y pruebas que se aplicarán para contrastar las hipótesis de forma transparente.", correct: true },
+                    { text: "Modificar los resultados numéricos al finalizar el estudio para que coincidan con la hipótesis inicial.", correct: false },
+                    { text: "Calcular el presupuesto financiero necesario para comprar equipo clínico de hospitalización.", correct: false },
+                    { text: "Describir las opiniones subjetivas del personal de enfermería sobre los pacientes.", correct: false }
+                ],
+                feedback: "Correcto. El plan de análisis predetermina las rutas estadísticas para evitar sesgos de confirmación y garantizar la validez metodológica."
+            },
+            {
+                category: "Tamaño de Muestra y Simulaciones",
+                text: "Al describir el cálculo del tamaño de la muestra en el plan de análisis, ¿por qué es altamente recomendable simular diferentes escenarios de pérdida de seguimiento o varianza?",
+                visualType: "svg-sample-sim",
+                options: [
+                    { text: "Para evaluar la robustez estadística ante abandonos o variabilidades imprevistas y asegurar la potencia del estudio.", correct: true },
+                    { text: "Para reducir el número de participantes a cero y ahorrar tiempo de recolección.", correct: false },
+                    { text: "Para eliminar por completo la necesidad de aplicar pruebas estadísticas bivariadas.", correct: false },
+                    { text: "Para asegurar que todos los pacientes tengan exactamente la misma edad y género.", correct: false }
+                ],
+                feedback: "Correcto. Las simulaciones de escenarios de tamaño muestral permiten anticipar pérdidas y garantizar una potencia estadística adecuada (ej. 80%)."
+            },
+            {
+                category: "Análisis Descriptivo",
+                text: "En el plan de análisis descriptivo para variables cuantitativas con distribución simétrica (como la presión arterial sistólica normal), ¿qué medidas estadísticas de resumen se deben especificar obligatoriamente?",
+                visualType: "none",
+                options: [
+                    { text: "La media aritmética y la desviación estándar.", correct: true },
+                    { text: "La mediana y el rango intercuartílico exclusivamente.", correct: false },
+                    { text: "La moda y las frecuencias absolutas simples.", correct: false },
+                    { text: "El coeficiente de correlación de Pearson múltiple.", correct: false }
+                ],
+                feedback: "Correcto. Para distribuciones normales o simétricas, la media y la desviación estándar son las medidas de tendencia central y dispersión ideales."
+            },
+            {
+                category: "Análisis Descriptivo",
+                text: "Si una variable cuantitativa en un estudio de gestión en enfermería presenta una marcada asimetría (como días de estancia hospitalaria), ¿qué medidas de resumen se programan en el análisis descriptivo?",
+                visualType: "none",
+                options: [
+                    { text: "La mediana y el rango intercuartílico (RIC).", correct: true },
+                    { text: "La media aritmética y la varianza muestral pura.", correct: false },
+                    { text: "La sumatoria total y el promedio ponderado.", correct: false },
+                    { text: "El error estándar de la media exclusivamente.", correct: false }
+                ],
+                feedback: "Correcto. Ante distribuciones asimétricas, la mediana y el rango intercuartílico resumen mejor los datos al no verse afectados por valores extremos."
+            },
+            {
+                category: "Visualización de Datos",
+                text: "Dentro del plan de análisis gráfico, ¿qué tipo de gráfico es el más adecuado para visualizar la relación y tendencia entre dos variables cuantitativas continuas (ej. horas de turno vs. nivel de fatiga)?",
+                visualType: "svg-scatter",
+                options: [
+                    { text: "El diagrama de dispersión (Scatter plot).", correct: true },
+                    { text: "El gráfico de pastel o sectores circulares.", correct: false },
+                    { text: "El diagrama de barras simples de frecuencias.", correct: false },
+                    { text: "El pictograma de pictogramas clínicos.", correct: false }
+                ],
+                feedback: "Correcto. El diagrama de dispersión es excelente para mostrar asociaciones bivariadas entre dos variables cuantitativas continuas."
+            },
+            {
+                category: "Visualización de Datos",
+                text: "Para comparar la distribución y la presencia de valores atípicos (outliers) de una variable cuantitativa continua (ej. escala de dolor) estratificada por grupos de pacientes, ¿qué recurso gráfico se debe planificar?",
+                visualType: "none",
+                options: [
+                    { text: "El diagrama de caja y bigotes (Boxplot).", correct: true },
+                    { text: "El histograma de frecuencias acumuladas simple.", correct: false },
+                    { text: "El gráfico de líneas temporales cruzadas.", correct: false },
+                    { text: "El mapa de coordenadas geográficas.", correct: false }
+                ],
+                feedback: "Correcto. El diagrama de caja y bigotes (boxplot) visualiza eficientemente la mediana, cuartiles y valores atípicos entre grupos."
+            },
+            {
+                category: "Análisis Bivariado",
+                text: "Si en el plan de análisis bivariado se busca evaluar la asociación entre dos variables cualitativas (ej. presencia de úlcera por presión: sí/no vs. nivel de movilidad: alto/bajo), ¿qué prueba estadística se debe especificar?",
+                visualType: "none",
+                options: [
+                    { text: "La prueba de chi-cuadrado de Pearson (o prueba exacta de Fisher).", correct: true },
+                    { text: "La prueba t de Student para muestras independientes.", correct: false },
+                    { text: "El análisis de varianza (ANOVA) de un factor.", correct: false },
+                    { text: "El coeficiente de correlación lineal de Pearson.", correct: false }
+                ],
+                feedback: "Correcto. Chi-cuadrado evalúa la independencia o asociación entre dos variables categóricas o cualitativas."
+            },
+            {
+                category: "Análisis Bivariado",
+                text: "Para comparar las medias de una variable cuantitativa continua con distribución normal entre dos grupos independientes (ej. puntuación de satisfacción entre turno diurno y nocturno), ¿qué prueba bivariada se programa?",
+                visualType: "none",
+                options: [
+                    { text: "La prueba t de Student para muestras independientes.", correct: true },
+                    { text: "La prueba de rangos con signo de Wilcoxon.", correct: false },
+                    { text: "El coeficiente de correlación de Spearman.", correct: false },
+                    { text: "La prueba de Kruskal-Wallis paramétrica.", correct: false }
+                ],
+                feedback: "Correcto. La prueba t de Student compara medias de dos grupos independientes cuando los datos son paramétricos."
+            },
+            {
+                category: "Análisis Multivariado",
+                text: "¿Cuál es la función metodológica principal de planificar un análisis multivariado (ej. regresión logística multivariante) en una investigación en salud?",
+                visualType: "svg-multiv",
+                options: [
+                    { text: "Controlar simultáneamente el efecto de múltiples variables confusoras para estimar la asociación neta sobre el desenlace.", correct: true },
+                    { text: "Sustituir la recolección de datos primarios por cálculos matemáticos automáticos.", correct: false },
+                    { text: "Calcular el promedio simple de las respuestas de los pacientes sin ajustar por edad.", correct: false },
+                    { text: "Reducir la muestra total del estudio a la mitad sin perder significancia.", correct: false }
+                ],
+                feedback: "Correcto. El análisis multivariado permite ajustar y aislar el verdadero efecto de una variable controlando posibles confusores."
+            },
+            {
+                category: "Análisis Multivariado",
+                text: "Si la variable dependiente de interés en un estudio clínico de enfermería es de naturaleza dicotómica o binaria (ej. ocurrencia de caída del paciente: sí/no), ¿qué modelo multivariado se debe especificar en el plan de análisis?",
+                visualType: "none",
+                options: [
+                    { text: "Modelo de Regresión Logística Binaria.", correct: true },
+                    { text: "Modelo de Regresión Lineal Simple.", correct: false },
+                    { text: "Análisis de conglomerados jerárquicos.", correct: false },
+                    { text: "Prueba exacta de Fisher univariante.", correct: false }
+                ],
+                feedback: "Correcto. La regresión logística binaria modela la probabilidad de ocurrencia de un evento dicotómico ajustado por múltiples covariables."
+            },
+            {
+                category: "Software Estadístico",
+                text: "Al describir el software y las herramientas estadísticas en el protocolo de investigación, ¿qué detalle técnico se debe reportar obligatoriamente junto con el nombre del programa (ej. SPSS, R, STATA)?",
+                visualType: "none",
+                options: [
+                    { text: "La versión específica del software y los paquetes o librerías analíticas utilizadas.", correct: true },
+                    { text: "El color de la interfaz gráfica y el tamaño de la pantalla del computador.", correct: false },
+                    { text: "El nombre y número de teléfono del creador comercial del software.", correct: false },
+                    { text: "La marca de la impresora conectada al sistema informático.", correct: false }
+                ],
+                feedback: "Correcto. Reportar la versión exacta del software y sus librerías garantiza la replicabilidad del procesamiento de datos."
+            },
+            {
+                category: "Plan de Análisis de Datos",
+                text: "En la redacción del plan de análisis, ¿qué se entiende por 'nivel de significancia estadística (alfa)' prefijado?",
+                visualType: "none",
+                options: [
+                    { text: "La probabilidad máxima aceptada de cometer un error de tipo I (rechazar la hipótesis nula siendo verdadera), comúnmente 0.05.", correct: true },
+                    { text: "El porcentaje total de pacientes que abandonaron el estudio voluntariamente.", correct: false },
+                    { text: "La cantidad de preguntas incluidas en el cuestionario de satisfacción.", correct: false },
+                    { text: "El margen de error del tamaño de la muestra dividido entre dos.", correct: false }
+                ],
+                feedback: "Correcto. El nivel de alfa (ej. 5% o 0.05) define el umbral de probabilidad para declarar un resultado estadísticamente significativo."
+            },
+            {
+                category: "Tamaño de Muestra y Simulaciones",
+                text: "¿Qué parámetro estadístico no es estrictamente necesario para calcular el tamaño muestral en un estudio analítico de comparación de medias?",
+                visualType: "none",
+                options: [
+                    { text: "El nombre comercial del hospital donde se realizará el estudio.", correct: true },
+                    { text: "La potencia estadística deseada (ej. 80% o 90%).", correct: false },
+                    { text: "El nivel de significancia estadística (alfa bilateral).", correct: false },
+                    { text: "La varianza o desviación estándar esperada en la población.", correct: false }
+                ],
+                feedback: "Correcto. El tamaño de la muestra depende de parámetros estadísticos (alfa, beta, varianza, efecto), no de la ubicación institucional."
+            },
+            {
+                category: "Análisis Descriptivo",
+                text: "Para resumir una variable cualitativa politómica nominal (ej. tipo de servicio hospitalario: Urgencias, UCI, Pediatría, Medicina Interna), ¿qué estadísticos descriptivos se deben programar?",
+                visualType: "none",
+                options: [
+                    { text: "Frecuencias absolutas y porcentajes (relativas).", correct: true },
+                    { text: "La media aritmética y la desviación estándar.", correct: false },
+                    { text: "La mediana y el rango intercuartílico.", correct: false },
+                    { text: "El coeficiente de correlación de Pearson.", correct: false }
+                ],
+                feedback: "Correcto. Las variables cualitativas o categóricas se resumen mediante conteos de frecuencias y porcentajes."
+            },
+            {
+                category: "Visualización de Datos",
+                text: "¿Cuál es la función principal de incluir un diagrama de barras apiladas o agrupadas en el plan de análisis gráfico de un estudio de enfermería?",
+                visualType: "none",
+                options: [
+                    { text: "Visualizar la distribución conjunta de dos variables cualitativas categóricas.", correct: true },
+                    { text: "Calcular automáticamente la regresión lineal multivariante.", correct: false },
+                    { text: "Mostrar la correlación perfecta entre dos variables continuas.", correct: false },
+                    { text: "Identificar valores atípicos en distribuciones normales.", correct: false }
+                ],
+                feedback: "Correcto. Las barras apiladas o agrupadas permiten comparar proporciones entre categorías de dos variables cualitativas."
+            },
+            {
+                category: "Análisis Bivariado",
+                text: "Si se desea evaluar la correlación bivariada entre dos variables cuantitativas que no cumplen con los supuestos de normalidad (distribución libre), ¿qué prueba no paramétrica debe planificarse?",
+                visualType: "none",
+                options: [
+                    { text: "El coeficiente de correlación de Spearman.", correct: true },
+                    { text: "El coeficiente de correlación de Pearson.", correct: false },
+                    { text: "La prueba t de Student para muestras pareadas.", correct: false },
+                    { text: "El análisis de varianza ANOVA de un factor.", correct: false }
+                ],
+                feedback: "Correcto. El coeficiente de Spearman es la medida de asociación bivariada no paramétrica para datos ordinales o cuantitativos no normales."
+            },
+            {
+                category: "Análisis Multivariado",
+                text: "Cuando el desenlace o variable dependiente en un estudio de supervivencia o tiempo hasta el evento (ej. tiempo hasta la rehospitalización) es analizado ajustando por covariables, ¿qué modelo multivariado se especifica?",
+                visualType: "none",
+                options: [
+                    { text: "Modelo de Regresión de Cox (Proportional Hazards).", correct: true },
+                    { text: "Prueba de chi-cuadrado de Pearson.", correct: false },
+                    { text: "Prueba t de Student independiente.", correct: false },
+                    { text: "Diagrama de dispersión bivariado.", correct: false }
+                ],
+                feedback: "Correcto. La regresión de Cox es el modelo multivariado estándar para analizar el tiempo hasta que ocurre un evento de interés."
+            },
+            {
+                category: "Software Estadístico",
+                text: "¿Qué ventaja metodológica ofrece el uso de lenguajes de programación estadística basados en sintaxis (como R o Python) frente a los programas de menús visuales tradicionales en investigaciones complejas?",
+                visualType: "none",
+                options: [
+                    { text: "La reproducibilidad total del código analítico y la capacidad de automatizar flujos complejos de datos.", correct: true },
+                    { text: "La eliminación absoluta de cualquier error humano en la recolección clínica.", correct: false },
+                    { text: "La garantía de que el comité de ética no solicitará modificaciones al protocolo.", correct: false },
+                    { text: "La creación automática de pacientes ficticios sin sesgos.", correct: false }
+                ],
+                feedback: "Correcto. Las herramientas basadas en sintaxis aseguran scripts reproducibles y transparentes para auditar todo el análisis de datos."
+            },
+            {
+                category: "Plan de Análisis de Datos",
+                text: "En el plan de análisis estadístico, ¿qué define el concepto de 'prueba de hipótesis bilateral (a dos colas)' frente a la unilateral?",
+                visualType: "none",
+                options: [
+                    { text: "Que la región de rechazo se divide en ambos extremos de la distribución, evaluando diferencias en cualquier dirección.", correct: true },
+                    { text: "Que se requiere duplicar el tamaño de la muestra original obligatoriamente.", correct: false },
+                    { text: "Que se descartan todas las variables cualitativas del estudio.", correct: false },
+                    { text: "Que los resultados solo aplican para pacientes masculinos.", correct: false }
+                ],
+                feedback: "Correcto. Una prueba bilateral evalúa efectos en ambas direcciones (mayor o menor), siendo la opción más conservadora y rigurosa."
+            },
+            {
+                category: "Tamaño de Muestra y Simulaciones",
+                text: "Al realizar simulaciones por computadora (como simulaciones de Monte Carlo) para estimar la potencia y el tamaño muestral en diseños complejos de enfermería, el investigador busca:",
+                visualType: "none",
+                options: [
+                    { text: "Modelar escenarios bajo diferentes supuestos de distribución y pérdidas para comprobar la estabilidad del diseño.", correct: true },
+                    { text: "Adivinar con certeza absoluta el resultado clínico exacto del paciente.", correct: false },
+                    { text: "Evitar la redacción de la introducción del protocolo de investigación.", correct: false },
+                    { text: "Sustituir las pruebas estadísticas finales por opiniones de expertos.", correct: false }
+                ],
+                feedback: "Correcto. Las simulaciones modelan múltiples escenarios probabilísticos para evaluar la robustez del diseño muestral y analítico."
+            },
+            {
+                category: "Análisis Descriptivo",
+                text: "¿Qué indica un coeficiente de asimetría (skewness) cercano a cero en el análisis descriptivo de una variable cuantitativa?",
+                visualType: "none",
+                options: [
+                    { text: "Que la distribución de los datos es simétrica (se aproxima a una curva normal).", correct: true },
+                    { text: "Que todos los datos recolectados tienen un valor numérico idéntico a cero.", correct: false },
+                    { text: "Que existe una gran cantidad de valores atípicos extremos.", correct: false },
+                    { text: "Que la muestra total del estudio debe ser descartada por error.", correct: false }
+                ],
+                feedback: "Correcto. Un valor de asimetría cercano a cero denota simetría en la distribución empírica de la variable analizada."
+            },
+            {
+                category: "Visualización de Datos",
+                text: "En la planificación de un gráfico de líneas temporales para mostrar la evolución de la glicemia media de los pacientes a lo largo de 5 mediciones, ¿qué se representa en el eje horizontal (eje X)?",
+                visualType: "none",
+                options: [
+                    { text: "El tiempo o los momentos de medición (ej. días o semanas).", correct: true },
+                    { text: "Los valores absolutos de la frecuencia de pacientes.", correct: false },
+                    { text: "Las opiniones cualitativas de los familiares.", correct: false },
+                    { text: "El nombre comercial del software estadístico.", correct: false }
+                ],
+                feedback: "Correcto. En gráficos de líneas o tendencias temporales, el eje X representa la variable de tiempo o secuencia de seguimiento."
+            },
+            {
+                category: "Análisis Bivariado",
+                text: "Si al realizar una prueba bivariada de comparación de medias entre tres o más grupos independientes (ej. nivel de estrés según años de experiencia: 1-5, 6-10, >10 años) se cumple la normalidad, se programa:",
+                visualType: "none",
+                options: [
+                    { text: "El análisis de varianza (ANOVA) de un factor.", correct: true },
+                    { text: "La prueba t de Student para dos grupos.", correct: false },
+                    { text: "El coeficiente de correlación de Pearson.", correct: false },
+                    { text: "La prueba de chi-cuadrado nominal.", correct: false }
+                ],
+                feedback: "Correcto. ANOVA de un factor compara medias entre tres o más grupos independientes bajo el supuesto de normalidad y homocedasticidad."
+            },
+            {
+                category: "Análisis Multivariado",
+                text: "Cuando un investigador busca agrupar variables o ítems correlacionados de una escala de clima laboral en dimensiones subyacentes independientes dentro del plan de análisis multivariado, aplica:",
+                visualType: "none",
+                options: [
+                    { text: "El análisis factorial exploratorio (o confirmatorio).", correct: true },
+                    { text: "La regresión logística binaria de desenlaces.", correct: false },
+                    { text: "La prueba t de Student para muestras pareadas.", correct: false },
+                    { text: "El cálculo del tamaño de la muestra por proporciones.", correct: false }
+                ],
+                feedback: "Correcto. El análisis factorial reduce la dimensionalidad agrupando variables correlacionadas en constructos o factores latentes."
+            },
+            {
+                category: "Plan de Análisis de Datos",
+                text: "En la conclusión del plan de análisis de un protocolo de investigación cuantitativa, ¿qué aspecto ético y analítico final debe garantizarse?",
+                visualType: "none",
+                options: [
+                    { text: "El compromiso de reportar todos los análisis planeados (incluso los resultados negativos o no significativos) evitando el sesgo de publicación.", correct: true },
+                    { text: "La promesa de alterar los datos si el comité de ética lo solicita verbalmente.", correct: false },
+                    { text: "La destrucción de la base de datos inmediatamente después del análisis.", correct: false },
+                    { text: "La publicación exclusiva de los hallazgos que favorezcan la hipótesis principal.", correct: false }
+                ],
+                feedback: "Correcto. La transparencia analítica exige reportar todos los hallazgos previstos en el plan, evitando el sesgo de reporte selectivo."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timer = 60;
+        let timerInterval = null;
+        let answered = false;
+
+        // Elementos DOM
+        const screenStart = document.getElementById('screen-start');
+        const screenGame = document.getElementById('screen-game');
+        const screenResult = document.getElementById('screen-result');
+        const gameStats = document.getElementById('game-stats');
+        const currentQNum = document.getElementById('current-q-num');
+        const currentScore = document.getElementById('current-score');
+        const timerDisplay = document.getElementById('timer-display');
+        const timerBar = document.getElementById('timer-bar');
+        const questionCategory = document.getElementById('question-category');
+        const questionText = document.getElementById('question-text');
+        const questionVisual = document.getElementById('question-visual');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackPanel = document.getElementById('feedback-panel');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackText = document.getElementById('feedback-text');
+        const nextBtn = document.getElementById('next-btn');
+
+        function startGame() {
+            screenStart.classList.add('hidden');
+            screenResult.classList.add('hidden');
+            screenGame.classList.remove('hidden');
+            gameStats.classList.remove('hidden');
+            
+            currentQuestionIndex = 0;
+            score = 0;
+            updateStats();
+            loadQuestion();
+        }
+
+        function updateStats() {
+            currentQNum.textContent = currentQuestionIndex + 1;
+            currentScore.textContent = score;
+        }
+
+        function loadQuestion() {
+            answered = false;
+            feedbackPanel.classList.add('hidden');
+            optionsContainer.innerHTML = '';
+            
+            const q = questionsData[currentQuestionIndex];
+            questionCategory.textContent = q.category;
+            questionText.textContent = q.text;
+
+            // Manejo de organizadores visuales SVG estadísticos según la pregunta
+            if (q.visualType && q.visualType !== 'none') {
+                questionVisual.classList.remove('hidden');
+                questionVisual.innerHTML = getSvgVisual(q.visualType);
+            } else {
+                questionVisual.classList.add('hidden');
+                questionVisual.innerHTML = '';
+            }
+
+            // Mezclar opciones aleatoriamente para evitar patrones predecibles
+            let shuffledOptions = [...q.options];
+            shuffledOptions.sort(() => Math.random() - 0.5);
+
+            shuffledOptions.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-accentEmerald/50 text-slate-200 transition text-sm sm:text-base flex items-center justify-between group";
+                
+                const letterSpan = document.createElement('span');
+                letterSpan.className = "w-7 h-7 rounded-lg bg-slate-800 text-slate-400 font-bold flex items-center justify-center mr-3 group-hover:bg-accentEmerald group-hover:text-darkBg transition flex-shrink-0";
+                letterSpan.textContent = String.fromCharCode(65 + idx); // A, B, C, D
+
+                const textSpan = document.createElement('span');
+                textSpan.className = "flex-grow";
+                textSpan.textContent = opt.text;
+
+                btn.appendChild(letterSpan);
+                btn.appendChild(textSpan);
+
+                btn.onclick = () => selectAnswer(opt.correct, q.feedback, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        function getSvgVisual(type) {
+            if (type === 'svg-plan-intro') {
+                return `<svg class="w-full max-w-md h-24" viewBox="0 0 400 100">
+                    <rect x="20" y="30" width="100" height="40" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+                    <text x="70" y="55" fill="#10b981" font-size="12" text-anchor="middle" font-weight="bold">Datos Brutos</text>
+                    <line x1="120" y1="50" x2="150" y2="50" stroke="#64748b" stroke-width="2"/>
+                    <rect x="150" y="30" width="100" height="40" rx="8" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
+                    <text x="200" y="55" fill="#a855f7" font-size="12" text-anchor="middle" font-weight="bold">Plan Estadístico</text>
+                    <line x1="250" y1="50" x2="280" y2="50" stroke="#64748b" stroke-width="2"/>
+                    <rect x="280" y="30" width="100" height="40" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="2"/>
+                    <text x="330" y="55" fill="#06b6d4" font-size="12" text-anchor="middle" font-weight="bold">Inferencia</text>
+                </svg>`;
+            } else if (type === 'svg-sample-sim') {
+                return `<svg class="w-full max-w-md h-24" viewBox="0 0 400 100">
+                    <circle cx="80" cy="50" r="30" fill="#1e293b" stroke="#06b6d4" stroke-width="2"/>
+                    <text x="80" y="55" fill="#06b6d4" font-size="12" text-anchor="middle" font-weight="bold">Muestra N</text>
+                    <path d="M 115 50 Q 150 20 185 50" fill="none" stroke="#10b981" stroke-width="2"/>
+                    <text x="150" y="25" fill="#10b981" font-size="10" text-anchor="middle">Simulación</text>
+                    <rect x="220" y="30" width="150" height="40" rx="8" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
+                    <text x="295" y="55" fill="#a855f7" font-size="11" text-anchor="middle" font-weight="bold">Escenarios de Pérdida</text>
+                </svg>`;
+            } else if (type === 'svg-scatter') {
+                return `<svg class="w-full max-w-md h-24" viewBox="0 0 400 100">
+                    <line x1="40" y1="80" x2="360" y2="80" stroke="#64748b" stroke-width="2"/>
+                    <line x1="40" y1="10" x2="40" y2="80" stroke="#64748b" stroke-width="2"/>
+                    <circle cx="80" cy="65" r="4" fill="#10b981"/>
+                    <circle cx="120" cy="55" r="4" fill="#10b981"/>
+                    <circle cx="170" cy="40" r="4" fill="#10b981"/>
+                    <circle cx="230" cy="30" r="4" fill="#10b981"/>
+                    <circle cx="300" cy="20" r="4" fill="#10b981"/>
+                    <line x1="60" y1="70" x2="330" y2="20" stroke="#a855f7" stroke-width="2" stroke-dasharray="4"/>
+                </svg>`;
+            } else if (type === 'svg-multiv') {
+                return `<svg class="w-full max-w-md h-24" viewBox="0 0 400 100">
+                    <rect x="20" y="15" width="90" height="30" rx="6" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
+                    <text x="65" y="35" fill="#a855f7" font-size="10" text-anchor="middle">Variable X1</text>
+                    <rect x="20" y="55" width="90" height="30" rx="6" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
+                    <text x="65" y="75" fill="#a855f7" font-size="10" text-anchor="middle">Variable X2</text>
+                    <line x1="110" y1="30" x2="160" y2="50" stroke="#64748b" stroke-width="2"/>
+                    <line x1="110" y1="70" x2="160" y2="50" stroke="#64748b" stroke-width="2"/>
+                    <circle cx="180" cy="50" r="20" fill="#131c31" stroke="#06b6d4" stroke-width="2"/>
+                    <text x="180" y="55" fill="#06b6d4" font-size="10" text-anchor="middle">Ajuste</text>
+                    <line x1="200" y1="50" x2="250" y2="50" stroke="#64748b" stroke-width="2"/>
+                    <rect x="250" y="30" width="130" height="40" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+                    <text x="315" y="55" fill="#10b981" font-size="11" text-anchor="middle" font-weight="bold">Desenlace Neta</text>
+                </svg>`;
+            }
+            return '';
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timer = 60;
+            timerDisplay.textContent = timer + 's';
+            timerBar.style.width = '100%';
+            timerBar.className = "bg-accentEmerald h-full transition-all duration-1000";
+
+            timerInterval = setInterval(() => {
+                timer--;
+                timerDisplay.textContent = timer + 's';
+                let percentage = (timer / 60) * 100;
+                timerBar.style.width = percentage + '%';
+
+                if (timer <= 20) {
+                    timerBar.className = "bg-amber-500 h-full transition-all duration-1000";
+                }
+                if (timer <= 10) {
+                    timerBar.className = "bg-rose-500 h-full transition-all duration-1000";
+                }
+
+                if (timer <= 0) {
+                    clearInterval(timerInterval);
+                    if (!answered) {
+                        handleTimeOut();
+                    }
+                }
+            }, 1000);
+        }
+
+        function handleTimeOut() {
+            answered = true;
+            disableAllOptions();
+            feedbackPanel.classList.remove('hidden', 'bg-emerald-950/40', 'border-emerald-500/40', 'bg-rose-950/40', 'border-rose-500/40');
+            feedbackPanel.classList.add('bg-rose-950/40', 'border-rose-500/40');
+            feedbackTitle.className = "font-bold text-base mb-1 text-rose-400";
+            feedbackTitle.textContent = "⏱️ ¡Tiempo agotado!";
+            feedbackText.textContent = "Se agotaron los 60 segundos para este reactivo. Recuerda que la gestión del tiempo analítico es clave en estadística aplicada.";
+            nextBtn.focus();
+        }
+
+        function selectAnswer(isCorrect, feedbackMsg, selectedBtn) {
+            if (answered) return;
+            answered = true;
+            clearInterval(timerInterval);
+
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+
+            feedbackPanel.classList.remove('hidden', 'bg-emerald-950/40', 'border-emerald-500/40', 'bg-rose-950/40', 'border-rose-500/40');
+
+            if (isCorrect) {
+                score += 4;
+                updateStats();
+                selectedBtn.classList.remove('bg-slate-900/80', 'border-slate-800');
+                selectedBtn.classList.add('bg-emerald-950/60', 'border-emerald-500', 'text-emerald-300');
+                
+                feedbackPanel.classList.add('bg-emerald-950/40', 'border-emerald-500/40');
+                feedbackTitle.className = "font-bold text-base mb-1 text-emerald-400";
+                feedbackTitle.textContent = "🎉 ¡Excelente respuesta!";
+                feedbackText.textContent = "¡Felicitaciones! Demuestras gran dominio del plan de análisis estadístico. " + feedbackMsg;
+            } else {
+                selectedBtn.classList.remove('bg-slate-900/80', 'border-slate-800');
+                selectedBtn.classList.add('bg-rose-950/60', 'border-rose-500', 'text-rose-300');
+
+                feedbackPanel.classList.add('bg-rose-950/40', 'border-rose-500/40');
+                feedbackTitle.className = "font-bold text-base mb-1 text-rose-400";
+                feedbackTitle.textContent = "💡 Respuesta incorrecta";
+                feedbackText.textContent = "Revisión conceptual: " + feedbackMsg;
+            }
+            nextBtn.focus();
+        }
+
+        function disableAllOptions() {
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questionsData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            screenGame.classList.add('hidden');
+            gameStats.classList.add('hidden');
+            screenResult.classList.remove('hidden');
+
+            const finalScoreText = document.getElementById('final-score-text');
+            const resultTitle = document.getElementById('result-title');
+            const resultMessage = document.getElementById('result-message');
+            const resultIconContainer = document.getElementById('result-icon-container');
+
+            finalScoreText.textContent = score + " / 100";
+
+            if (score >= 80) {
+                resultIconContainer.innerHTML = "🏆✨";
+                resultTitle.textContent = "¡Excelente Desempeño Estadístico!";
+                resultMessage.innerHTML = "Has obtenido una calificación sobresaliente.<br><br><span class='text-2xl font-bold text-accentEmerald'>«¡Lo lograste!»</span>";
+            } else {
+                resultIconContainer.innerHTML = "📚💪";
+                resultTitle.textContent = "Sigue Fortaleciendo Tus Competencias";
+                resultMessage.innerHTML = "Has completado el simulador. Continúa repasando los planes de análisis y pruebas estadísticas.<br><br><span class='text-xl font-semibold text-amber-400'>«Sigue intentando, No te rindas»</span>";
+            }
+        }
+
+        function restartGame() {
+            startGame();
+        }
+    </script>
+</body><div style="position: fixed; bottom: 10px; right: 10px; background-color: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 5px; font-family: sans-serif; font-size: 12px; z-index: 9999;">
+    Juego creado por: Ander Asenjo
+</div>
+
+</html>
