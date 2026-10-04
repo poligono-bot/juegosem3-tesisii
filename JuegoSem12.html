@@ -1,0 +1,774 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego Educativo: Referencias, IA y Prevención del Plagio</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', Arial, sans-serif; }
+        body {
+            background: linear-gradient(135deg, #090d16 0%, #111827 50%, #064e3b 100%);
+            color: #f3f4f6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        header {
+            background: rgba(15, 23, 42, 0.95);
+            border-bottom: 2px solid rgba(20, 184, 166, 0.3);
+            padding: 15px 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .header-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .title-area h1 { font-size: 16px; color: #2dd4bf; font-weight: 700; }
+        .title-area p { font-size: 12px; color: #94a3b8; }
+        .stats-box {
+            display: flex;
+            gap: 15px;
+            background: rgba(30, 41, 59, 0.9);
+            padding: 8px 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(20, 184, 166, 0.3);
+            font-size: 13px;
+            align-items: center;
+        }
+        main {
+            max-width: 800px;
+            width: 90%;
+            margin: 40px auto;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            background: rgba(15, 23, 42, 0.98);
+            border: 2px solid rgba(20, 184, 166, 0.4);
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            width: 100%;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hidden { display: none !important; }
+        .btn {
+            background: linear-gradient(135deg, #0d9488 0%, #06b6d4 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 15px rgba(13, 148, 136, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 20px rgba(13, 148, 136, 0.6);
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+            text-align: left;
+        }
+        .info-item {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            font-size: 13px;
+        }
+        .info-item strong { display: block; color: #2dd4bf; margin-bottom: 5px; }
+        
+        /* Estilos de Juego */
+        .progress-bar-container {
+            background: #1e293b;
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 1px solid #334155;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #14b8a6, #38bdf8);
+            height: 100%;
+            width: 4%;
+            transition: width 0.3s ease;
+        }
+        .category-badge {
+            background: rgba(20, 184, 166, 0.15);
+            color: #2dd4bf;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 15px;
+            border: 1px solid rgba(20, 184, 166, 0.3);
+        }
+        .question-text {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .option-btn {
+            background: rgba(30, 41, 59, 0.9);
+            border: 2px solid #334155;
+            color: #e2e8f0;
+            padding: 14px 18px;
+            border-radius: 14px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .option-btn:hover:not(:disabled) {
+            border-color: #2dd4bf;
+            background: rgba(30, 41, 59, 1);
+        }
+        .option-letter {
+            background: #0f172a;
+            color: #2dd4bf;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 12px;
+            border: 1px solid #334155;
+        }
+        .feedback {
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+        .feedback.correct { background: rgba(6, 78, 59, 0.8); border: 1px solid #10b981; color: #a7f3d0; }
+        .feedback.incorrect { background: rgba(159, 18, 57, 0.6); border: 1px solid #f43f5e; color: #fecdd3; }
+        
+        footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 12px;
+            color: #64748b;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CABECERA -->
+    <header>
+        <div class="header-content">
+            <div class="title-area">
+                <h1>Maestría en Enfermería y Gestión Integral del Cuidado</h1>
+                <p>Módulo: Integridad Científica, Referencias, IA y Ética de la Investigación</p>
+            </div>
+            <div id="stats-header" class="stats-box hidden">
+                <div><span>Pregunta: </span><strong id="current-q-num" style="color: #38bdf8;">1</strong>/25</div>
+                <div><span>Puntaje: </span><strong id="current-score" style="color: #fbbf24;">0</strong> pts</div>
+                <div><span>Tiempo: </span><strong id="timer-display" style="color: #f43f5e; background: rgba(244,63,94,0.15); padding: 2px 6px; border-radius: 4px;">60s</strong></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main>
+        <!-- PANTALLA DE INICIO -->
+        <div id="screen-start" class="card" style="text-align: center;">
+            <h2 style="font-size: 24px; color: #fff; margin-bottom: 12px;">Simulador Evaluativo de Investigación en Enfermería</h2>
+            <p style="color: #94a3b8; font-size: 14px; margin-bottom: 25px; line-height: 1.6;">
+                Demuestra tu competencia en normativas de referenciación, prevención del plagio, uso ético de IA y gestores bibliográficos.
+            </p>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <strong>25 Preguntas</strong>
+                    <span style="color: #94a3b8;">Alternativas equilibradas de nivel posgrado.</span>
+                </div>
+                <div class="info-item">
+                    <strong>60 Segundos</strong>
+                    <span style="color: #94a3b8;">Límite temporal estricto por cada reactivo.</span>
+                </div>
+                <div class="info-item">
+                    <strong>Meta: 80 Pts</strong>
+                    <span style="color: #94a3b8;">Obtén la copa institucional al superar la prueba.</span>
+                </div>
+            </div>
+
+            <button type="button" id="btn-start" class="btn">🚀 Iniciar Desafío Académico</button>
+        </div>
+
+        <!-- PANTALLA DE JUEGO -->
+        <div id="screen-game" class="card hidden">
+            <div class="progress-bar-container">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+
+            <div id="question-category" class="category-badge">Categoría</div>
+            <h3 id="question-text" class="question-text">Enunciado de la pregunta...</h3>
+
+            <div id="options-container" class="options-list"></div>
+
+            <div id="feedback-container" class="feedback hidden">
+                <strong id="feedback-title" style="display: block; margin-bottom: 4px;"></strong>
+                <p id="feedback-text"></p>
+            </div>
+
+            <div style="text-align: right;">
+                <button type="button" id="next-btn" class="btn hidden">Siguiente Pregunta ➔</button>
+            </div>
+        </div>
+
+        <!-- PANTALLA DE RESULTADOS -->
+        <div id="screen-result" class="card hidden" style="text-align: center;">
+            <h2 id="result-title" style="font-size: 24px; color: #fff; margin-bottom: 10px;"></h2>
+            <p id="result-message" style="color: #94a3b8; font-size: 14px; margin-bottom: 25px; line-height: 1.5;"></p>
+
+            <div style="background: rgba(30, 41, 59, 0.8); padding: 20px; border-radius: 16px; border: 1px solid #334155; max-width: 320px; margin: 0 auto 25px auto; text-align: left; font-size: 13px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #334155;">
+                    <span style="color: #94a3b8;">Puntuación Final:</span>
+                    <strong id="final-score-val" style="color: #fbbf24; font-size: 15px;">0 / 100 pts</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #334155;">
+                    <span style="color: #94a3b8;">Preguntas Acertadas:</span>
+                    <strong id="final-correct-val" style="color: #2dd4bf; font-size: 15px;">0 / 25</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: #94a3b8;">Estatus:</span>
+                    <strong id="final-status-val" style="font-size: 14px;"></strong>
+                </div>
+            </div>
+
+            <button type="button" id="btn-restart" class="btn">🔄 Repetir Evaluación</button>
+        </div>
+    </main>
+
+    <!-- PIE DE PÁGINA -->
+    <footer>
+        <p>Gestión Integral del Cuidado e Investigación en Enfermería &bull; Módulo Académico Interactivo</p>
+    </footer>
+
+    <!-- SCRIPT DE CONTROL TOTAL -->
+    <script>
+        const questions = [
+            {
+                category: "Manejo de referencias y prevención del plagio",
+                question: "En el contexto de la maestría en enfermería, ¿cuál de las siguientes definiciones describe con mayor rigor académico el concepto de plagio por parafraseo inadecuado?",
+                options: [
+                    "Modificar únicamente tres palabras aisladas de un párrafo original manteniendo intacta la estructura y el sentido analítico del autor primario.",
+                    "Traducir un artículo escrito en idioma inglés utilizando un sistema automatizado sin contrastarlo con la literatura nacional previa.",
+                    "Sustituir de manera exhaustiva todos los términos técnicos de un marco teórico empleando sinónimos de uso común en la práctica clínica diaria.",
+                    "Citar la fuente bibliográfica primaria al final de un capítulo extenso omitiendo deliberadamente las comillas en definiciones conceptuales exactas."
+                ],
+                correct: 0,
+                explanation: "El parafraseo inadecuado ocurre cuando se alteran mínimamente las palabras originales sin cambiar la sintaxis ni aportar un análisis crítico genuino."
+            },
+            {
+                category: "Buenas prácticas de referenciación",
+                question: "¿Cuál constituye una práctica fundamental y recomendada al integrar citas directas breves (menos de 40 palabras) en un artículo de investigación en salud?",
+                options: [
+                    "Integrarlas de manera fluida dentro del párrafo redactado por el investigador, entrecomilladas y acompañadas de autor, año y número de página exacto.",
+                    "Destacarlas en un bloque independiente sin comillas y con sangría completa, omitiendo el número de página para facilitar la lectura.",
+                    "Utilizar siempre cursivas en toda la oración para diferenciar la opinión personal del investigador respecto al texto recuperado.",
+                    "Reemplazar los apellidos de los autores originales por un código numérico secuencial que se aclare únicamente en las conclusiones."
+                ],
+                correct: 0,
+                explanation: "Las citas directas menores de 40 palabras se incorporan en el texto entre comillas e incluyen obligatoriamente el número de página."
+            },
+            {
+                category: "Uso ético de Inteligencia Artificial",
+                question: "Desde la perspectiva de la integridad científica en posgrado, ¿cómo debe gestionarse el uso de herramientas de Inteligencia Artificial generativa?",
+                options: [
+                    "Emplearlas exclusivamente como apoyo para estructurar esquemas conceptuales y sugerir sinónimos avanzados, declarando su uso en la sección metodológica.",
+                    "Dejar que redacten la totalidad del manuscrito clínico para garantizar que el lenguaje técnico cumpla con los estándares internacionales.",
+                    "Utilizarlas para generar de manera automática referencias bibliográficas novedosas aunque los artículos no hayan sido consultados.",
+                    "Evitar su uso bajo cualquier circunstancia debido a que su intervención invalida automáticamente la validez metodológica."
+                ],
+                correct: 0,
+                explanation: "Las herramientas de IA deben utilizarse de forma transparente y ética como soporte auxiliar, declarando formalmente su aplicación."
+            },
+            {
+                category: "Formato de citas y referencias",
+                question: "Al redactar la lista de referencias bibliográficas de un artículo científico en enfermería bajo normas internacionales, ¿cuál es el criterio obligatorio?",
+                options: [
+                    "Incluir exclusivamente aquellas fuentes académicas, revisadas por pares y citadas de manera directa dentro del cuerpo del manuscrito principal.",
+                    "Incorporar todos los manuales generales leídos durante el proceso formativo de la maestría aunque no guarden relación directa con los hallazgos.",
+                    "Ordenar la bibliografía de forma estrictamente cronológica desde los textos más antiguos hasta las publicaciones vigentes del último año.",
+                    "Omitir las URL o identificadores DOI en revistas electrónicas para simplificar la visualización ante los comités editoriales."
+                ],
+                correct: 0,
+                explanation: "Toda referencia final debe corresponder estrictamente a fuentes consultadas y citadas directamente en el desarrollo del estudio."
+            },
+            {
+                category: "Uso de gestores de referencias",
+                question: "¿Qué ventaja metodológica fundamental ofrece el empleo sincronizado de gestores bibliográficos como Zotero, Mendeley o EndNote en una tesis?",
+                options: [
+                    "Automatizar el formateo dinámico de citas y referencias permitiendo cambiar de estilo bibliográfico (ej. APA a Vancouver) sin alterar manualmente el texto.",
+                    "Garantizar de manera automática que el índice de similitud en software antiplagio sea siempre inferior al cinco por ciento en el documento final.",
+                    "Sustituir por completo la necesidad de realizar búsquedas manuales en bases de datos indexadas como PubMed, Scielo o CINAHL.",
+                    "Traducir de manera simultánea los resúmenes clínicos de los artículos seleccionados al idioma español con validez metodológica certificada."
+                ],
+                correct: 0,
+                explanation: "Los gestores automatizan la inserción y conversión de estilos bibliográficos con precisión, previniendo errores manuales."
+            },
+            {
+                category: "Manejo de referencias y prevención del plagio",
+                question: "¿Cuál de las siguientes acciones éticas previene eficazmente el denominado 'auto-plagio' o publicación redundante en la investigación de posgrado?",
+                options: [
+                    "Declarar explícitamente y citar formalmente los trabajos previos de autoría propia cuando se reutilizan datos metodológicos en una nueva investigación ampliada.",
+                    "Modificar el título y los gráficos estadísticos de una tesis anterior para presentarla como un estudio completamente inédito.",
+                    "Evitar registrar los protocolos de investigación preliminares en repositorios institucionales de acceso público para que no sean detectados.",
+                    "Cambiar el idioma de publicación de un artículo previo para que las normativas internacionales de exclusión de duplicidad no lo consideren duplicado."
+                ],
+                correct: 0,
+                explanation: "El auto-plagio se evita transparentando y citando adecuadamente las publicaciones previas de la misma autoría."
+            },
+            {
+                category: "Buenas prácticas de referenciación",
+                question: "Cuando un investigador en enfermería realiza una cita secundaria (citar a un autor citado por otro), ¿cuál es el procedimiento metodológico correcto?",
+                options: [
+                    "Mencionar la fuente original no consultada indicando el texto secundario donde efectivamente se localizó la información mediante la fórmula respectiva.",
+                    "Copiar la referencia bibliográfica completa del autor original en la lista final asumiendo que fue consultada en su versión original física.",
+                    "Atribuir la autoría intelectual primigenia exclusivamente al investigador del texto secundario para simplificar el proceso de referenciación.",
+                    "Descartar por completo el uso de cualquier concepto o dato que no se encuentre disponible en acceso abierto para descarga inmediata."
+                ],
+                correct: 0,
+                explanation: "En las citas secundarias se debe consignar la fuente original y la fuente secundaria consultada para mantener la transparencia."
+            },
+            {
+                category: "Uso ético de Inteligencia Artificial",
+                question: "¿Qué riesgo metodológico y ético principal conlleva utilizar sistemas de IA conversacional para autogenerar referencias bibliográficas?",
+                options: [
+                    "La generación de 'alucinaciones bibliográficas', creando títulos, autores y revistas ficticias que no existen en ninguna base de datos científica.",
+                    "El incremento instantáneo en el costo económico por derechos de autor de las publicaciones indexadas en Scopus y Web of Science.",
+                    "La pérdida absoluta de la conectividad a internet en el equipo de cómputo durante el proceso de exportación del documento final.",
+                    "La modificación involuntaria de los márgenes y tipografías oficiales exigidos por el manual de estilo de la institución académica."
+                ],
+                correct: 0,
+                explanation: "Las IA conversacionales frecuentemente fabrican referencias falsas (alucinaciones), destruyendo la validez científica."
+            },
+            {
+                category: "Formato de citas y referencias",
+                question: "En relación con las directrices de estilo para referencias de artículos de revistas científicas, ¿qué elemento es indispensable en el estándar moderno?",
+                options: [
+                    "Incluir el Identificador de Objeto Digital (DOI) en formato de enlace web persistente siempre que la revista electrónica lo tenga asignado.",
+                    "Anotar de forma obligatoria la ciudad exacta donde se encuentra ubicada la imprenta editorial que editó el volumen periódico.",
+                    "Especificar el número exacto de páginas totales que componen el fascículo completo de la revista donde se publicó el estudio clínico.",
+                    "Colocar el nombre completo y segundo apellido de todos los coinvestigadores firmantes sin importar si exceden la veintena de autores."
+                ],
+                correct: 0,
+                explanation: "El DOI es el identificador persistente estándar moderno que garantiza la localización inequívoca de los artículos."
+            },
+            {
+                category: "Uso de gestores de referencias",
+                question: "¿Cómo optimiza el uso de metadatos bibliográficos en gestores como Zotero o Mendeley la calidad de la investigación?",
+                options: [
+                    "Permitiendo organizar colecciones temáticas de artículos, etiquetas de rigor metodológico y notas críticas directamente vinculadas al PDF del estudio.",
+                    "Creando copias de seguridad automáticas en redes sociales profesionales para compartir los datos confidenciales de los pacientes.",
+                    "Impidiendo que el investigador descargue archivos que contengan posibles virus informáticos procedentes de repositorios depredadores.",
+                    "Calculando de forma automática el tamaño de la muestra clínica requerida para estudios experimentales futuros en hospitales."
+                ],
+                correct: 0,
+                explanation: "Los gestores permiten clasificar la literatura mediante etiquetas, colecciones y notas de lectura crítica."
+            },
+            {
+                category: "Manejo de referencias y prevención del plagio",
+                question: "¿Qué criterio distingue a una revista científica legítima de una considerada 'depredadora' en el ámbito de la publicación en salud?",
+                options: [
+                    "Las revistas depredadoras exigen pagos rápidos por publicación sin ofrecer procesos rigurosos de revisión por pares ni edición ética.",
+                    "Las revistas legítimas publican los manuscritos en menos de veinticuatro horas sin solicitar ningún tipo de formato de estilo académico.",
+                    "Las revistas depredadoras se encuentran indexadas de forma permanente en bases de datos de alto impacto como Medline y Scopus.",
+                    "Las revistas legítimas prohíben estrictamente el uso de referencias bibliográficas internacionales en idioma distinto al nativo."
+                ],
+                correct: 0,
+                explanation: "Las revistas depredadoras priorizan el lucro económico rápido sin revisión por pares ni control de calidad ético."
+            },
+            {
+                category: "Buenas prácticas de referenciación",
+                question: "Al citar una guía de práctica clínica institucional en el marco teórico de la gestión del cuidado, ¿qué se debe considerar?",
+                options: [
+                    "Identificar claramente a la entidad corporativa u organismo autor, el año de publicación, el título oficial y el enlace de recuperación institucional.",
+                    "Atribuir la autoría completa al director general del hospital en turno durante el año en que se redactó el protocolo clínico.",
+                    "Citar la guía como comunicación personal debido a que no ha sido publicada en una revista indexada de circulación internacional.",
+                    "Omitir la fuente si la guía clínica es de uso interno y restringido dentro de la unidad de cuidados intensivos donde labora el maestrando."
+                ],
+                correct: 0,
+                explanation: "Las guías de práctica clínica institucionales se referencian consignando al organismo autor corporativo."
+            },
+            {
+                category: "Uso ético de Inteligencia Artificial",
+                question: "¿Qué precaución metodológica debe tomar un investigador al emplear algoritmos de IA para traducir y parafrasear textos científicos?",
+                options: [
+                    "Revisar minuciosamente que la traducción no altere la precisión conceptual de los términos clínicos especializados en salud y gestión de cuidados.",
+                    "Aceptar la versión traducida de inmediato asumiendo que los modelos neuronales modernos no cometen errores en la jerga médica.",
+                    "Eliminar todas las notas al pie y referencias originales para que el texto traducido parezca redactado originariamente en español.",
+                    "Ocultar el uso del traductor inteligente para evitar que el jurado evaluador cuestione la suficiencia en el dominio del idioma extranjero."
+                ],
+                correct: 0,
+                explanation: "Las traducciones automáticas pueden distorsionar términos técnicos específicos, requiriendo validación humana estricta."
+            },
+            {
+                category: "Formato de citas y referencias",
+                question: "Cuando se presenta una tabla o figura adaptada de otro estudio previo en una tesis de maestría, ¿cómo debe referenciarse éticamente?",
+                options: [
+                    "Incluyendo una nota al pie de la tabla o figura especificando la autoría original mediante la fórmula de adaptación y citando la fuente completa.",
+                    "Modificando ligeramente los datos numéricos de la tabla para obviar la necesidad de otorgar el crédito académico al autor original.",
+                    "Insertando la tabla completa sin ninguna leyenda explicativa ni referencia bibliográfica asumiendo que es de dominio público.",
+                    "Colocando únicamente la referencia bibliográfica en la sección general de bibliografía final sin mencionarla en el cuerpo de la tabla."
+                ],
+                correct: 0,
+                explanation: "Las tablas o figuras adaptadas requieren una nota explícita al pie con su respectiva cita y referencia."
+            },
+            {
+                category: "Uso de gestores de referencias",
+                question: "¿Qué función cumple el conector o extensión de navegador web en gestores bibliográficos como Zotero o Mendeley?",
+                options: [
+                    "Capturar y extraer de forma automatizada los metadatos bibliográficos, resúmenes y archivos PDF directamente desde la página web de la revista.",
+                    "Convertir de forma instantánea el sitio web visitado en un formato de video interactivo para presentarlo en las diapositivas de sustentación.",
+                    "Bloquear el acceso a páginas web no indexadas para impedir que el estudiante consulte blogs personales sin rigor científico.",
+                    "Generar claves de acceso ilimitado a todas las revistas de suscripción cerrada sin necesidad de credenciales institucionales."
+                ],
+                correct: 0,
+                explanation: "El conector del navegador permite almacenar metadatos y documentos PDF con un solo clic directamente en la biblioteca."
+            },
+            {
+                category: "Manejo de referencias y prevención del plagio",
+                question: "¿Por qué el autoplagio parcial (reciclar párrafos enteros de artículos previos sin citarlos) es sancionado en posgrado?",
+                options: [
+                    "Porque vulnera el principio de originalidad científica y distorsiona el conteo real de la contribución inédita del nuevo estudio.",
+                    "Porque satura la capacidad de almacenamiento de los servidores institucionales de la biblioteca central de la universidad.",
+                    "Porque genera conflictos de propiedad intelectual con los editores comerciales de los gestores bibliográficos de código abierto.",
+                    "Porque incrementa de manera drástica el número de páginas de la tesis superando los límites máximos permitidos por el reglamento."
+                ],
+                correct: 0,
+                explanation: "Todo trabajo académico debe aportar conocimiento inédito; reciclar texto propio sin citarlo engaña sobre la originalidad."
+            },
+            {
+                category: "Buenas prácticas de referenciación",
+                question: "¿Cuál es el procedimiento adecuado cuando se desea citar una afirmación general considerada conocimiento público o de dominio común?",
+                options: [
+                    "No requiere citación bibliográfica formal, ya que pertenece a hechos comprobados de dominio general en la disciplina sanitaria.",
+                    "Debe buscarse obligatoriamente un artículo de opinión reciente que respalde la afirmación para evitar observaciones del jurado.",
+                    "Se debe inventar una referencia bibliográfica genérica para cumplir con el formato estricto de citas por párrafo requerido.",
+                    "Es necesario parafrasear el concepto utilizando sinónimos complejos y añadiendo una autocita del propio investigador."
+                ],
+                correct: 0,
+                explanation: "Los hechos de conocimiento común no necesitan cita bibliográfica formal."
+            },
+            {
+                category: "Uso ético de Inteligencia Artificial",
+                question: "Al utilizar aplicaciones de IA para optimizar la redacción y claridad gramatical, ¿qué responsabilidad recae en el investigador?",
+                options: [
+                    "Asumir la total y absoluta responsabilidad intelectual, científica y ética sobre el contenido final, los argumentos y la veracidad del manuscrito.",
+                    "Delegar toda responsabilidad legal ante el comité de ética en los desarrolladores del software de inteligencia artificial utilizado.",
+                    "Justificar cualquier error metodológico argumentando que fue una sugerencia directa generada por el algoritmo de lenguaje natural.",
+                    "Eximir a los coautores del artículo de revisar el documento final confiando ciegamente en la corrección gramatical automática."
+                ],
+                correct: 0,
+                explanation: "La autoría conlleva responsabilidad total; la IA es un instrumento de apoyo auxiliar."
+            },
+            {
+                category: "Formato de citas y referencias",
+                question: "¿Cómo se ordenan alfabéticamente las referencias bibliográficas al final de un trabajo cuando existen múltiples publicaciones de un mismo autor?",
+                options: [
+                    "Se ordenan cronológicamente por año de publicación, desde el trabajo más antiguo hasta el más reciente, y si coinciden, por título.",
+                    "Se ordenan alfabéticamente tomando en cuenta el número de páginas totales que contiene cada uno de los libros o artículos publicados.",
+                    "Se agrupan todas en un único párrafo continuo sin respetar ningún orden cronológico ni alfabético específico en el listado final.",
+                    "Se priorizan aquellas referencias que hayan obtenido mayor cantidad de descargas en las bases de datos internacionales."
+                ],
+                correct: 0,
+                explanation: "Las obras de un mismo autor se ordenan cronológicamente por año de publicación."
+            },
+            {
+                category: "Uso de gestores de referencias",
+                question: "¿Qué utilidad principal presentan los grupos de colaboración en la nube dentro de gestores como Mendeley o Zotero?",
+                options: [
+                    "Compartir bibliografías especializadas, carpetas de artículos y notas de lectura de manera sincronizada entre coinvestigadores.",
+                    "Transmitir en tiempo real videollamadas clínicas para la toma de signos vitales de pacientes hospitalizados en áreas críticas.",
+                    "Modificar de manera simultánea y sin restricciones los datos estadísticos crudos almacenados en las bases de datos de los hospitales.",
+                    "Evitar la necesidad de redactar conjuntamente el reporte de investigación mediante la unificación automática de estilos de redacción."
+                ],
+                correct: 0,
+                explanation: "Los grupos en la nube facilitan el trabajo colaborativo al compartir repositorios bibliográficos."
+            },
+            {
+                category: "Manejo de referencias y prevención del plagio",
+                question: "¿Cuál es la función principal de los programas de detección de similitud (como Turnitin) en las tesis de maestría?",
+                options: [
+                    "Analizar el texto en busca de coincidencias con bases de datos globales para ayudar a identificar posibles omisiones de citas.",
+                    "Certificar de forma automática la calidad metodológica, la validez clínica y la originalidad teórica de los hallazgos.",
+                    "Sustituir la revisión crítica que realiza el comité asesor de tesis y el jurado evaluador antes de la sustentación oral.",
+                    "Corregir de forma instantánea y autónoma todos los errores ortográficos y gramaticales encontrados en el documento."
+                ],
+                correct: 0,
+                explanation: "Los detectores muestran coincidencias de texto, ayudando al autor a verificar la correcta referenciación."
+            },
+            {
+                category: "Buenas prácticas de referenciación",
+                question: "¿Por qué se considera una mala práctica científica el exceso de citación de fuentes secundarias en lugar de artículos de investigación primaria?",
+                options: [
+                    "Porque debilita el rigor de la evidencia científica al no fundamentar los argumentos en los datos empíricos originales obtenidos.",
+                    "Porque incrementa de forma artificial el costo económico de suscripción a las revistas biomédicas de acceso restringido.",
+                    "Porque las normas internacionales prohíben estrictamente incluir más de cinco revisiones narrativas en toda la bibliografía de una tesis.",
+                    "Porque impide que el gestor bibliográfico reconozca el formato correcto de los libros de texto tradicionales impresos."
+                ],
+                correct: 0,
+                explanation: "Basar la investigación en fuentes primarias fortalece la solidez empírica y evita sesgos de interpretación."
+            },
+            {
+                category: "Uso ético de Inteligencia Artificial",
+                question: "¿Qué uso ético y válido se le puede dar a una IA durante el análisis de la discusión de los resultados de un estudio?",
+                options: [
+                    "Sugerir posibles perspectivas teóricas adicionales para contrastar los hallazgos, siempre que el investigador verifique los estudios y redacte por sí mismo.",
+                    "Redactar las conclusiones definitivas basándose en datos supuestos creados por el algoritmo para acelerar la finalización del manuscrito.",
+                    "Sustituir la discusión crítica de los resultados clínicos comparándolos con literatura inexistente generada por el sistema.",
+                    "Ocultar las limitaciones metodológicas reales del estudio utilizando argumentos persuasivos redactados de forma automática."
+                ],
+                correct: 0,
+                explanation: "La IA puede sugerir perspectivas teóricas, pero el análisis crítico y la redacción final corresponden al investigador."
+            },
+            {
+                category: "Formato de citas y referencias",
+                question: "¿Qué diferencia estructural existe en la citación dentro del texto entre un autor y tres o más autores bajo el estándar APA actual?",
+                options: [
+                    "Para tres o más autores, se incluye desde la primera mención el apellido del primer autor seguido de la abreviatura 'et al.' y el año.",
+                    "Para tres o más autores, es obligatorio enlistar los apellidos completos de todos los coinvestigadores cada vez que se les cite.",
+                    "Para un solo autor, se omite el apellido y se coloca únicamente el número de identificación del investigador registrado en la universidad.",
+                    "Para tres o más autores, se reemplazan los nombres por las iniciales de la institución hospitalaria donde se desarrolló el estudio."
+                ],
+                correct: 0,
+                explanation: "En APA actual, las obras con tres o más autores se citan desde la primera vez utilizando 'et al.'."
+            },
+            {
+                category: "Uso de gestores de referencias",
+                question: "¿Qué ocurre con las citas en un documento de procesador de textos al actualizar el estilo bibliográfico en un gestor de referencias?",
+                options: [
+                    "Se actualizan y reorganizan de manera automática en todo el documento según las nuevas reglas del formato seleccionado (ej. de Vancouver a APA).",
+                    "Se eliminan por completo del texto, obligando al investigador a reinsertar manualmente cada una de las referencias bibliográficas.",
+                    "Se convierten en texto plano estático que ya no puede ser modificado ni verificado por el sistema informático del gestor.",
+                    "Generan un error irreversible en el archivo de texto impidiendo que pueda ser guardado o impreso en formato digital."
+                ],
+                correct: 0,
+                explanation: "La gran ventaja de los gestores es la actualización dinámica y automatizada de todas las citas al cambiar de estilo."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let correctCount = 0;
+        let timer = null;
+        let timeLeft = 60;
+        let answeredCurrent = false;
+
+        // Referencias del DOM seguras
+        const screenStart = document.getElementById('screen-start');
+        const screenGame = document.getElementById('screen-game');
+        const screenResult = document.getElementById('screen-result');
+        const statsHeader = document.getElementById('stats-header');
+        
+        const btnStart = document.getElementById('btn-start');
+        const btnRestart = document.getElementById('btn-restart');
+        const nextBtn = document.getElementById('next-btn');
+
+        const currentQNumEl = document.getElementById('current-q-num');
+        const currentScoreEl = document.getElementById('current-score');
+        const timerDisplay = document.getElementById('timer-display');
+        const progressBar = document.getElementById('progress-bar');
+        
+        const questionCategoryEl = document.getElementById('question-category');
+        const questionTextEl = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackContainer = document.getElementById('feedback-container');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackText = document.getElementById('feedback-text');
+
+        // Eventos de botones principales
+        btnStart.onclick = function() {
+            screenStart.classList.add('hidden');
+            screenResult.classList.add('hidden');
+            screenGame.classList.remove('hidden');
+            statsHeader.classList.remove('hidden');
+            currentQuestion = 0;
+            score = 0;
+            correctCount = 0;
+            loadQuestion();
+        };
+
+        btnRestart.onclick = function() {
+            screenResult.classList.add('hidden');
+            screenStart.classList.remove('hidden');
+            statsHeader.classList.add('hidden');
+        };
+
+        nextBtn.onclick = function() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        };
+
+        function loadQuestion() {
+            clearInterval(timer);
+            timeLeft = 60;
+            answeredCurrent = false;
+            timerDisplay.textContent = timeLeft + 's';
+            timerDisplay.style.color = "#f43f5e";
+            
+            feedbackContainer.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+
+            const q = questions[currentQuestion];
+            currentQNumEl.textContent = currentQuestion + 1;
+            currentScoreEl.textContent = score;
+            progressBar.style.width = (((currentQuestion + 1) / questions.length) * 100) + '%';
+
+            questionCategoryEl.textContent = q.category;
+            questionTextEl.textContent = q.question;
+
+            let optionsWithIndex = q.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
+            optionsWithIndex.sort(() => Math.random() - 0.5);
+
+            optionsContainer.innerHTML = '';
+            optionsWithIndex.forEach((item, displayIdx) => {
+                const btn = document.createElement('button');
+                btn.type = "button";
+                btn.className = "option-btn";
+                btn.innerHTML = `<span class="option-letter">${String.fromCharCode(65 + displayIdx)}</span> <span>${item.text}</span>`;
+                btn.onclick = function() {
+                    selectAnswer(item.originalIndex === q.correct, btn, optionsWithIndex, q.correct, q.explanation);
+                };
+                optionsContainer.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        function startTimer() {
+            timer = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft + 's';
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    timeOutAnswer();
+                }
+            }, 1000);
+        }
+
+        function timeOutAnswer() {
+            if (answeredCurrent) return;
+            answeredCurrent = true;
+            disableAllOptions();
+
+            const q = questions[currentQuestion];
+            feedbackContainer.className = "feedback incorrect";
+            feedbackTitle.textContent = "⌛ ¡Tiempo agotado!";
+            feedbackText.textContent = `Se agotaron los 60 segundos. Explicación: ${q.explanation}`;
+            feedbackContainer.classList.remove('hidden');
+            nextBtn.classList.remove('hidden');
+        }
+
+        function selectAnswer(isCorrect, selectedBtn, optionsWithIndex, correctOriginalIndex, explanationText) {
+            if (answeredCurrent) return;
+            answeredCurrent = true;
+            clearInterval(timer);
+            disableAllOptions();
+
+            const allBtns = optionsContainer.querySelectorAll('button');
+            allBtns.forEach((btn, idx) => {
+                const optObj = optionsWithIndex[idx];
+                if (optObj.originalIndex === correctOriginalIndex) {
+                    btn.style.borderColor = "#10b981";
+                    btn.style.background = "rgba(6, 78, 59, 0.7)";
+                } else if (btn === selectedBtn && !isCorrect) {
+                    btn.style.borderColor = "#f43f5e";
+                    btn.style.background = "rgba(159, 18, 57, 0.5)";
+                } else {
+                    btn.style.opacity = "0.4";
+                }
+            });
+
+            if (isCorrect) {
+                score += 4;
+                correctCount++;
+                currentScoreEl.textContent = score;
+                feedbackContainer.className = "feedback correct";
+                feedbackTitle.textContent = "✅ ¡Excelente respuesta!";
+                feedbackText.textContent = `¡Felicitaciones! Rigor metodológico aplicado correctamente. ${explanationText}`;
+            } else {
+                feedbackContainer.className = "feedback incorrect";
+                feedbackTitle.textContent = "❌ Respuesta incorrecta";
+                feedbackText.textContent = `Analiza el error conceptual: ${explanationText}`;
+            }
+
+            feedbackContainer.classList.remove('hidden');
+            nextBtn.classList.remove('hidden');
+        }
+
+        function disableAllOptions() {
+            const allBtns = optionsContainer.querySelectorAll('button');
+            allBtns.forEach(btn => btn.disabled = true);
+        }
+
+        function showResults() {
+            screenGame.classList.add('hidden');
+            statsHeader.classList.add('hidden');
+            screenResult.classList.remove('hidden');
+
+            document.getElementById('final-score-val').textContent = score + " / 100 pts";
+            document.getElementById('final-correct-val').textContent = correctCount + " / 25";
+
+            const resultTitle = document.getElementById('result-title');
+            const resultMessage = document.getElementById('result-message');
+            const finalStatusVal = document.getElementById('final-status-val');
+
+            if (score >= 80) {
+                resultTitle.textContent = "🏆 ¡Lo lograste con Excelencia!";
+                resultMessage.textContent = "Has demostrado un dominio avanzado en gestión bibliográfica, prevención del plagio e integridad investigativa en enfermería.";
+                finalStatusVal.textContent = "Aprobado";
+                finalStatusVal.style.color = "#10b981";
+            } else {
+                resultTitle.textContent = "📚 Sigue intentando, No te rindas";
+                resultMessage.textContent = "Has completado la evaluación formativa. Te invitamos a reforzar los conceptos de referenciación y normas internacionales.";
+                finalStatusVal.textContent = "En Consolidación";
+                finalStatusVal.style.color = "#fbbf24";
+            }
+        }
+    </script>
+</body>
+<div style="position: fixed; bottom: 10px; right: 10px; background-color: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 5px; font-family: sans-serif; font-size: 12px; z-index: 9999;">
+    Juego creado por: Ander Asenjo
+</div>
+</html>
