@@ -1,0 +1,701 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego Educativo: Metodologías Mixtas en Investigación en Enfermería</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0b0f19',
+                        cardBg: '#131c31',
+                        accentEmerald: '#10b981',
+                        accentPurple: '#a855f7',
+                        accentCyan: '#06b6d4',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .glass-panel {
+            background: rgba(19, 28, 49, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(16, 185, 129, 0.6); }
+        }
+        .glow-effect { animation: pulseGlow 3s infinite; }
+    </style>
+</head>
+<body class="bg-darkBg text-slate-100 min-h-screen flex flex-col justify-between selection:bg-accentEmerald selection:text-black">
+
+    <!-- Header / Navbar -->
+    <header class="glass-panel border-b border-slate-800 py-4 px-6 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-accentEmerald to-accentCyan p-2.5 rounded-xl text-darkBg font-bold text-xl shadow-lg">
+                    🧬
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight text-white">Metodologías Mixtas en Salud</h1>
+                    <p class="text-xs text-slate-400">Maestría en Enfermería y Gestión Integral del Cuidado</p>
+                </div>
+            </div>
+            <div id="game-stats" class="hidden flex items-center space-x-6 text-sm font-medium">
+                <div class="flex items-center space-x-2 bg-slate-900/60 px-4 py-1.5 rounded-full border border-slate-800">
+                    <span class="text-slate-400">Pregunta:</span>
+                    <span id="current-q-num" class="text-accentEmerald font-bold">1</span><span class="text-slate-500">/25</span>
+                </div>
+                <div class="flex items-center space-x-2 bg-slate-900/60 px-4 py-1.5 rounded-full border border-slate-800">
+                    <span class="text-slate-400">Puntaje:</span>
+                    <span id="current-score" class="text-accentCyan font-bold">0</span><span class="text-slate-500">/100</span>
+                </div>
+                <div id="timer-container" class="flex items-center space-x-2 bg-slate-900/60 px-4 py-1.5 rounded-full border border-slate-800">
+                    <span class="text-slate-400">⏱️ Tiempo:</span>
+                    <span id="timer-display" class="text-amber-400 font-bold">60s</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow flex items-center justify-center p-4 sm:p-6">
+        <div class="w-full max-w-4xl mx-auto">
+
+            <!-- Pantalla de Inicio -->
+            <section id="screen-start" class="glass-panel p-8 sm:p-12 rounded-3xl shadow-2xl text-center space-y-6 glow-effect">
+                <div class="inline-block p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-4xl mb-2">
+                    🔄🔬
+                </div>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+                    Simulador Interactivo: Metodologías Mixtas
+                </h2>
+                <p class="text-slate-300 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+                    Fortalece la competencia <strong class="text-accentEmerald">«Indaga mediante métodos científicos para construir sus conocimientos»</strong>. Evalúa tus saberes avanzados en diseños mixtos secuenciales (explicativos y exploratorios), redacción metodológica, reportes de casos, grupos focales, entrevistas a profundidad e instrumentos cuantitativos en enfermería.
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left max-w-2xl mx-auto py-2">
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <span class="text-accentEmerald font-bold text-lg">25</span>
+                        <p class="text-xs text-slate-400">Reactivos especializados de posgrado</p>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <span class="text-accentCyan font-bold text-lg">60 Seg</span>
+                        <p class="text-xs text-slate-400">Límite por cada pregunta</p>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <span class="text-purple-400 font-bold text-lg">4 Pts</span>
+                        <p class="text-xs text-slate-400">Valor individual (Máx 100)</p>
+                    </div>
+                </div>
+                <button onclick="startGame()" class="mt-4 px-8 py-4 bg-gradient-to-r from-accentEmerald to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-darkBg font-bold text-lg rounded-2xl shadow-xl transition transform hover:scale-105 active:scale-95">
+                    Iniciar Desafío Metodológico 🚀
+                </button>
+            </section>
+
+            <!-- Pantalla del Juego / Preguntas -->
+            <section id="screen-game" class="hidden glass-panel p-6 sm:p-10 rounded-3xl shadow-2xl space-y-6">
+                <!-- Barra de progreso del tiempo -->
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div id="timer-bar" class="bg-accentEmerald h-full transition-all duration-1000" style="width: 100%;"></div>
+                </div>
+
+                <!-- Contenedor Visual Opcional (Organizadores SVG Mixtos) -->
+                <div id="question-visual" class="hidden bg-slate-900/80 p-4 rounded-2xl border border-slate-800 flex justify-center items-center">
+                    <!-- Dinámico vía JS -->
+                </div>
+
+                <!-- Enunciado de la Pregunta -->
+                <div>
+                    <span id="question-category" class="text-xs font-semibold uppercase tracking-wider px-3 py-1 bg-purple-500/10 text-purple-400 rounded-full border border-purple-500/20"></span>
+                    <h3 id="question-text" class="text-lg sm:text-xl font-semibold text-white mt-3 leading-snug"></h3>
+                </div>
+
+                <!-- Opciones de Respuesta -->
+                <div id="options-container" class="space-y-3">
+                    <!-- Dinámico vía JS -->
+                </div>
+
+                <!-- Panel de Retroalimentación -->
+                <div id="feedback-panel" class="hidden p-4 sm:p-5 rounded-2xl border transition-all">
+                    <div id="feedback-title" class="font-bold text-base mb-1"></div>
+                    <p id="feedback-text" class="text-sm text-slate-300 leading-relaxed"></p>
+                    <button id="next-btn" onclick="nextQuestion()" class="mt-4 px-6 py-2.5 bg-slate-100 hover:bg-white text-darkBg font-bold rounded-xl text-sm transition shadow">
+                        Siguiente Pregunta ➡️
+                    </button>
+                </div>
+            </section>
+
+            <!-- Pantalla de Resultados Finales -->
+            <section id="screen-result" class="hidden glass-panel p-8 sm:p-12 rounded-3xl shadow-2xl text-center space-y-6">
+                <div id="result-icon-container" class="inline-block p-6 rounded-3xl bg-slate-900/80 border border-slate-800 text-6xl shadow-inner">
+                    <!-- Icono o Copa -->
+                </div>
+                <h2 id="result-title" class="text-2xl sm:text-3xl font-extrabold text-white"></h2>
+                <div class="text-4xl sm:text-5xl font-black text-accentEmerald" id="final-score-text">0 / 100</div>
+                <p id="result-message" class="text-base sm:text-lg text-slate-300 max-w-md mx-auto"></p>
+                <div class="pt-4">
+                    <button onclick="restartGame()" class="px-8 py-3.5 bg-gradient-to-r from-accentEmerald to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-darkBg font-bold rounded-2xl shadow-xl transition transform hover:scale-105">
+                        Volver a Intentar 🔄
+                    </button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-900">
+        Maestría en Enfermería y Gestión Integral del Cuidado • Módulo de Metodologías Mixtas en Investigación
+    </footer>
+
+    <!-- Script Principal del Juego -->
+    <script>
+        const questionsData = [
+            {
+                category: "Materiales y Métodos - Mixtos",
+                text: "¿Qué aspecto metodológico es imprescindible redactar en la sección de materiales y métodos de un protocolo de investigación con metodología mixta para justificar la integración de enfoques?",
+                visualType: "svg-mix-intro",
+                options: [
+                    { text: "La justificación de la triangulación y el diseño de integración temporal o secuencial de datos.", correct: true },
+                    { text: "Únicamente el presupuesto asignado para la compra de suministros clínicos.", correct: false },
+                    { text: "La lista de los nombres de los pacientes que se negaron a participar en las entrevistas.", correct: false },
+                    { text: "Las opiniones personales de la dirección del hospital sobre el personal de enfermería.", correct: false }
+                ],
+                feedback: "Correcto. En estudios mixtos, la sección metodológica debe detallar el diseño integrador, la justificación de la mezcla y cómo interactúan las fases."
+            },
+            {
+                category: "Diseño Explicativo (CUAN -> QUAL)",
+                text: "En un diseño de investigación secuencial explicativo (CUAN -> QUAL), ¿cuál es el propósito metodológico principal de la fase cualitativa posterior?",
+                visualType: "svg-cuan-qual",
+                options: [
+                    { text: "Ayudar a explicar, interpretar y profundizar en los resultados cuantitativos obtenidos previamente.", correct: true },
+                    { text: "Reemplazar por completo los datos numéricos debido a su baja validez.", correct: false },
+                    { text: "Calcular el tamaño muestral estadístico de la población general.", correct: false },
+                    { text: "Manipular experimentalmente la variable independiente en un entorno clínico controlado.", correct: false }
+                ],
+                feedback: "Correcto. En el diseño explicativo secuencial, la fase cualitativa se construye sobre los resultados cuantitativos para comprender a fondo los hallazgos numéricos."
+            },
+            {
+                category: "Diseño Exploratorio (QUAL -> CUAN)",
+                text: "Cuando un investigador en enfermería desarrolla primero una fase cualitativa (ej. entrevistas a profundidad sobre vivencias de dolor crónico) para posteriormente diseñar y validar un instrumento cuantitativo basado en esos hallazgos, aplica un diseño:",
+                visualType: "svg-qual-cuan",
+                options: [
+                    { text: "Secuencial exploratorio (QUAL -> CUAN).", correct: true },
+                    { text: "Transversal puramente descriptivo.", correct: false },
+                    { text: "Secuencial explicativo (CUAN -> QUAL).", correct: false },
+                    { text: "Ensayo clínico aleatorizado doble ciego.", correct: false }
+                ],
+                feedback: "Correcto. El diseño exploratorio secuencial comienza con la exploración cualitativa para construir o probar un instrumento cuantitativo posterior."
+            },
+            {
+                category: "Componente Cualitativo - Casos",
+                text: "Dentro de la descripción de los procedimientos cualitativos, ¿cuándo se justifica adecuadamente el uso de un 'reporte de casos' o 'serie de casos' en una investigación clínica de enfermería?",
+                visualType: "none",
+                options: [
+                    { text: "Cuando se documenta un fenómeno clínico inusual, complejo o innovador que requiere una comprensión profunda y contextualizada.", correct: true },
+                    { text: "Cuando se busca realizar inferencias estadísticas con una muestra probabilística mayor a 500 pacientes.", correct: false },
+                    { text: "Cuando se desea calcular la media y desviación estándar de la presión arterial sistólica.", correct: false },
+                    { text: "Cuando se requiere un ensayo controlado con asignación aleatoria pura.", correct: false }
+                ],
+                feedback: "Correcto. El reporte o serie de casos cualitativo aborda situaciones clínicas particulares o raras para extraer aprendizajes contextuales profundos."
+            },
+            {
+                category: "Componente Cualitativo - Entrevistas",
+                text: "Al describir los procedimientos para las 'entrevistas a profundidad' en el componente cualitativo, ¿qué elemento metodológico garantiza el rigor en la obtención de discursos ricos y significativos?",
+                visualType: "none",
+                options: [
+                    { text: "El uso de una guía temática flexible y la búsqueda de saturación teórica de la información.", correct: true },
+                    { text: "La aplicación estricta de un cuestionario con opciones cerradas dicotómicas sí/no.", correct: false },
+                    { text: "El cálculo previo del margen de error con un nivel de confianza del 95%.", correct: false },
+                    { text: "La estandarización matemática de las respuestas para un análisis estadístico multivariante.", correct: false }
+                ],
+                feedback: "Correcto. Las entrevistas a profundidad emplean guías flexibles y buscan la saturación teórica como criterio de suficiencia muestral cualitativa."
+            },
+            {
+                category: "Componente Cualitativo - Grupos Focales",
+                text: "En un estudio sobre el clima laboral en unidades de cuidados intensivos, el uso de 'grupos focales' como procedimiento cualitativo se selecciona fundamentalmente porque permite:",
+                visualType: "none",
+                options: [
+                    { text: "Capturar la interacción social, los debates y las construcciones colectivas de significados entre los profesionales.", correct: true },
+                    { text: "Medir de forma cuantitativa y aislada el nivel de cortisol sérico individual de cada enfermero.", correct: false },
+                    { text: "Calcular el coeficiente alfa de Cronbach de una escala psicométrica.", correct: false },
+                    { text: "Establecer relaciones de causalidad lineal entre variables de exposición.", correct: false }
+                ],
+                feedback: "Correcto. La gran ventaja metodológica de los grupos focales es la interacción grupal y el intercambio dinámico de perspectivas."
+            },
+            {
+                category: "Componente Cuantitativo - Instrumentos",
+                text: "Dentro de la descripción de los procedimientos del componente cuantitativo en un estudio mixto, ¿cómo deben documentarse las 'encuestas y pruebas de laboratorio'?",
+                visualType: "none",
+                options: [
+                    { text: "Especificando sus propiedades psicométricas o metrológicas, rangos de normalidad, validez y confiabilidad.", correct: true },
+                    { text: "Mencionando únicamente que se aplicaron de manera informal y sin supervisión.", correct: false },
+                    { text: "Omitiendo los detalles técnicos para ahorrar espacio en la redacción.", correct: false },
+                    { text: "Describiendo exclusivamente las opiniones subjetivas de los encuestadores.", correct: false }
+                ],
+                feedback: "Correcto. Los instrumentos cuantitativos (encuestas y pruebas) exigen rigor técnico detallando validez, confiabilidad y calibración."
+            },
+            {
+                category: "Materiales y Métodos - Mixtos",
+                text: "¿Qué caracteriza a la estrategia de 'integración concurrente' en la redacción metodológica de un estudio mixto en enfermería?",
+                visualType: "none",
+                options: [
+                    { text: "La recolección y análisis simultáneo de datos cuantitativos y cualitativos para realizar una posterior convergencia.", correct: true },
+                    { text: "La ejecución de la fase cuantitativa cinco años antes de iniciar el contacto cualitativo.", correct: false },
+                    { text: "La exclusión absoluta de cualquier dato numérico en el informe final.", correct: false },
+                    { text: "La aplicación de entrevistas únicamente después de que el paciente ha fallecido.", correct: false }
+                ],
+                feedback: "Cardeal. La integración concurrente (o paralela) recopila ambos tipos de datos en el mismo periodo para contrastarlos e integrarlos."
+            },
+            {
+                category: "Diseño Explicativo (CUAN -> QUAL)",
+                text: "En un diseño CUAN -> QUAL, si los resultados cuantitativos muestran un fenómeno inesperado de baja adherencia a tratamientos en pacientes diabéticos, la fase cualitativa subsiguiente sirve para:",
+                visualType: "none",
+                options: [
+                    { text: "Explorar las razones y percepciones subjetivas de los pacientes que explican esa baja adherencia.", correct: true },
+                    { text: "Modificar retroactivamente los datos numéricos para que coincidan con la hipótesis.", correct: false },
+                    { text: "Aumentar el tamaño de la muestra probabilística cuantitativa en 1000 sujetos más.", correct: false },
+                    { text: "Descartar por completo el método cuantitativo por considerarlo inválido.", correct: false }
+                ],
+                feedback: "Correcto. El diseño explicativo utiliza los resultados cuantitativos atípicos o destacados como punto de partida para la profundización cualitativa."
+            },
+            {
+                category: "Diseño Exploratorio (QUAL -> CUAN)",
+                text: "Un equipo de enfermería desea investigar un nuevo modelo de cuidado humanizado. Primero realizan grupos focales con pacientes (QUAL) y con base en los temas emergentes desarrollan un cuestionario estructurado que aplican a gran escala (CUAN). Este diseño es:",
+                visualType: "none",
+                options: [
+                    { text: "Secuencial exploratorio (QUAL -> CUAN).", correct: true },
+                    { text: "Secuencial explicativo (CUAN -> QUAL).", correct: false },
+                    { text: "Transversal descriptivo simple.", correct: false },
+                    { text: "Estudio de cohorte retrospectivo.", correct: false }
+                ],
+                feedback: "Correcto. Se parte de lo cualitativo para explorar y construir herramientas cuantitativas aplicadas posteriormente a mayor escala."
+            },
+            {
+                category: "Componentes Cualitativos",
+                text: "¿Qué criterio metodológico se utiliza para determinar el fin de la recolección de datos en las entrevistas a profundidad de un estudio mixto?",
+                visualType: "none",
+                options: [
+                    { text: "La saturación teórica (cuando ya no se aportan nuevos códigos o categorías relevantes).", correct: true },
+                    { text: "La aplicación estricta de una fórmula matemática de tamaño muestral basada en la varianza.", correct: false },
+                    { text: "El agotamiento físico del entrevistador en el primer día de campo.", correct: false },
+                    { text: "La obtención exacta de un número par de participantes sin importar la información.", correct: false }
+                ],
+                feedback: "Correcto. La saturación teórica es el estándar de rigor cualitativo para cerrar la fase de recolección de datos discursivos."
+            },
+            {
+                category: "Componentes Cuantitativos",
+                text: "En la descripción de procedimientos cuantitativos de laboratorio para un estudio sobre infecciones nosocomiales, ¿qué se debe detallar rigurosamente?",
+                visualType: "none",
+                options: [
+                    { text: "El protocolo de toma de muestras, medios de cultivo, equipos automatizados y controles de calidad analítica.", correct: true },
+                    { text: "Las emociones del paciente al momento de recibir el resultado de laboratorio.", correct: false },
+                    { text: "Las transcripciones textuales de las quejas de los familiares.", correct: false },
+                    { text: "Las anécdotas del personal de limpieza del hospital.", correct: false }
+                ],
+                feedback: "Correcto. Los procedimientos de laboratorio exigen rigor metrológico, estandarización analítica y control de calidad."
+            },
+            {
+                category: "Materiales y Métodos - Mixtos",
+                text: "Al redactar la estrategia de integración en un estudio mixto, ¿qué término describe la combinación de los resultados cualitativos y cuantitativos en la sección de discusión del artículo?",
+                visualType: "none",
+                options: [
+                    { text: "Triangulación o convergencia de datos.", correct: true },
+                    { text: "Contaminación experimental cruzada.", correct: false },
+                    { text: "Error aleatorio de muestreo.", correct: false },
+                    { text: "Pérdida de datos por deserción.", correct: false }
+                ],
+                feedback: "Correcto. La triangulación o convergencia permite contraponer los hallazgos cuantitativos y cualitativos para enriquecer la conclusión."
+            },
+            {
+                category: "Diseños Mixtos",
+                text: "¿Cuál es el principal desafío metodológico al redactar un estudio con diseño mixto explicativo (CUAN -> QUAL) en enfermería?",
+                visualType: "none",
+                options: [
+                    { text: "Conectar adecuadamente los resultados cuantitativos específicos con el diseño de la muestra y guía de la fase cualitativa.", correct: true },
+                    { text: "Evitar que el estudio tenga más de dos páginas de extensión total.", correct: false },
+                    { text: "Impedir que el comité de ética revise el protocolo de investigación.", correct: false },
+                    { text: "Convertir todas las entrevistas de texto a fórmulas estadísticas complejas obligatoriamente.", correct: false }
+                ],
+                feedback: "Correcto. El nexo o conexión metodológica entre ambas fases es el reto crítico en la redacción de diseños secuenciales."
+            },
+            {
+                category: "Componente Cualitativo - Casos",
+                text: "En la descripción metodológica de una serie de casos cualitativa sobre eventos adversos en administración de fármacos, ¿qué se prioriza por encima de la generalización estadística?",
+                visualType: "none",
+                options: [
+                    { text: "La transferencia y la descripción densa del contexto clínico particular.", correct: true },
+                    { text: "El cálculo del intervalo de confianza al 99% para la población mundial.", correct: false },
+                    { text: "La comprobación de hipótesis nulas mediante pruebas t de Student.", correct: false },
+                    { text: "La estandarización numérica de las opiniones de los pacientes.", correct: false }
+                ],
+                feedback: "Correcto. La investigación cualitativa busca la transferencia contextual y la descripción densa, no la generalización estadística."
+            },
+            {
+                category: "Componente Cuantitativo - Encuestas",
+                text: "Cuando un investigador utiliza encuestas estructuradas validadas en un estudio mixto, ¿cómo se describe el proceso de control de sesgos en la metodología?",
+                visualType: "none",
+                options: [
+                    { text: "Detallando el pilotaje del instrumento, la capacitación de los encuestadores y los criterios de validación.", correct: true },
+                    { text: "Afirmando que las encuestas se llenaron al azar sin supervisión.", correct: false },
+                    { text: "Indicando que no se requiere ninguna revisión previa de las preguntas.", correct: false },
+                    { text: "Sustituyendo las preguntas por anécdotas personales del autor.", correct: false }
+                ],
+                feedback: "Correcto. El pilotaje y la capacitación estandarizada son controles metodológicos esenciales para minimizar sesgos en encuestas."
+            },
+            {
+                category: "Diseños Mixtos - Exploratorio",
+                text: "En el diseño secuencial exploratorio (QUAL -> CUAN), ¿por qué es fundamental describir detalladamente la fase cualitativa inicial en la metodología?",
+                visualType: "none",
+                options: [
+                    { text: "Porque de sus hallazgos derivan las variables, dimensiones e ítems del instrumento cuantitativo subsecuente.", correct: true },
+                    { text: "Porque permite calcular el presupuesto financiero antes de comprar reactivos.", correct: false },
+                    { text: "Porque sustituye la necesidad de realizar un marco teórico bibliográfico.", correct: false },
+                    { text: "Porque elimina la necesidad de redactar conclusiones al final del estudio.", correct: false }
+                ],
+                feedback: "Correcto. En este diseño, la fase cualitativa fundamenta la construcción de los instrumentos cuantitativos posteriores."
+            },
+            {
+                category: "Procedimientos Cualitativos",
+                text: "¿Qué procedimiento de análisis es el más comúnmente reportado en la metodología para procesar datos textuales provenientes de entrevistas a profundidad en enfermería?",
+                visualType: "none",
+                options: [
+                    { text: "El análisis de contenido temático o codificación inductiva de categorías.", correct: true },
+                    { text: "La prueba de chi-cuadrado de Pearson para tablas de contingencia.", correct: false },
+                    { text: "El análisis de regresión lineal múltiple ajustada por covariables.", correct: false },
+                    { text: "El cálculo de la varianza poblacional estándar.", correct: false }
+                ],
+                feedback: "Correcto. El análisis temático inductivo es la técnica central para codificar y categorizar material textual cualitativo."
+            },
+            {
+                category: "Procedimientos Cuantitativos",
+                text: "Al describir los criterios de selección de la muestra cuantitativa dentro de un estudio mixto, el investigador debe asegurar que:",
+                visualType: "none",
+                options: [
+                    { text: "Los participantes cumplan con los criterios de inclusión/exclusión y se especifique si el muestreo es probabilístico o no probabilístico.", correct: true },
+                    { text: "Se entreviste únicamente a los amigos cercanos del equipo de investigación.", correct: false },
+                    { text: "Se seleccione la muestra basándose exclusivamente en la intuición sin criterios formales.", correct: false },
+                    { text: "Se ignoren por completo las características demográficas de la población.", correct: false }
+                ],
+                feedback: "Correcto. La rigurosidad cuantitativa exige definir con precisión los criterios de selección y el tipo de muestreo."
+            },
+            {
+                category: "Materiales y Métodos - Mixtos",
+                text: "En la redacción del apartado de 'Materiales y Métodos' de un artículo mixto, ¿qué se entiende por la matriz de integración de métodos?",
+                visualType: "none",
+                options: [
+                    { text: "Un esquema o tabla que muestra cómo se conectan las preguntas de investigación, las fases cuali-cuanti y los datos recolectados.", correct: true },
+                    { text: "Una lista de precios de los equipos de cómputo utilizados.", correct: false },
+                    { text: "Un diagrama contable de los gastos de publicación en revistas indexadas.", correct: false },
+                    { text: "Un registro de asistencia del personal de enfermería al turno matutino.", correct: false }
+                ],
+                feedback: "Correcto. La matriz de integración es una herramienta metodológica clave para visualizar la articulación entre los componentes del estudio mixto."
+            },
+            {
+                category: "Diseños Explicativos",
+                text: "Si un investigador observa correlaciones estadísticas anómalas entre la carga laboral y errores de enfermería, y decide realizar grupos focales para entender las causas subyacentes, está utilizando un diseño:",
+                visualType: "none",
+                options: [
+                    { text: "Secuencial explicativo (CUAN -> QUAL).", correct: true },
+                    { text: "Secuencial exploratorio (QUAL -> CUAN).", correct: false },
+                    { text: "Transversal puramente descriptivo.", correct: false },
+                    { text: "Estudio experimental puro sin cegamiento.", correct: false }
+                ],
+                feedback: "Correcto. Partir de hallazgos cuantitativos para explicarlos mediante métodos cualitativos define el diseño explicativo secuencial."
+            },
+            {
+                category: "Componente Cualitativo - Grupos Focales",
+                text: "¿Qué precaución metodológica debe reportarse al describir la moderación de un grupo focal en investigación en salud?",
+                visualType: "none",
+                options: [
+                    { text: "El manejo neutral del moderador para evitar sesgos de deseabilidad o dominancia de ciertos participantes en la discusión.", correct: true },
+                    { text: "La aplicación obligatoria de descargas eléctricas leves ante respuestas incorrectas.", correct: false },
+                    { text: "El uso de un cuestionario de opción múltiple con tiempo cronometrado de 60 segundos.", correct: false },
+                    { text: "La prohibición absoluta de grabar el audio de la sesión.", correct: false }
+                ],
+                feedback: "Correcto. Un moderador entrenado debe evitar sesgos de dominancia y asegurar la participación equitativa en los grupos focales."
+            },
+            {
+                category: "Componentes Mixtos",
+                text: "¿Cuál es la principal ventaja de emplear metodologías mixtas en la investigación sobre gestión integral del cuidado en enfermería?",
+                visualType: "none",
+                options: [
+                    { text: "Permite una comprensión más holística, profunda y complementaria de los problemas complejos de salud al integrar la estadística y la vivencia humana.", correct: true },
+                    { text: "Garantiza que el estudio se realice en menos de una semana sin esfuerzo analítico.", correct: false },
+                    { text: "Elimina la necesidad de redactar un marco metodológico complejo.", correct: false },
+                    { text: "Reduce los costos operativos a cero en cualquier hospital.", correct: false }
+                ],
+                feedback: "Correcto. La gran fortaleza de los métodos mixtos es la visión integral y complementaria de los fenómenos asistenciales complejos."
+            },
+            {
+                category: "Componente Cuantitativo - Pruebas",
+                text: "Al redactar los procedimientos de instrumentos cuantitativos basados en biomarcadores o pruebas fisiológicas, ¿qué garantía metodológica es indispensable?",
+                visualType: "none",
+                options: [
+                    { text: "La calibración previa de los equipos médicos y el cumplimiento de estándares de bioseguridad y precisión metrológica.", correct: true },
+                    { text: "La interpretación subjetiva y artística de los colores del reactivo.", correct: false },
+                    { text: "La omisión del nombre del fabricante del equipo por considerarse irrelevante.", correct: false },
+                    { text: "La sustitución de los datos numéricos por narraciones poéticas.", correct: false }
+                ],
+                feedback: "Correcto. Las pruebas cuantitativas fisiológicas y de laboratorio exigen estricta calibración, control metrológico y protocolos estandarizados."
+            },
+            {
+                category: "Redacción Científica - Métodos Mixtos",
+                text: "En la conclusión de la sección de materiales y métodos de un estudio mixto, ¿qué declaración ética y de rigor metodológico global no debe faltar?",
+                visualType: "none",
+                options: [
+                    { text: "La aprobación del comité de ética para ambas fases (cuali y cuanti) y la estrategia de validación cruzada.", correct: true },
+                    { text: "El número de teléfono personal de cada paciente participante para acceso público.", correct: false },
+                    { text: "Una lista de marcas comerciales de computadoras usadas para redactar el artículo.", correct: false },
+                    { text: "La renuncia de los autores a cualquier responsabilidad científica.", correct: false }
+                ],
+                feedback: "Correcto. La aprobación ética integral y la estrategia de validación de ambas fases cierran con rigor metodológico el apartado."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timer = 60;
+        let timerInterval = null;
+        let answered = false;
+
+        // Elementos DOM
+        const screenStart = document.getElementById('screen-start');
+        const screenGame = document.getElementById('screen-game');
+        const screenResult = document.getElementById('screen-result');
+        const gameStats = document.getElementById('game-stats');
+        const currentQNum = document.getElementById('current-q-num');
+        const currentScore = document.getElementById('current-score');
+        const timerDisplay = document.getElementById('timer-display');
+        const timerBar = document.getElementById('timer-bar');
+        const questionCategory = document.getElementById('question-category');
+        const questionText = document.getElementById('question-text');
+        const questionVisual = document.getElementById('question-visual');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackPanel = document.getElementById('feedback-panel');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackText = document.getElementById('feedback-text');
+        const nextBtn = document.getElementById('next-btn');
+
+        function startGame() {
+            screenStart.classList.add('hidden');
+            screenResult.classList.add('hidden');
+            screenGame.classList.remove('hidden');
+            gameStats.classList.remove('hidden');
+            
+            currentQuestionIndex = 0;
+            score = 0;
+            updateStats();
+            loadQuestion();
+        }
+
+        function updateStats() {
+            currentQNum.textContent = currentQuestionIndex + 1;
+            currentScore.textContent = score;
+        }
+
+        function loadQuestion() {
+            answered = false;
+            feedbackPanel.classList.add('hidden');
+            optionsContainer.innerHTML = '';
+            
+            const q = questionsData[currentQuestionIndex];
+            questionCategory.textContent = q.category;
+            questionText.textContent = q.text;
+
+            // Manejo de organizadores visuales SVG mixtos según la pregunta
+            if (q.visualType && q.visualType !== 'none') {
+                questionVisual.classList.remove('hidden');
+                questionVisual.innerHTML = getSvgVisual(q.visualType);
+            } else {
+                questionVisual.classList.add('hidden');
+                questionVisual.innerHTML = '';
+            }
+
+            // Mezclar opciones aleatoriamente para evitar patrones predecibles
+            let shuffledOptions = [...q.options];
+            shuffledOptions.sort(() => Math.random() - 0.5);
+
+            shuffledOptions.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-accentEmerald/50 text-slate-200 transition text-sm sm:text-base flex items-center justify-between group";
+                
+                const letterSpan = document.createElement('span');
+                letterSpan.className = "w-7 h-7 rounded-lg bg-slate-800 text-slate-400 font-bold flex items-center justify-center mr-3 group-hover:bg-accentEmerald group-hover:text-darkBg transition flex-shrink-0";
+                letterSpan.textContent = String.fromCharCode(65 + idx); // A, B, C, D
+
+                const textSpan = document.createElement('span');
+                textSpan.className = "flex-grow";
+                textSpan.textContent = opt.text;
+
+                btn.appendChild(letterSpan);
+                btn.appendChild(textSpan);
+
+                btn.onclick = () => selectAnswer(opt.correct, q.feedback, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        function getSvgVisual(type) {
+            if (type === 'svg-mix-intro') {
+                return `<svg class="w-full max-w-md h-24" viewBox="0 0 400 100">
+                    <rect x="20" y="30" width="100" height="40" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+                    <text x="70" y="55" fill="#10b981" font-size="12" text-anchor="middle" font-weight="bold">CUAN</text>
+                    <line x1="120" y1="50" x2="150" y2="50" stroke="#64748b" stroke-width="2"/>
+                    <circle cx="200" cy="50" r="22" fill="#131c31" stroke="#a855f7" stroke-width="2"/>
+                    <text x="200" y="55" fill="#a855f7" font-size="11" text-anchor="middle" font-weight="bold">MIX</text>
+                    <line x1="250" y1="50" x2="280" y2="50" stroke="#64748b" stroke-width="2"/>
+                    <rect x="280" y="30" width="100" height="40" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="2"/>
+                    <text x="330" y="55" fill="#06b6d4" font-size="12" text-anchor="middle" font-weight="bold">QUAL</text>
+                </svg>`;
+            } else if (type === 'svg-cuan-qual') {
+                return `<svg class="w-full max-w-md h-24" viewBox="0 0 400 100">
+                    <rect x="30" y="30" width="130" height="40" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+                    <text x="95" y="55" fill="#10b981" font-size="12" text-anchor="middle" font-weight="bold">1. CUAN (Datos)</text>
+                    <path d="M 160 50 Q 200 20 240 50" fill="none" stroke="#a855f7" stroke-width="2"/>
+                    <text x="200" y="25" fill="#a855f7" font-size="10" text-anchor="middle">Explicación</text>
+                    <rect x="240" y="30" width="130" height="40" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="2"/>
+                    <text x="305" y="55" fill="#06b6d4" font-size="12" text-anchor="middle" font-weight="bold">2. QUAL (Voces)</text>
+                </svg>`;
+            } else if (type === 'svg-qual-cuan') {
+                return `<svg class="w-full max-w-md h-24" viewBox="0 0 400 100">
+                    <rect x="30" y="30" width="130" height="40" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="2"/>
+                    <text x="95" y="55" fill="#06b6d4" font-size="12" text-anchor="middle" font-weight="bold">1. QUAL (Explora)</text>
+                    <path d="M 160 50 Q 200 80 240 50" fill="none" stroke="#10b981" stroke-width="2"/>
+                    <text x="200" y="85" fill="#10b981" font-size="10" text-anchor="middle">Construye Instrumento</text>
+                    <rect x="240" y="30" width="130" height="40" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+                    <text x="305" y="55" fill="#10b981" font-size="12" text-anchor="middle" font-weight="bold">2. CUAN (Mide)</text>
+                </svg>`;
+            }
+            return '';
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timer = 60;
+            timerDisplay.textContent = timer + 's';
+            timerBar.style.width = '100%';
+            timerBar.className = "bg-accentEmerald h-full transition-all duration-1000";
+
+            timerInterval = setInterval(() => {
+                timer--;
+                timerDisplay.textContent = timer + 's';
+                let percentage = (timer / 60) * 100;
+                timerBar.style.width = percentage + '%';
+
+                if (timer <= 20) {
+                    timerBar.className = "bg-amber-500 h-full transition-all duration-1000";
+                }
+                if (timer <= 10) {
+                    timerBar.className = "bg-rose-500 h-full transition-all duration-1000";
+                }
+
+                if (timer <= 0) {
+                    clearInterval(timerInterval);
+                    if (!answered) {
+                        handleTimeOut();
+                    }
+                }
+            }, 1000);
+        }
+
+        function handleTimeOut() {
+            answered = true;
+            disableAllOptions();
+            feedbackPanel.classList.remove('hidden', 'bg-emerald-950/40', 'border-emerald-500/40', 'bg-rose-950/40', 'border-rose-500/40');
+            feedbackPanel.classList.add('bg-rose-950/40', 'border-rose-500/40');
+            feedbackTitle.className = "font-bold text-base mb-1 text-rose-400";
+            feedbackTitle.textContent = "⏱️ ¡Tiempo agotado!";
+            feedbackText.textContent = "Se agotaron los 60 segundos para este reactivo. Recuerda que la gestión del tiempo analítico es clave en metodologías mixtas.";
+            nextBtn.focus();
+        }
+
+        function selectAnswer(isCorrect, feedbackMsg, selectedBtn) {
+            if (answered) return;
+            answered = true;
+            clearInterval(timerInterval);
+
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+
+            feedbackPanel.classList.remove('hidden', 'bg-emerald-950/40', 'border-emerald-500/40', 'bg-rose-950/40', 'border-rose-500/40');
+
+            if (isCorrect) {
+                score += 4;
+                updateStats();
+                selectedBtn.classList.remove('bg-slate-900/80', 'border-slate-800');
+                selectedBtn.classList.add('bg-emerald-950/60', 'border-emerald-500', 'text-emerald-300');
+                
+                feedbackPanel.classList.add('bg-emerald-950/40', 'border-emerald-500/40');
+                feedbackTitle.className = "font-bold text-base mb-1 text-emerald-400";
+                feedbackTitle.textContent = "🎉 ¡Excelente respuesta!";
+                feedbackText.textContent = "¡Felicitaciones! Demuestras gran dominio metodológico mixto. " + feedbackMsg;
+            } else {
+                selectedBtn.classList.remove('bg-slate-900/80', 'border-slate-800');
+                selectedBtn.classList.add('bg-rose-950/60', 'border-rose-500', 'text-rose-300');
+
+                feedbackPanel.classList.add('bg-rose-950/40', 'border-rose-500/40');
+                feedbackTitle.className = "font-bold text-base mb-1 text-rose-400";
+                feedbackTitle.textContent = "💡 Respuesta incorrecta";
+                feedbackText.textContent = "Revisión conceptual: " + feedbackMsg;
+            }
+            nextBtn.focus();
+        }
+
+        function disableAllOptions() {
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questionsData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            screenGame.classList.add('hidden');
+            gameStats.classList.add('hidden');
+            screenResult.classList.remove('hidden');
+
+            const finalScoreText = document.getElementById('final-score-text');
+            const resultTitle = document.getElementById('result-title');
+            const resultMessage = document.getElementById('result-message');
+            const resultIconContainer = document.getElementById('result-icon-container');
+
+            finalScoreText.textContent = score + " / 100";
+
+            if (score >= 80) {
+                resultIconContainer.innerHTML = "🏆✨";
+                resultTitle.textContent = "¡Excelente Desempeño Metodológico!";
+                resultMessage.innerHTML = "Has obtenido una calificación sobresaliente.<br><br><span class='text-2xl font-bold text-accentEmerald'>«¡Lo lograste!»</span>";
+            } else {
+                resultIconContainer.innerHTML = "📚💪";
+                resultTitle.textContent = "Sigue Fortaleciendo Tus Competencias";
+                resultMessage.innerHTML = "Has completado el simulador. Continúa repasando los diseños mixtos y procedimientos de investigación.<br><br><span class='text-xl font-semibold text-amber-400'>«Sigue intentando, No te rindas»</span>";
+            }
+        }
+
+        function restartGame() {
+            startGame();
+        }
+    </script>
+</body><div style="position: fixed; bottom: 10px; right: 10px; background-color: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 5px; font-family: sans-serif; font-size: 12px; z-index: 9999;">
+    Juego creado por: Ander Asenjo
+</div>
+
+</html>
