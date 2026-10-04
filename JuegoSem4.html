@@ -4,7 +4,15 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
+ <script>
+      var clave = "1234"; // CAMBIA 1234 POR TU CLAVE
+      var intento = prompt("Ingrese la contraseña:4321");
+      if (intento !== clave) {
+        alert("Contraseña incorrecta");
+        document.write("<h1 style='color:white;text-align:center;'>Acceso denegado</h1>");
+        window.stop();
+      }
+    </script>   <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador de Redacción Científica | Maestría en Enfermería</title>
     <script src="https://cdn.tailwindcss.com"></script>
