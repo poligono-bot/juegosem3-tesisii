@@ -1,0 +1,654 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bioética y Gestión de la Investigación en Enfermería</title>
+    <!-- Tailwind CSS for modern glassmorphism styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f766e 100%);
+            min-height: 100vh;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(-10%); animation-timing-function: cubic-bezier(0.8,0,1,1); }
+            50% { transform: none; animation-timing-function: cubic-bezier(0,0,0.2,1); }
+        }
+        .animate-bounce-slow {
+            animation: bounce-slow 2s infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(20, 184, 166, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(20, 184, 166, 0.8); }
+        }
+        .glow-effect {
+            animation: pulse-glow 3s infinite;
+        }
+    </style>
+</head>
+<body class="text-slate-100 flex flex-col min-h-screen justify-between antialiased selection:bg-teal-500 selection:text-white">
+
+    <header class="w-full py-4 px-6 glass-panel border-b border-white/10 shadow-lg flex justify-between items-center z-20">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-teal-500 flex items-center justify-center shadow-lg shadow-teal-500/30">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                </svg>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg md:text-xl tracking-wide bg-gradient-to-r from-teal-400 to-cyan-300 bg-clip-text text-transparent">Maestría en Enfermería y Gestión</h1>
+                <p class="text-xs text-slate-400">Módulo Avanzado: Ética e Integridad Científica</p>
+            </div>
+        </div>
+        <div id="stats-header" class="hidden md:flex items-center space-x-6">
+            <div class="text-right">
+                <span class="text-xs text-slate-400 block">Progreso</span>
+                <span id="header-progress" class="font-semibold text-teal-300">Pregunta 1 / 25</span>
+            </div>
+            <div class="text-right">
+                <span class="text-xs text-slate-400 block">Puntaje Actual</span>
+                <span id="header-score" class="font-semibold text-cyan-300">0 pts</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-4 md:p-6 my-auto">
+        
+        <!-- Welcome Screen -->
+        <div id="screen-welcome" class="glass-card w-full max-w-3xl rounded-3xl p-6 md:p-10 shadow-2xl glow-effect text-center space-y-6">
+            <div class="inline-flex p-4 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 mb-2">
+                <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+            </div>
+            <h2 class="text-2xl md:text-4xl font-bold tracking-tight text-white">Simulador de Toma de Decisiones Bioéticas</h2>
+            <p class="text-slate-300 text-sm md:text-base leading-relaxed max-w-2xl mx-auto">
+                Pon a prueba tus competencias de posgrado en investigación avanzada en salud. Analiza 25 casos complejos sobre ética clínica, comités de revisión (CEI), consentimiento informado, reporte de violaciones y uso ético de herramientas antiplagio (Turnitin).
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left my-6">
+                <div class="glass-panel p-4 rounded-xl border border-white/5">
+                    <div class="text-teal-400 font-bold mb-1">⏱️ 60 Segundos</div>
+                    <p class="text-xs text-slate-400">Límite riguroso por cada caso clínico-normativo.</p>
+                </div>
+                <div class="glass-panel p-4 rounded-xl border border-white/5">
+                    <div class="text-teal-400 font-bold mb-1">🏆 100 Puntos Max</div>
+                    <p class="text-xs text-slate-400">4 puntos por cada respuesta correcta (25 preguntas).</p>
+                </div>
+                <div class="glass-panel p-4 rounded-xl border border-white/5">
+                    <div class="text-teal-400 font-bold mb-1">💡 Feedback Experto</div>
+                    <p class="text-xs text-slate-400">Retroalimentación detallada basada en normativas internacionales.</p>
+                </div>
+            </div>
+
+            <button onclick="startGame()" class="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-bold rounded-xl shadow-lg shadow-teal-500/25 hover:from-teal-600 hover:to-cyan-600 transition-all transform hover:-translate-y-0.5">
+                Iniciar Evaluación de Maestría
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="screen-quiz" class="hidden w-full max-w-4xl space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-center glass-card p-4 rounded-2xl gap-4">
+                <div class="flex items-center space-x-3">
+                    <span id="question-badge" class="px-3 py-1 bg-teal-500/20 border border-teal-500/40 text-teal-300 rounded-full text-xs font-semibold uppercase tracking-wider">Categoría</span>
+                    <span id="question-counter" class="text-sm font-medium text-slate-300">Pregunta 1 de 25</span>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span id="timer-display" class="font-bold text-amber-400 text-lg">60s</span>
+                    </div>
+                    <div class="text-sm font-semibold text-cyan-300">
+                        Puntuación: <span id="current-score">0</span> pts
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div id="progress-bar" class="bg-gradient-to-r from-teal-500 to-cyan-400 h-full w-0 transition-all duration-300"></div>
+            </div>
+
+            <div class="glass-card rounded-3xl p-6 md:p-8 shadow-xl space-y-6">
+                <h3 id="question-text" class="text-lg md:text-xl font-semibold text-white leading-snug"></h3>
+                
+                <div id="options-container" class="grid grid-cols-1 gap-3">
+                    <!-- Dynamic Options Inserted Here -->
+                </div>
+            </div>
+
+            <div id="feedback-box" class="hidden glass-card rounded-2xl p-6 border-l-4 space-y-4 transition-all">
+                <div class="flex items-center space-x-3">
+                    <div id="feedback-icon" class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-white"></div>
+                    <h4 id="feedback-title" class="text-lg font-bold"></h4>
+                </div>
+                <p id="feedback-text" class="text-slate-300 text-sm leading-relaxed"></p>
+                <button onclick="nextQuestion()" class="px-6 py-2.5 bg-teal-500 text-white font-semibold rounded-xl hover:bg-teal-600 transition-all shadow-md">
+                    Siguiente Pregunta ➔
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="screen-results" class="hidden glass-card w-full max-w-2xl rounded-3xl p-8 md:p-12 text-center space-y-6 shadow-2xl">
+            <div id="result-trophy-container" class="flex justify-center">
+                <!-- Trophy or Try Again Icon injected via JS -->
+            </div>
+            <h2 id="result-heading" class="text-3xl font-extrabold text-white tracking-tight"></h2>
+            <div class="glass-panel p-6 rounded-2xl inline-block w-full">
+                <p class="text-sm text-slate-400 mb-1">Calificación Final Obtenida</p>
+                <div id="final-score-display" class="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-300">0 / 100</div>
+                <p id="final-stats-detail" class="text-xs text-slate-400 mt-2">Respuestas correctas: 0 de 25</p>
+            </div>
+            <p id="result-message" class="text-slate-300 text-base leading-relaxed"></p>
+            <button onclick="restartGame()" class="px-8 py-3.5 bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-bold rounded-xl shadow-lg hover:from-teal-600 hover:to-cyan-600 transition-all">
+                Reiniciar Evaluación
+            </button>
+        </div>
+
+    </main>
+
+    <footer class="w-full py-4 text-center text-xs text-slate-500 border-t border-white/5">
+        Evaluación basada en normativas internacionales de investigación en salud (Helsinki, CIOMS) • Maestría en Enfermería
+    </footer>
+
+    <script>
+        const questionsData = [
+            {
+                category: "Consideraciones Éticas",
+                question: "En un estudio sobre el manejo del dolor crónico en adultos mayores hospitalizados, la investigadora principal decide omitir la administración de analgesia de rescate en el grupo placebo. Desde la perspectiva bioética, ¿qué principio fundamental se está vulnerando primordialmente?",
+                options: [
+                    { text: "El principio de Autonomía al impedir la libre elección.", isCorrect: false },
+                    { text: "El principio de Beneficencia y No Maleficencia al generar sufrimiento evitable.", isCorrect: true },
+                    { text: "El principio de Justicia al repartir de forma desigual los recursos.", isCorrect: false },
+                    { text: "El principio de Veracidad al ocultar la composición del placebo.", isCorrect: false }
+                ],
+                explanation: "La no maleficencia y la beneficencia obligan al investigador a maximizar beneficios y minimizar daños. Omitir analgesia necesaria constituye daño evitable."
+            },
+            {
+                category: "Aspectos Éticos del Estudio",
+                question: "¿Cuál de los siguientes elementos es indispensable incluir en la sección de 'Aspectos Éticos' del protocolo de investigación para un estudio cuantitativo cuasiexperimental en unidades de cuidados intensivos?",
+                options: [
+                    { text: "La lista de marcas comerciales de los equipos biomédicos avanzados.", isCorrect: false },
+                    { text: "El análisis financiero detallado del costo-efectividad institucional.", isCorrect: false },
+                    { text: "La gestión de riesgos previsibles, confidencialidad y resguardo de vulnerabilidad.", isCorrect: true },
+                    { text: "El currículum vitae notariado de cada uno de los asesores metodológicos.", isCorrect: false }
+                ],
+                explanation: "Los aspectos éticos deben detallar explícitamente cómo se protegerá la integridad, el anonimato y la minimización de riesgos en poblaciones vulnerables como las de UCI."
+            },
+            {
+                category: "Comité de Ética (CEI)",
+                question: "Un Comité de Ética en Investigación (CEI) rechaza un protocolo presentado por una maestrando en enfermería porque el diseño expone innecesariamente a una cohorte de gestantes a un procedimiento invasivo no validado previamente en fases preclínicas. ¿Cuál es la atribución principal del CEI en este caso?",
+                options: [
+                    { text: "Modificar de forma arbitraria la metodología estadística del estudio.", isCorrect: false },
+                    { text: "Evaluar la validez científica y la relación riesgo-beneficio para proteger sujetos.", isCorrect: true },
+                    { text: "Ejercer funciones de auditoría contable y financiera sobre el presupuesto.", isCorrect: false },
+                    { text: "Aprobar automáticamente cualquier protocolo respaldado por facultades.", isCorrect: false }
+                ],
+                explanation: "El CEI tiene como mandato primordial velar por la protección de la vida, salud, dignidad, integridad y derechos de los sujetos de investigación mediante evaluación rigurosa."
+            },
+            {
+                category: "Consentimiento y Asentimiento",
+                question: "En una investigación cualitativa sobre vivencias de adolescentes hospitalizados por patologías oncológicas, se requiere cumplir con el proceso de consentimiento y asentimiento informado. ¿Cómo debe aplicarse correctamente en este grupo etario?",
+                options: [
+                    { text: "Solo se requiere la firma del director del hospital por ser menor de edad.", isCorrect: false },
+                    { text: "Se obtiene el consentimiento de padres y el asentimiento informado del menor.", isCorrect: true },
+                    { text: "Basta con el asentimiento verbal del adolescente sin documento firmado.", isCorrect: false },
+                    { text: "No se requiere ningún proceso de consentimiento por ser estudio cualitativo.", isCorrect: false }
+                ],
+                explanation: "En menores o adolescentes, la normativa ética exige el consentimiento informado de representantes legales y el asentimiento informado del menor respetando su madurez."
+            },
+            {
+                category: "Violaciones Éticas",
+                question: "Durante la ejecución de un ensayo clínico en enfermería, se descubre que un asistente de investigación falsificó los registros de signos vitales de 15 pacientes para cumplir con los plazos de entrega del reporte. ¿Cómo se clasifica esta falta según las directrices de integridad científica?",
+                options: [
+                    { text: "Un error metodológico menor subsanable mediante corrección de base.", isCorrect: false },
+                    { text: "Una violación ética grave tipificada como fabricación y falsificación de datos.", isCorrect: true },
+                    { text: "Una discrepancia interpretativa derivada de la subjetividad clínica.", isCorrect: false },
+                    { text: "Un conflicto de interés secundario sin impacto en la seguridad.", isCorrect: false }
+                ],
+                explanation: "La fabricación y falsificación de datos son pilares de la mala conducta científica (research misconduct), comprometiendo la seguridad y la validez universal."
+            },
+            {
+                category: "Similitud y Turnitin",
+                question: "Al procesar una tesis de maestría en el software antiplagio Turnitin, se obtiene un índice de similitud global del 34%. Sin embargo, al revisar el reporte detallado, el 30% corresponde a citas bibliográficas normadas y nombres exactos de instrumentos de medición validados debidamente referenciados. ¿Cuál debe ser el criterio del comité evaluador?",
+                options: [
+                    { text: "Rechazar inmediatamente el trabajo por superar el umbral estándar del 20%.", isCorrect: false },
+                    { text: "Realizar un análisis cualitativo del reporte para discriminar coincidencias.", isCorrect: true },
+                    { text: "Exigir que se eliminen todas las citas bibliográficas del marco teórico.", isCorrect: false },
+                    { text: "Considerar que cualquier porcentaje menor al 50% está libre de faltas.", isCorrect: false }
+                ],
+                explanation: "El índice de Turnitin es cuantitativo orientativo; el juicio humano experto debe analizar el desglose para identificar si existe plagio real o citas legítimas."
+            },
+            {
+                category: "Consideraciones Éticas",
+                question: "Según la Declaración de Helsinki, ¿cuál es el criterio ético aplicable al uso de un grupo placebo en investigación clínica cuando ya existe una intervención probada y eficaz?",
+                options: [
+                    { text: "El uso de placebo está siempre prohibido en cualquier circunstancia clínica.", isCorrect: false },
+                    { text: "Se permite solo si no hay intervención probada o por razones metodológicas sólidas.", isCorrect: true },
+                    { text: "Queda a discreción absoluta del investigador principal y su presupuesto.", isCorrect: false },
+                    { text: "Se puede utilizar libremente siempre que los pacientes firmen una renuncia.", isCorrect: false }
+                ],
+                explanation: "Helsinki estipula que los placebos sólo se justifican bajo estrictas condiciones metodológicas donde no se exponga a daño grave al paciente por privación del estándar."
+            },
+            {
+                category: "Aspectos Éticos del Estudio",
+                question: "En una investigación epidemiológica que utiliza historias clínicas electrónicas sin anonimización previa, ¿qué medida de salvaguarda ética es innegociable antes de procesar la base de datos?",
+                options: [
+                    { text: "Publicar los nombres de los pacientes junto con diagnósticos en anexos.", isCorrect: false },
+                    { text: "Aplicar estricta disociación o anonimización de datos personales directos.", isCorrect: true },
+                    { text: "Imprimir las historias y archivarlas en pasillos de acceso público.", isCorrect: false },
+                    { text: "Transmitir la base completa mediante correos electrónicos personales.", isCorrect: false }
+                ],
+                explanation: "La protección de datos de salud y la confidencialidad exigen la anonimización o disociación de identificadores para salvaguardar la privacidad."
+            },
+            {
+                category: "Comité de Ética (CEI)",
+                question: "¿Qué documento normativo internacional es considerado el estándar ético histórico fundamental para la protección de sujetos humanos tras los juicios de Núremberg?",
+                options: [
+                    { text: "La Declaración de Yakarta sobre Promoción de la Salud Pública.", isCorrect: false },
+                    { text: "El Código histórico de Núremberg de protección de sujetos.", isCorrect: true },
+                    { text: "Las Normas ISO 9001 de Calidad y Gestión Hospitalaria.", isCorrect: false },
+                    { text: "El Tratado de Ottawa sobre Sistemas Sanitarios Globales.", isCorrect: false }
+                ],
+                explanation: "El Código de Núremberg (1947) sentó las bases universales de la ética en investigación, estableciendo como requisito absoluto el consentimiento voluntario."
+            },
+            {
+                category: "Consentimiento y Asentimiento",
+                question: "Un paciente con deterioro cognitivo leve participa en una investigación sobre adherencia al tratamiento farmacológico. Aunque puede comprender parcialmente el estudio, su capacidad de decisión fluctúa. ¿Cómo se debe proceder éticamente?",
+                options: [
+                    { text: "Excluirlo automáticamente sin importar su grado de autonomía remanente.", isCorrect: false },
+                    { text: "Obtener consentimiento del representante y asentimiento en momentos de lucidez.", isCorrect: true },
+                    { text: "Asumir que la firma familiar cubre toda responsabilidad ética sin evaluar.", isCorrect: false },
+                    { text: "Obligar al paciente a firmar el documento durante un episodio confuso.", isCorrect: false }
+                ],
+                explanation: "En pacientes con autonomía fluctuante, se debe respetar su voluntad en momentos de lucidez mediante aquiescencia y complementar con el representante legal."
+            },
+            {
+                category: "Violaciones Éticas",
+                question: "¿Cómo se define el fenómeno ético del 'plagio mosaico' o 'patchwork plagiarism' en la redacción de tesis de maestría?",
+                options: [
+                    { text: "La traducción autorizada de artículos científicos publicados en inglés.", isCorrect: false },
+                    { text: "Tomar fragmentos de múltiples fuentes entrelazándolos sin citar.", isCorrect: true },
+                    { text: "El uso exclusivo de estadísticas descriptivas en lugar de inferenciales.", isCorrect: false },
+                    { text: "La inclusión de tablas de elaboración propia basadas en datos primarios.", isCorrect: false }
+                ],
+                explanation: "El plagio mosaico ocurre al ensamblar textos de diversos autores sin entrecomillar ni atribuir la autoría original, simulando una redacción propia fraudulenta."
+            },
+            {
+                category: "Similitud y Turnitin",
+                question: "Un estudiante utiliza un software de parafraseo automático (spinners) para evadir el porcentaje de similitud detectado por Turnitin en su tesis de enfermería, manteniendo ideas complejas plagiadas pero con sinónimos alterados. ¿Qué falta a la integridad académica constituye esto?",
+                options: [
+                    { text: "Una estrategia válida de optimización de estilo de redacción científica.", isCorrect: false },
+                    { text: "Plagio conceptual avanzado y deshonestidad académica deliberada.", isCorrect: true },
+                    { text: "Un error menor de citación APA subsanable en revisión.", isCorrect: false },
+                    { text: "Una infracción exclusiva de formato tipográfico institucional.", isCorrect: false }
+                ],
+                explanation: "El uso de parafraseo automático para enmascarar fuentes originales sin dar crédito constituye una falta ética grave de apropiación intelectual y deshonestidad."
+            },
+            {
+                category: "Consideraciones Éticas",
+                question: "En una investigación cualitativa donde se exploran experiencias traumáticas de personal de enfermería en pandemia, una participante comienza a llorar y manifiesta crisis de ansiedad durante la entrevista. ¿Cuál es la conducta ética inmediata del investigador?",
+                options: [
+                    { text: "Continuar la grabación obligatoriamente para no perder datos valiosos.", isCorrect: false },
+                    { text: "Suspender la entrevista, brindar contención y derivación psicológica.", isCorrect: true },
+                    { text: "Exhortar a la participante a controlar sus emociones de inmediato.", isCorrect: false },
+                    { text: "Eliminar a la participante de la investigación y reportarla como no apta.", isCorrect: false }
+                ],
+                explanation: "El bienestar del participante prevalece siempre sobre los intereses de la investigación. Ante daño emocional, se debe suspender y brindar soporte inmediato."
+            },
+            {
+                category: "Aspectos Éticos del Estudio",
+                question: "Si una investigación en salud contempla la toma de muestras biológicas adicionales durante una punción venosa de rutina, ¿qué principio ético debe especificarse claramente en el protocolo?",
+                options: [
+                    { text: "El beneficio económico que obtendrá el laboratorio central.", isCorrect: false },
+                    { text: "La mínima adicionalidad de riesgo y el consentimiento específico.", isCorrect: true },
+                    { text: "La obligatoriedad de donar tejido para patentes comerciales.", isCorrect: false },
+                    { text: "La exención absoluta de consentimiento para fluidos corporales.", isCorrect: false }
+                ],
+                explanation: "Toda muestra biológica adicional o uso secundario requiere un consentimiento informado transparente que especifique el alcance y los riesgos mínimos involucrados."
+            },
+            {
+                category: "Comité de Ética (CEI)",
+                question: "¿Cuál es la principal consecuencia operativa para una tesis de posgrado en enfermería si se inicia la recolección de datos en campo antes de contar con el dictamen de aprobación del Comité de Ética?",
+                options: [
+                    { text: "Ninguna, siempre que los resultados sean estadísticamente significativos.", isCorrect: false },
+                    { text: "La invalidación ética, bloqueo de sustentación y rechazo editorial.", isCorrect: true },
+                    { text: "Una multa económica menor pagada por el asesor metodológico.", isCorrect: false },
+                    { text: "La convalidación automática posterior si no hubo eventos adversos.", isCorrect: false }
+                ],
+                explanation: "Los comités de ética exigen aprobación previa y prospectiva. Recolectar datos antes invalida éticamente el estudio y bloquea su publicación científica."
+            },
+            {
+                category: "Consentimiento y Asentimiento",
+                question: "Durante el proceso de consentimiento informado, un investigador advierte que el participante tiene un nivel de alfabetización limitado. ¿Qué debe hacer el investigador para garantizar la validez del proceso?",
+                options: [
+                    { text: "Leer el documento rápidamente y exigir la firma con huella digital.", isCorrect: false },
+                    { text: "Adaptar la comunicación verbal, usar apoyos visuales y testigo imparcial.", isCorrect: true },
+                    { text: "Asumir que personas con baja alfabetización no pueden consentir.", isCorrect: false },
+                    { text: "Sustituir el consentimiento por una autorización verbal sin testigos.", isCorrect: false }
+                ],
+                explanation: "La comprensión es un requisito del consentimiento. El investigador debe adaptar la comunicación y asegurar que el participante comprenda plenamente los alcances."
+            },
+            {
+                category: "Violaciones Éticas",
+                question: "¿Cómo se denomina la falta ética en la que un investigador publica exactamente el mismo artículo científico en dos revistas diferentes sin el consentimiento ni la referencia cruzada requerida?",
+                options: [
+                    { text: "Investigación multicéntrica cooperativa internacional.", isCorrect: false },
+                    { text: "Publicación redundante o duplicada (dual publication).", isCorrect: true },
+                    { text: "Meta-análisis integrativo de fuentes primarias.", isCorrect: false },
+                    { text: "Validación cruzada interinstitucional de resultados.", isCorrect: false }
+                ],
+                explanation: "La publicación duplicada o redundante sin autorización desvirtúa las métricas científicas y satura la literatura con información repetida de forma deshonesta."
+            },
+            {
+                category: "Similitud y Turnitin",
+                question: "Un tesista incluye fragmentos enteros de sus propias publicaciones previas en su nueva tesis de maestría sin citarse a sí mismo ni poner comillas. ¿Qué falta ética se configura en este caso?",
+                options: [
+                    { text: "Una práctica perfectamente legal exenta de cualquier revisión.", isCorrect: false },
+                    { text: "Auto-plagio (self-plagiarism) o reciclaje indebido de texto.", isCorrect: true },
+                    { text: "Plagio de terceros o piratería intelectual externa.", isCorrect: false },
+                    { text: "Error tipográfico menor de formato en normas APA.", isCorrect: false }
+                ],
+                explanation: "El auto-plagio ocurre al reutilizar obra propia publicada previamente sin la debida citación y delimitación, engañando al lector sobre la novedad del contenido."
+            },
+            {
+                category: "Consideraciones Éticas",
+                question: "En un estudio clínico sobre intervenciones de enfermería en pacientes terminales, ¿qué directriz ética rige la protección de la vulnerabilidad extrema al final de la vida?",
+                options: [
+                    { text: "Acelerar los protocolos experimentales para optimizar tiempos.", isCorrect: false },
+                    { text: "Asegurar voluntariedad sin coerción y priorizar el confort y dignidad.", isCorrect: true },
+                    { text: "Someter obligatoriamente a todos los pacientes de sala al piloto.", isCorrect: false },
+                    { text: "Omitir el derecho a revocación para evitar sesgos de deserción.", isCorrect: false }
+                ],
+                explanation: "Los pacientes terminales constituyen un grupo altamente vulnerable; la protección de su dignidad y la libertad absoluta de retirarse sin perjuicio son imperativos éticos."
+            },
+            {
+                category: "Aspectos Éticos del Estudio",
+                question: "¿Por qué es crucial detallar los posibles 'conflictos de interés' en los aspectos éticos de un protocolo de investigación en enfermería financiado por la industria farmacéutica?",
+                options: [
+                    { text: "Para asegurar bonificaciones económicas adicionales al equipo.", isCorrect: false },
+                    { text: "Garantizar transparencia, objetividad y prevenir sesgos comerciales.", isCorrect: true },
+                    { text: "Para evitar que el comité cobre tasas administrativas de revisión.", isCorrect: false },
+                    { text: "Para eximir al investigador de responsabilidades legales secundarias.", isCorrect: false }
+                ],
+                explanation: "Declarar conflictos de interés financieros o institucionales asegura la transparencia y objetividad en la ciencia, alertando sobre posibles sesgos de patrocinio."
+            },
+            {
+                category: "Comité de Ética (CEI)",
+                question: "¿Qué rol cumple el seguimiento o monitoreo continuo (informes de avance anual) que exige el Comité de Ética tras la aprobación inicial de un protocolo?",
+                options: [
+                    { text: "Supervisar cumplimiento y reportar oportunamente eventos adversos.", isCorrect: true },
+                    { text: "Cobrar multas por retrasos en la entrega de resultados estadísticos.", isCorrect: false },
+                    { text: "Modificar la autoría de los artículos científicos derivados.", isCorrect: false },
+                    { text: "Realizar auditorías políticas del personal en los hospitales.", isCorrect: false }
+                ],
+                explanation: "La supervisión ética no termina con la aprobación inicial; el comité exige informes periódicos para salvaguardar la seguridad durante toda la ejecución."
+            },
+            {
+                category: "Consentimiento y Asentimiento",
+                question: "Un paciente firma el consentimiento informado, pero a mitad de la intervención investigativa decide retirarse del estudio manifestando incomodidad. ¿Cuál es el procedimiento ético correcto?",
+                options: [
+                    { text: "Exigirle que permanezca hasta culminar las mediciones pendientes.", isCorrect: false },
+                    { text: "Respetar inmediatamente su retiro sin penalización en su atención.", isCorrect: true },
+                    { text: "Retener sus datos anteriores y condicionar tratamientos médicos.", isCorrect: false },
+                    { text: "Ignorar la solicitud si el tamaño muestral está comprometido.", isCorrect: false }
+                ],
+                explanation: "El principio de autonomía garantiza que el participante puede revocar su consentimiento en cualquier momento sin represalias ni pérdida de su atención médica."
+            },
+            {
+                category: "Violaciones Éticas",
+                question: "En un reporte de investigación, se detecta que los autores omitieron deliberadamente los resultados negativos que contradecían su hipótesis inicial, publicando únicamente los datos favorables. ¿Cómo se califica esta práctica?",
+                options: [
+                    { text: "Sesgo de publicación u omisión selectiva de datos científicos.", isCorrect: true },
+                    { text: "Síntesis metodológica avanzada recomendada por expertos.", isCorrect: false },
+                    { text: "Optimización de espacio editorial en revistas de impacto.", isCorrect: false },
+                    { text: "Error de redondeo estadístico menor sin relevancia clínica.", isCorrect: false }
+                ],
+                explanation: "Ocultar resultados desfavorables distorsiona la evidencia científica y vulnera la veracidad y honestidad que exige la investigación en salud."
+            },
+            {
+                category: "Similitud y Turnitin",
+                question: "Un comité de posgrado evalúa una tesis cuyo reporte de Turnitin muestra un 12% de similitud global, pero el revisor descubre que dicho porcentaje se concentra íntegramente en la sección metodológica copiada textual y descaradamente de otro autor sin comillas ni cita. ¿Qué dictamen procede?",
+                options: [
+                    { text: "Aprobar sin observaciones por estar bajo el límite institucional.", isCorrect: false },
+                    { text: "Calificarlo como plagio parcial inaceptable por bloque clave.", isCorrect: true },
+                    { text: "Sugerir un cambio de tipografía para disimular la coincidencia.", isCorrect: false },
+                    { text: "Otorgar mención honorífica por brevedad en la redacción.", isCorrect: false }
+                ],
+                explanation: "El porcentaje global bajo no exime de falta si un bloque específico es plagio literal sin cita. La evaluación cualitativa detecta la apropiación indebida de textos."
+            },
+            {
+                category: "Consideraciones Éticas",
+                question: "Al realizar una investigación sobre violencia intrafamiliar en profesionales de enfermería, ¿cuál es la consideración ética más crítica respecto a la seguridad de las participantes?",
+                options: [
+                    { text: "Publicar los nombres reales de las enfermeras para visibilidad.", isCorrect: false },
+                    { text: "Implementar estricta confidencialidad extrema y anonimización.", isCorrect: true },
+                    { text: "Compartir las grabaciones de audio con los jefes directos.", isCorrect: false },
+                    { text: "Realizar entrevistas grupales abiertas en pasillos clínicos.", isCorrect: false }
+                ],
+                explanation: "En temas sensibles como violencia, la seguridad física y emocional de los participantes exige anonimato absoluto y protocolos de protección contra represalias."
+            }
+        ];
+
+        // Global Game State Variables
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timer = null;
+        let timeLeft = 60;
+        let answered = false;
+
+        function startGame() {
+            shuffleOptionsRandomly();
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById('screen-welcome').classList.add('hidden');
+            document.getElementById('screen-results').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.remove('hidden');
+            document.getElementById('stats-header').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function shuffleOptionsRandomly() {
+            questionsData.forEach(q => {
+                for (let i = q.options.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [q.options[i], q.options[j]] = [q.options[j], q.options[i]];
+                }
+            });
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= questionsData.length) {
+                endGame();
+                return;
+            }
+
+            answered = false;
+            timeLeft = 60;
+            document.getElementById('timer-display').textContent = `${timeLeft}s`;
+            document.getElementById('timer-display').classList.remove('text-red-500');
+            document.getElementById('feedback-box').classList.add('hidden');
+
+            const q = questionsData[currentQuestionIndex];
+            document.getElementById('question-badge').textContent = q.category;
+            document.getElementById('question-counter').textContent = `Pregunta ${currentQuestionIndex + 1} de ${questionsData.length}`;
+            document.getElementById('question-text').textContent = q.question;
+            document.getElementById('header-progress').textContent = `Pregunta ${currentQuestionIndex + 1} / 25`;
+            document.getElementById('header-score').textContent = `${score} pts`;
+            document.getElementById('current-score').textContent = score;
+
+            const progressPercent = ((currentQuestionIndex) / questionsData.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const button = document.createElement('button');
+                button.className = `w-full text-left p-4 rounded-2xl glass-panel border border-white/10 hover:border-teal-400 hover:bg-teal-500/10 transition-all text-sm md:text-base font-medium flex items-center space-x-3 group`;
+                button.innerHTML = `
+                    <span class="w-8 h-8 rounded-xl bg-slate-800 border border-white/10 flex items-center justify-center text-teal-300 font-bold group-hover:bg-teal-500 group-hover:text-white transition-all flex-shrink-0">${String.fromCharCode(65 + idx)}</span>
+                    <span class="text-slate-200">${opt.text}</span>
+                `;
+                button.onclick = () => selectOption(opt.isCorrect, button);
+                optionsContainer.appendChild(button);
+            });
+
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-display').textContent = `${timeLeft}s`;
+                if (timeLeft <= 15) {
+                    document.getElementById('timer-display').classList.add('text-red-500');
+                }
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    handleTimeOut();
+                }
+            }, 1000);
+        }
+
+        function handleTimeOut() {
+            if (answered) return;
+            answered = true;
+            disableAllOptions();
+
+            const q = questionsData[currentQuestionIndex];
+            showFeedback(false, `⏰ ¡Tiempo agotado! No se registró respuesta a tiempo. (4 puntos perdidos)`, q.explanation);
+        }
+
+        function selectOption(isCorrect, selectedButton) {
+            if (answered) return;
+            answered = true;
+            clearInterval(timer);
+            disableAllOptions();
+
+            const q = questionsData[currentQuestionIndex];
+
+            const buttons = document.getElementById('options-container').children;
+            for (let i = 0; i < buttons.length; i++) {
+                if (q.options[i].isCorrect) {
+                    buttons[i].classList.add('border-teal-500', 'bg-teal-500/20');
+                }
+            }
+
+            if (isCorrect) {
+                score += 4;
+                selectedButton.classList.add('border-emerald-500', 'bg-emerald-500/20');
+                showFeedback(true, `¡Excelente! Respuesta correcta. Liderazgo ético demostrado. (+4 puntos)`, q.explanation);
+            } else {
+                selectedButton.classList.add('border-rose-500', 'bg-rose-500/20');
+                showFeedback(false, `Respuesta incorrecta. Revisa el fundamento normativo para fortalecer tu juicio crítico.`, q.explanation);
+            }
+
+            document.getElementById('header-score').textContent = `${score} pts`;
+            document.getElementById('current-score').textContent = score;
+        }
+
+        function disableAllOptions() {
+            const buttons = document.getElementById('options-container').children;
+            for (let button of buttons) {
+                button.disabled = true;
+                button.classList.add('opacity-70', 'cursor-not-allowed');
+            }
+        }
+
+        function showFeedback(isCorrect, titleText, explanationText) {
+            const feedbackBox = document.getElementById('feedback-box');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackText = document.getElementById('feedback-text');
+
+            feedbackBox.classList.remove('hidden', 'border-emerald-500', 'border-rose-500');
+            if (isCorrect) {
+                feedbackBox.classList.add('border-emerald-500', 'bg-emerald-950/30');
+                feedbackIcon.className = "w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center font-bold text-white";
+                feedbackIcon.innerHTML = "✓";
+                feedbackTitle.className = "text-lg font-bold text-emerald-400";
+                feedbackTitle.textContent = titleText;
+            } else {
+                feedbackBox.classList.add('border-rose-500', 'bg-rose-950/30');
+                feedbackIcon.className = "w-8 h-8 rounded-full bg-rose-500 flex items-center justify-center font-bold text-white";
+                feedbackIcon.innerHTML = "✕";
+                feedbackTitle.className = "text-lg font-bold text-rose-400";
+                feedbackTitle.textContent = titleText;
+            }
+
+            feedbackText.innerHTML = `<strong class="text-white block mb-1">Fundamento Normativo / Bioético:</strong> ${explanationText}`;
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        function endGame() {
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('stats-header').classList.add('hidden');
+            document.getElementById('screen-results').classList.remove('hidden');
+
+            const correctCount = score / 4;
+            document.getElementById('final-score-display').textContent = `${score} / 100`;
+            document.getElementById('final-stats-detail').textContent = `Respuestas correctas: ${correctCount} de 25`;
+
+            const trophyContainer = document.getElementById('result-trophy-container');
+            const heading = document.getElementById('result-heading');
+            const message = document.getElementById('result-message');
+
+            if (score >= 80) {
+                heading.textContent = "¡Lo lograste!";
+                trophyContainer.innerHTML = `
+                    <div class="relative inline-block animate-bounce-slow">
+                        <div class="absolute inset-0 bg-amber-400/20 rounded-full blur-xl"></div>
+                        <div class="relative w-24 h-24 rounded-3xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center shadow-2xl border border-white/20">
+                            <svg class="w-14 h-14 text-slate-950" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M5 3h14a1 1 0 0 1 1 1v2a6 6 0 0 1-5 5.917V15a3 3 0 0 1-3 3h-2a3 3 0 0 1-3-3v-3.083A6 6 0 0 1 4 6V4a1 1 0 0 1 1-1zm2 3v2a4 4 0 0 0 4 4h2a4 4 0 0 0 4-4V6H7zm9.93 11a4.978 4.978 0 0 1-1.93 2H9a4.978 4.978 0 0 1-1.93-2h9.86z"/>
+                            </svg>
+                        </div>
+                    </div>
+                `;
+                message.textContent = "Excelente desempeño. Has demostrado dominar los rigurosos estándares éticos, la gestión ante comités de revisión, la protección de sujetos vulnerables y el uso ético de herramientas antiplagio en la investigación avanzada en enfermería.";
+            } else {
+                heading.textContent = "Sigue intentando, No te rindas";
+                trophyContainer.innerHTML = `
+                    <div class="w-20 h-20 rounded-3xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center mx-auto text-teal-400">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                `;
+                message.textContent = "El rigor metodológico y bioético en la gestión del cuidado requiere constante profundización en normativas internacionales (Helsinki, CIOMS). Repasa los fundamentos y vuelve a intentarlo para alcanzar la excelencia.";
+            }
+        }
+
+        function restartGame() {
+            startGame();
+        }
+    </script>
+</body><div style="position: fixed; bottom: 10px; right: 10px; background-color: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 5px; font-family: sans-serif; font-size: 12px; z-index: 9999;">
+    Juego creado por: Ander Asenjo
+</div>
+
+</html>
