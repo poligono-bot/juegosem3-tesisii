@@ -1,0 +1,671 @@
+﻿
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Redacción Científica | Maestría en Enfermería</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-950 via-slate-900 to-blue-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <!-- Header -->
+    <header class="bg-indigo-900/60 backdrop-blur-md border-b border-indigo-800/60 py-4 px-6 shadow-lg sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-indigo-600 to-violet-500 text-white p-2.5 rounded-xl shadow-md">
+                    <i class="fa-solid fa-microscope text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-tight text-indigo-300">Maestría en Enfermería</h1>
+                    <p class="text-xs text-indigo-200/70">Gestión Integral del Cuidado e Investigación</p>
+                </div>
+            </div>
+            <div id="score-container" class="hidden items-center space-x-4 bg-indigo-950/60 px-4 py-2 rounded-xl border border-indigo-700/50 shadow-inner">
+                <div class="text-xs text-indigo-200">Pregunta: <span id="current-q-num" class="font-bold text-white">1</span>/25</div>
+                <div class="h-4 w-[1px] bg-indigo-700/60"></div>
+                <div class="text-xs text-indigo-200">Puntaje: <span id="current-score" class="font-bold text-indigo-400">0</span> pts</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-4 sm:p-6">
+        <div class="w-full max-w-3xl bg-slate-900/80 backdrop-blur-xl border border-indigo-900/50 rounded-3xl shadow-2xl overflow-hidden relative">
+            
+            <!-- Elemento decorativo visual superior -->
+            <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+
+            <!-- Pantalla de Inicio -->
+            <div id="start-screen" class="p-8 sm:p-12 text-center">
+                <div class="relative inline-block mb-6">
+                    <div class="absolute -inset-2 bg-indigo-500/20 rounded-full blur-xl"></div>
+                    <div class="relative bg-gradient-to-tr from-indigo-600 to-violet-600 text-white p-5 rounded-2xl shadow-xl border border-indigo-400/30">
+                        <i class="fa-solid fa-file-invoice text-4xl"></i>
+                    </div>
+                </div>
+                
+                <span class="inline-block bg-indigo-500/10 text-indigo-300 text-xs font-semibold px-3.5 py-1 rounded-full border border-indigo-500/20 mb-3">
+                    <i class="fa-solid fa-graduation-cap mr-1.5"></i> Nivel Posgrado
+                </span>
+
+                <h2 class="text-2xl sm:text-3xl font-extrabold mb-3 tracking-tight text-white">Redacción de Artículos Científicos en Enfermería</h2>
+                <p class="text-indigo-200/80 text-sm sm:text-base mb-8 max-w-xl mx-auto leading-relaxed">
+                    Domina la estructura del Resumen/Abstract, la Introducción (¿Qué se sabe?, ¿Qué no?, Justificación y Objetivos), y la lectura analítica de tablas y gráficos bajo el método científico.
+                </p>
+
+                <!-- Tarjeta visual temática -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 text-left max-w-xl mx-auto bg-indigo-950/40 p-4 rounded-2xl border border-indigo-800/40">
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-indigo-600/20 p-2 rounded-lg text-indigo-400">
+                            <i class="fa-solid fa-list-check"></i>
+                        </div>
+                        <span class="text-xs font-medium text-indigo-100">25 Preguntas Clínicas</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-indigo-600/20 p-2 rounded-lg text-indigo-400">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <span class="text-xs font-medium text-indigo-100">60s por Pregunta</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-indigo-600/20 p-2 rounded-lg text-indigo-400">
+                            <i class="fa-solid fa-award"></i>
+                        </div>
+                        <span class="text-xs font-medium text-indigo-100">Premio por Excelencia</span>
+                    </div>
+                </div>
+
+                <button onclick="startGame()" class="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold px-8 py-4 rounded-2xl shadow-lg shadow-indigo-600/20 transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer flex items-center justify-center mx-auto space-x-3 text-base">
+                    <span>Iniciar Simulación</span>
+                    <i class="fa-solid fa-arrow-right text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Pantalla del Quiz -->
+            <div id="quiz-screen" class="hidden p-6 sm:p-8">
+                <div class="flex justify-between items-center mb-4">
+                    <span id="question-tag" class="inline-block bg-indigo-500/10 text-indigo-300 text-xs font-semibold px-3.5 py-1 rounded-full border border-indigo-500/20"></span>
+                    <div id="timer-badge" class="flex items-center space-x-2 bg-indigo-950/80 px-3.5 py-1.5 rounded-xl border border-indigo-800 text-amber-400 font-semibold text-sm shadow-inner">
+                        <i class="fa-regular fa-clock"></i>
+                        <span id="time-left">60</span>s
+                    </div>
+                </div>
+
+                <h3 id="question-text" class="text-lg sm:text-xl font-semibold text-white leading-snug mb-6"></h3>
+                
+                <div id="options-container" class="space-y-3 mb-6"></div>
+
+                <div id="feedback-box" class="hidden p-4 rounded-2xl mb-6 border transition-all shadow-lg">
+                    <div class="flex items-start space-x-3">
+                        <div id="feedback-icon" class="text-xl mt-0.5"></div>
+                        <div>
+                            <h4 id="feedback-title" class="font-semibold text-sm mb-1"></h4>
+                            <p id="feedback-text" class="text-xs sm:text-sm text-indigo-100/90 leading-relaxed"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <button id="next-btn" onclick="nextQuestion()" class="hidden bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md transition-all cursor-pointer flex items-center space-x-2">
+                        <span>Siguiente Pregunta</span>
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pantalla de Resultados -->
+            <div id="result-screen" class="hidden p-8 sm:p-12 text-center">
+                <div id="award-container" class="mb-6 flex justify-center"></div>
+                <h2 class="text-2xl sm:text-3xl font-bold mb-2 text-white">Simulación Finalizada</h2>
+                <p class="text-indigo-200/70 text-sm mb-6">Evaluación de Redacción Científica y Método Científico en Enfermería</p>
+                
+                <div class="bg-indigo-950/60 p-6 rounded-2xl max-w-sm mx-auto mb-8 border border-indigo-800/50 shadow-inner">
+                    <div class="text-sm text-indigo-200/80 mb-1">Puntuación Final</div>
+                    <div class="text-4xl font-extrabold text-indigo-400 mb-2"><span id="final-score">0</span> <span class="text-lg font-normal text-indigo-300">/ 100</span></div>
+                    <div id="result-message" class="text-base font-medium px-4 py-2 rounded-xl mt-4 inline-block"></div>
+                </div>
+
+                <button onclick="restartGame()" class="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold px-8 py-3.5 rounded-xl shadow-lg transition-all cursor-pointer flex items-center justify-center mx-auto space-x-2">
+                    <i class="fa-solid fa-rotate-right text-sm"></i>
+                    <span>Volver a Intentar</span>
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-indigo-300/60 border-t border-indigo-900/60 bg-indigo-950/20">
+        Gestión Integral del Cuidado e Investigación Basada en Evidencia &copy; 2026
+    </footer>
+
+    <script>
+        const rawQuestions = [
+            {
+                tag: "Estructura del Abstract",
+                question: "En la redacción del abstract estructurado para una revista indexada de alto impacto, ¿cuál es la extensión máxima típica en palabras y qué secciones obligatorias debe contener?",
+                options: [
+                    "250 a 300 palabras; secciones: Introducción, Métodos, Resultados y Conclusiones",
+                    "500 palabras exactas; secciones: Marco Teórico, Historia, Discusión y Referencias",
+                    "100 palabras; secciones únicas de Agradecimientos y Financiamiento institucional",
+                    "Sin límite de palabras; formato libre sin subtítulos estructurados"
+                ],
+                correctIndex: 0,
+                feedback: "Correcto. Las revistas indexadas internacionales (como PubMed/Medline) exigen resúmenes estructurados de entre 250 y 300 palabras bajo los epígrafes IMRYD esenciales."
+            },
+            {
+                tag: "Introducción: ¿Qué se sabe?",
+                question: "Al redactar el primer párrafo de la introducción de un artículo científico sobre gestión de cuidados, ¿con qué propósito se responde a la interrogante '¿Qué se sabe?'",
+                options: [
+                    "Para contextualizar el problema basándose en la literatura científica previa y antecedentes directos",
+                    "Para detallar de forma exhaustiva los resultados estadísticos obtenidos en la propia investigación",
+                    "Para enumerar los nombres de los autores que financiaron el proyecto clínico",
+                    "Para redactar las conclusiones definitivas del estudio y su repercusión política"
+                ],
+                correctIndex: 0,
+                feedback: "Muy bien. El bloque '¿Qué se sabe?' establece el estado del arte y la base teórica fundamentada en referencias bibliográficas recientes."
+            },
+            {
+                tag: "Introducción: ¿Qué no se sabe?",
+                question: "En la redacción de la introducción, identificar correctamente el '¿Qué no se sabe?' (vacío de conocimiento) sirve fundamentalmente para:",
+                options: [
+                    "Justificar la necesidad imperiosa de realizar el nuevo estudio y conectar el antecedente con la brecha actual",
+                    "Rellenar espacio editorial exigido por las normas de la revista científica",
+                    "Describir detalladamente los criterios de exclusión de los pacientes hospitalizados",
+                    "Demostrar que ningún autor previo ha investigado en el área de la salud"
+                ],
+                correctIndex: 0,
+                feedback: "Exacto. El vacío de conocimiento ('gap') es el motor lógico que justifica la investigación y le otorga originalidad al artículo."
+            },
+            {
+                tag: "Justificación y Objetivo",
+                question: "¿Cuál es la característica metodológica indispensable que debe poseer el objetivo general redactado al final de la introducción?",
+                options: [
+                    "Debe estar redactado con un verbo infinitivo claro y guardar total congruencia con el título y la hipótesis planteada",
+                    "Debe incluir los resultados numéricos principales obtenidos tras el análisis de datos",
+                    "Debe redactarse en tiempo pasado simple describiendo lo que ya se descubrió",
+                    "Debe ser un enunciado ambiguo para mantener la expectativa del lector evaluador"
+                ],
+                correctIndex: 0,
+                feedback: "Correcto. El objetivo debe ser coherente, alcanzable y redactado en infinitivo, marcando el rumbo metodológico del estudio."
+            },
+            {
+                tag: "Abstract en Inglés",
+                question: "Al redactar el abstract en inglés para una revista internacional indexada en Web of Science, ¿qué error gramatical y estilístico común se debe evitar estrictamente?",
+                options: [
+                    "El uso de traducción literal automática (anglicismos incorrectos o españolización de la sintaxis inglesa)",
+                    "El uso exclusivo de la voz pasiva en la sección de metodología",
+                    "La inclusión de abreviaturas estandarizadas como IC 95% o p < 0.05",
+                    "La separación clara mediante viñetas o negritas en las secciones del resumen"
+                ],
+                correctIndex: 0,
+                feedback: "Excelente. Los comités editoriales rechazan abstracts con traducciones automáticas deficientes que alteran la rigurosidad científica."
+            },
+            {
+                tag: "Método Científico: Indagación",
+                question: "Bajo la competencia 'Indaga mediante métodos científicos', ¿cómo se articula la formulación de la pregunta de investigación en un artículo de enfermería?",
+                options: [
+                    "Transformando un problema práctico del cuidado en una pregunta empíricamente contrastable mediante la estructura PICO",
+                    "Mediante opiniones subjetivas del personal de enfermería jefe de servicio",
+                    "A través de un ensayo clínico sin hipótesis previa ni marco de referencia",
+                    "Copiando textualmente la introducción de una tesis de pregrado publicada"
+                ],
+                correctIndex: 0,
+                feedback: "Así es. La formulación rigurosa de la pregunta guía todo el proceso de indagación científica y estructuración del manuscrito."
+            },
+            {
+                tag: "Análisis de Tablas en Artículos",
+                question: "En la interpretación de una Tabla 1 (características basales) de un artículo sobre efectividad de intervenciones, ¿qué indica una diferencia estadísticamente significativa en variables demográficas entre grupos no aleatorizados?",
+                options: [
+                    "La presencia de un potencial factor de confusión que requerirá ajuste multivariado posterior",
+                    "Que el estudio carece de validez externa de forma permanente e irremediable",
+                    "Que la variable dependiente ha sido medida con error sistemático de selección",
+                    "Que se debe anular inmediatamente el protocolo de investigación clínica"
+                ],
+                correctIndex: 0,
+                feedback: "Muy bien. Los desbalances basales en grupos no aleatorizados actúan como confusores que exigen modelos de regresión ajustados."
+            },
+            {
+                tag: "Análisis de Gráficos Científicos",
+                question: "Al analizar un gráfico de barras de errores (intervalos de confianza) en un estudio experimental de enfermería, ¿qué se infiere si los intervalos de confianza del 95% de dos grupos se solapan marcadamente?",
+                options: [
+                    "Probablemente no exista una diferencia estadísticamente significativa entre las medias de ambos grupos",
+                    "Que el tamaño de la muestra fue excesivamente grande y alteró la varianza",
+                    "Que el estudio posee un sesgo de información severo en el cegamiento",
+                    "Que la prueba estadística paramétrica utilizada fue incorrecta por completo"
+                ],
+                correctIndex: 0,
+                feedback: "Correcto. El solapamiento amplio de los intervalos de confianza del 95% sugiere la ausencia de diferencias estadísticamente significativas."
+            },
+            {
+                tag: "Redacción del Resumen",
+                question: "Una revista científica rechaza un resumen por carecer de 'datos cuantitativos concretos' en la sección de resultados. ¿Qué debió incluir el autor originalmente?",
+                options: [
+                    "Cifras exactas, tamaños muestrales, porcentajes, valores de p y estimadores de riesgo con IC 95%",
+                    "Una narrativa literaria extensa describiendo la satisfacción emocional del equipo",
+                    "Las opiniones personales de los pacientes sobre el sistema sanitario",
+                    "La lista completa de referencias bibliográficas consultadas en el gestor"
+                ],
+                correctIndex: 0,
+                feedback: "Excelente. Los resultados del abstract deben ser informativos, aportando datos numéricos duros y no solo afirmaciones genéricas."
+            },
+            {
+                tag: "Introducción: Coherencia",
+                question: "En la estructura de la introducción, ¿cómo se evalúa la transición lógica entre el párrafo de '¿Qué no se sabe?' y la 'Justificación'?",
+                options: [
+                    "Demostrando cómo el vacío detectado afecta negativamente la práctica clínica o la gestión del cuidado, justificando el estudio",
+                    "Cambiando de tema hacia los costos administrativos del hospital",
+                    "Agregando los agradecimientos al personal de enfermería operativo",
+                    "Presentando las conclusiones antes de describir los métodos"
+                ],
+                correctIndex: 0,
+                feedback: "Correcto. La justificación explica por qué es relevante llenar ese vacío de conocimiento detectado en la literatura."
+            },
+            {
+                tag: "Lectura Crítica de Figuras",
+                question: "En un diagrama de cajas (Boxplot) incluido en un artículo científico, la línea horizontal que divide el interior de la caja representa estadísticamente:",
+                options: [
+                    "La mediana de la distribución de los datos analizados",
+                    "La media aritmética ponderada de la muestra total",
+                    "La desviación estándar máxima registrada",
+                    "El error típico de estimación poblacional"
+                ],
+                correctIndex: 0,
+                feedback: "Muy bien. En los diagramas de caja, la línea central corresponde siempre a la mediana (percentil 50)."
+            },
+            {
+                tag: "Resumen (Palabras Clave)",
+                question: "¿Cuál es la función metodológica principal de seleccionar adecuadamente las 'Palabras Clave' (Keywords) al final del abstract basándose en tesauros como DeCS o MeSH?",
+                options: [
+                    "Garantizar la indización correcta, visibilidad y recuperación del artículo en bases de datos científicas internacionales",
+                    "Aumentar el número de páginas impresas del manuscrito final en la revista",
+                    "Ocultar los términos metodológicos complejos al lector general",
+                    "Cumplir un requisito opcional sin impacto en el factor de impacto"
+                ],
+                correctIndex: 0,
+                feedback: "Exacto. Los tesauros normalizados (DeCS/MeSH) optimizan la indexación bibliográfica y el posicionamiento del artículo."
+            },
+            {
+                tag: "Introducción: Pregunta de Investigación",
+                question: "En la parte final de la introducción, inmediatamente después de justificar el estudio, se debe redactar explícitamente:",
+                options: [
+                    "El objetivo principal o la pregunta de investigación que orientará todo el trabajo",
+                    "El análisis detallado del software estadístico utilizado para el procesamiento",
+                    "La lista de los hospitales donde se recolectaron los datos clínicos",
+                    "El currículum vitae abreviado del investigador principal"
+                ],
+                correctIndex: 0,
+                feedback: "Correcto. La introducción cierra de forma natural planteando el objetivo o pregunta de investigación."
+            },
+            {
+                tag: "Interpretación de Tablas de Regresión",
+                question: "Al leer una tabla de regresión logística en un artículo de gestión en salud, un Odds Ratio de 0.50 (IC 95%: 0.30 - 0.80) para una intervención de enfermería indica que:",
+                options: [
+                    "La intervención reduce a la mitad la oportunidad o riesgo del evento negativo estudiado de forma significativa",
+                    "La intervención duplica el riesgo de presentar complicaciones clínicas",
+                    "El estudio no posee significancia estadística debido al valor menor a uno",
+                    "Existe un error de cálculo matemático en el modelo multivariado"
+                ],
+                correctIndex: 0,
+                feedback: "Excelente. Un OR menor a 1 con intervalos que no cruzan el valor nulo indica un efecto protector estadísticamente significativo."
+            },
+            {
+                tag: "Método Científico en Artículos",
+                question: "El cumplimiento riguroso de las directrices internacionales (como CONSORT o STROBE) en la redacción científica refleja directamente que los autores:",
+                options: [
+                    "Aplicaron rigurosamente el método científico minimizando sesgos de reporte",
+                    "Pagaron una tarifa elevada de publicación editorial acelerada",
+                    "Omitieron deliberadamente las limitaciones de sus ensayos clínicos",
+                    "Utilizaron inteligencia artificial para redactar la totalidad del manuscrito"
+                ],
+                correctIndex: 0,
+                feedback: "Muy bien. Las directrices de redacción garantizan la transparencia y la adherencia estricta al rigor del método científico."
+            },
+            {
+                tag: "Abstract: Conclusiones",
+                question: "Un error frecuente que los evaluadores de revistas indexadas critican en la sección de conclusiones del abstract es:",
+                options: [
+                    "Incluir afirmaciones o datos que no fueron presentados ni respaldados en la sección de resultados del mismo resumen",
+                    "Utilizar un tono formal y académico en idioma inglés",
+                    "Sintetizar la implicancia clínica principal en menos de dos líneas",
+                    "Abreviar los términos estadísticos complejos correctamente"
+                ],
+                correctIndex: 0,
+                feedback: "Correcto. La conclusión del abstract debe derivarse estrictamente de los resultados reportados en el mismo texto, sin especulaciones externas."
+            },
+            {
+                tag: "Introducción: Antecedentes",
+                question: "Al redactar los antecedentes ('¿Qué se sabe?') en la introducción, ¿cuál es el criterio bibliográfico de mayor calidad científica exigido en maestrías?",
+                options: [
+                    "Utilizar prioritariamente artículos originales de investigación de los últimos 5 años en revistas indexadas",
+                    "Citar principalmente libros de texto universitarios de más de 20 años de antigüedad",
+                    "Incluir blogs institucionales y opiniones de redes sociales profesionales",
+                    "Basarse en gacetillas de prensa y notas informativas generales"
+                ],
+                correctIndex: 0,
+                feedback: "Excelente. El respaldo bibliográfico debe provenir de literatura primaria actualizada (artículos originales indexados)."
+            },
+            {
+                tag: "Análisis de Gráficos de Supervivencia",
+                question: "En un artículo de cuidados críticos que incluye una curva de Kaplan-Meier, la caída vertical brusca de la curva indica:",
+                options: [
+                    "Un evento de interés (como mortalidad o fallo del acceso vascular) ocurrido en ese momento preciso del seguimiento",
+                    "Un error de impresión gráfica en el software estadístico",
+                    "Un incremento masivo en el ingreso de nuevos pacientes al estudio",
+                    "La eliminación automática de pacientes por pérdida de seguimiento"
+                ],
+                correctIndex: 0,
+                feedback: "Muy bien. Cada descenso en la curva de Kaplan-Meier representa la ocurrencia del evento estudiado en el tiempo."
+            },
+            {
+                tag: "Estructura del Artículo Científico",
+                question: "¿Qué sección del artículo científico responde fundamentalmente a las preguntas planteadas en la introducción y contrasta los hallazgos con la literatura previa?",
+                options: [
+                    "La Discusión",
+                    "El Resumen ejecutivo inicial",
+                    "Los Agradecimientos institucionales",
+                    "Las Referencias bibliográficas"
+                ],
+                correctIndex: 0,
+                feedback: "Correcto. La discusión interpreta los resultados a la luz del conocimiento previo establecido en la introducción."
+            },
+            {
+                tag: "Redacción del Abstract: Objetivo",
+                question: "En la estructura de un abstract, la oración dedicada a 'Objetivo' debe redactarse de manera que:",
+                options: [
+                    "Explicite con exactitud la finalidad principal del estudio en consonancia con el último párrafo de la introducción",
+                    "Describa detalladamente el software estadístico y los modelos de regresión aplicados",
+                    "Resuma todas las limitaciones y sesgos encontrados durante el trabajo de campo",
+                    "Enumere los nombres de los coautores y sus grados académicos"
+                ],
+                correctIndex: 0,
+                feedback: "Excelente. El objetivo del abstract es un reflejo conciso del propósito central de la investigación."
+            },
+            {
+                tag: "Lectura Crítica de Tablas (ANOVA)",
+                question: "Al interpretar una tabla de análisis de varianza (ANOVA) que compara medias de tres grupos de pacientes, un valor de p < 0.001 permite afirmar que:",
+                options: [
+                    "Al menos uno de los grupos difiere significativamente de los otros en la media de la variable evaluada",
+                    "Todos los grupos son exactamente iguales entre sí sin margen de error",
+                    "El tamaño de la muestra utilizada fue insuficiente para el análisis paramétrico",
+                    "La variable dependiente es de naturaleza estrictamente cualitativa nominal"
+                ],
+                correctIndex: 0,
+                feedback: "Muy bien. ANOVA indica que existen diferencias significativas entre las medias de los grupos evaluados, requiriendo pruebas post-hoc."
+            },
+            {
+                tag: "Competencia Científica",
+                question: "Desde la perspectiva de la competencia 'Indaga mediante métodos científicos', la capacidad de interpretar tablas y gráficos complejos fomenta en el estudiante de maestría:",
+                options: [
+                    "Un pensamiento crítico basado en evidencia empírica verificable para la toma de decisiones clínicas",
+                    "La memorización de fórmulas matemáticas avanzadas sin aplicación práctica",
+                    "La aceptación dogmática de cualquier resultado publicado en revistas comerciales",
+                    "La reducción de la lectura crítica a favor de opiniones institucionales"
+                ],
+                correctIndex: 0,
+                feedback: "Correcto. La interpretación analítica de datos fortalece la toma de decisiones basada en la evidencia científica real."
+            },
+            {
+                tag: "Introducción: Magnitud del Problema",
+                question: "Al redactar el inicio de la introducción, es recomendable dimensionar el problema de salud utilizando:",
+                options: [
+                    "Datos epidemiológicos recientes y oficiales de organismos internacionales o nacionales (ej. OMS, ministerios)",
+                    "Apreciaciones subjetivas y anécdotas personales de la práctica diaria en el quirófano",
+                    "Suposiciones teóricas sin respaldo de bases de datos sanitarias",
+                    "Proyecciones futuras sin sustento metodológico ni histórico"
+                ],
+                correctIndex: 0,
+                feedback: "Excelente. Contextualizar con datos epidemiológicos oficiales le otorga peso y validez científica al planteamiento del problema."
+            },
+            {
+                tag: "Redacción de Abstract: Métodos",
+                question: "En el apartado de 'Métodos' dentro de un abstract estructurado, se debe sintetizar brevemente:",
+                options: [
+                    "El diseño del estudio, la población o muestra, los criterios de selección y las variables principales",
+                    "La lista completa de preguntas aplicadas en las encuestas y entrevistas cualitativas",
+                    "Los resultados numéricos detallados de cada subgrupo analizado",
+                    "La justificación teórica y filosófica del marco conceptual de enfermería"
+                ],
+                correctIndex: 0,
+                feedback: "Muy bien. La sección metodológica del abstract resume cómo se hizo el estudio de forma concisa y replicable."
+            },
+            {
+                tag: "Integración Metodológica Final",
+                question: "Si un artículo científico presenta una introducción impecable (con claro vacío de conocimiento y objetivo) pero sus tablas de resultados no guardan congruencia con dicho objetivo, metodológicamente se concluye que:",
+                options: [
+                    "Existe una ruptura en la coherencia interna del manuscrito, afectando gravemente la calidad del artículo",
+                    "El estudio cumple con todos los estándares internacionales de indexación",
+                    "Los editores de la revista aprobarán el texto sin modificaciones editoriales",
+                    "El objetivo de la introducción pierde importancia frente a la discusión"
+                ],
+                correctIndex: 0,
+                feedback: "Correcto. La coherencia interna entre introducción (objetivos), métodos y resultados es el pilar fundamental de la redacción científica rigurosa."
+            }
+        ];
+
+        // Mezclar las opciones de cada pregunta de forma aleatoria al iniciar
+        const questions = rawQuestions.map(q => {
+            const optionsWithMeta = q.options.map((opt, idx) => ({
+                text: opt,
+                isCorrect: idx === q.correctIndex
+            }));
+
+            // Algoritmo de mezcla Fisher-Yates
+            for (let i = optionsWithMeta.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [optionsWithMeta[i], optionsWithMeta[j]] = [optionsWithMeta[j], optionsWithMeta[i]];
+            }
+
+            const newCorrectIndex = optionsWithMeta.findIndex(opt => opt.isCorrect);
+
+            return {
+                tag: q.tag,
+                question: q.question,
+                options: optionsWithMeta.map(opt => opt.text),
+                correct: newCorrectIndex,
+                feedback: q.feedback
+            };
+        });
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+        let timeLeft = 60;
+        let timerInterval = null;
+
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const scoreContainer = document.getElementById('score-container');
+        
+        const currentQNumEl = document.getElementById('current-q-num');
+        const currentScoreEl = document.getElementById('current-score');
+        const questionTagEl = document.getElementById('question-tag');
+        const timeLeftEl = document.getElementById('time-left');
+        const timerBadge = document.getElementById('timer-badge');
+        const questionTextEl = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackBox = document.getElementById('feedback-box');
+        const feedbackIcon = document.getElementById('feedback-icon');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackText = document.getElementById('feedback-text');
+        const nextBtn = document.getElementById('next-btn');
+
+        function startGame() {
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            scoreContainer.classList.remove('hidden');
+            scoreContainer.classList.add('flex');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false;
+            nextBtn.classList.add('hidden');
+            feedbackBox.classList.add('hidden');
+            
+            timeLeft = 60;
+            timeLeftEl.textContent = timeLeft;
+            timerBadge.className = "flex items-center space-x-2 bg-indigo-950/80 px-3.5 py-1.5 rounded-xl border border-indigo-800 text-amber-400 font-semibold text-sm shadow-inner";
+            
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+
+            const q = questions[currentQuestion];
+            currentQNumEl.textContent = currentQuestion + 1;
+            currentScoreEl.textContent = score;
+            questionTagEl.textContent = q.tag;
+            questionTextEl.textContent = q.question;
+
+            optionsContainer.innerHTML = '';
+            q.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded-2xl bg-indigo-950/40 hover:bg-indigo-900/50 border border-indigo-800/50 hover:border-indigo-500/60 transition-all text-sm sm:text-base text-indigo-100 cursor-pointer flex items-center space-x-3 shadow-sm";
+                btn.innerHTML = `<span class="bg-indigo-900 text-indigo-300 font-bold px-2.5 py-1 rounded-lg text-xs border border-indigo-700/60 shadow-sm">${String.fromCharCode(65 + index)}</span> <span>${option}</span>`;
+                btn.onclick = () => selectOption(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function updateTimer() {
+            if (timeLeft > 0) {
+                timeLeft--;
+                timeLeftEl.textContent = timeLeft;
+                if (timeLeft <= 10) {
+                    timerBadge.className = "flex items-center space-x-2 bg-rose-950/80 px-3.5 py-1.5 rounded-xl border border-rose-700 text-rose-400 font-semibold text-sm animate-pulse shadow-inner";
+                }
+            } else {
+                clearInterval(timerInterval);
+                timeOutAction();
+            }
+        }
+
+        function timeOutAction() {
+            if (answered) return;
+            answered = true;
+
+            const q = questions[currentQuestion];
+            const allBtns = optionsContainer.children;
+
+            allBtns[q.correct].classList.remove('bg-indigo-950/40', 'hover:bg-indigo-900/50', 'border-indigo-800/50');
+            allBtns[q.correct].classList.add('bg-indigo-900/60', 'border-indigo-500', 'text-indigo-200');
+
+            feedbackBox.className = "p-4 rounded-2xl mb-6 border bg-amber-950/60 border-amber-500/30 text-amber-200 shadow-lg";
+            feedbackIcon.innerHTML = '<i class="fa-solid fa-hourglass-end text-amber-400"></i>';
+            feedbackTitle.textContent = "¡Tiempo Agotado!";
+            feedbackText.textContent = "Se acabaron los 60 segundos. " + q.feedback;
+
+            for (let btn of allBtns) {
+                btn.style.pointerEvents = 'none';
+            }
+
+            feedbackBox.classList.remove('hidden');
+            nextBtn.classList.remove('hidden');
+        }
+
+        function selectOption(selectedIndex, selectedBtn) {
+            if (answered) return;
+            answered = true;
+            clearInterval(timerInterval);
+
+            const q = questions[currentQuestion];
+            const allBtns = optionsContainer.children;
+
+            if (selectedIndex === q.correct) {
+                score += 4;
+                currentScoreEl.textContent = score;
+                selectedBtn.classList.remove('bg-indigo-950/40', 'hover:bg-indigo-900/50', 'border-indigo-800/50');
+                selectedBtn.classList.add('bg-emerald-950/60', 'border-emerald-500', 'text-emerald-200');
+                
+                feedbackBox.className = "p-4 rounded-2xl mb-6 border bg-emerald-950/60 border-emerald-500/30 text-emerald-200 shadow-lg";
+                feedbackIcon.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
+                feedbackTitle.textContent = "¡Respuesta Correcta!";
+                feedbackText.textContent = q.feedback + " ¡Excelente dominio metodológico!";
+            } else {
+                selectedBtn.classList.remove('bg-indigo-950/40', 'hover:bg-indigo-900/50', 'border-indigo-800/50');
+                selectedBtn.classList.add('bg-rose-950/60', 'border-rose-500/80', 'text-rose-200');
+                
+                allBtns[q.correct].classList.remove('bg-indigo-950/40', 'hover:bg-indigo-900/50', 'border-indigo-800/50');
+                allBtns[q.correct].classList.add('bg-indigo-900/60', 'border-indigo-500', 'text-indigo-200');
+
+                feedbackBox.className = "p-4 rounded-2xl mb-6 border bg-rose-950/60 border-rose-500/30 text-rose-200 shadow-lg";
+                feedbackIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-rose-400"></i>';
+                feedbackTitle.textContent = "Respuesta Incorrecta";
+                feedbackText.textContent = q.feedback;
+            }
+
+            for (let btn of allBtns) {
+                btn.style.pointerEvents = 'none';
+            }
+
+            feedbackBox.classList.remove('hidden');
+            nextBtn.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            if (timerInterval) clearInterval(timerInterval);
+            quizScreen.classList.add('hidden');
+            scoreContainer.classList.add('hidden');
+            scoreContainer.classList.remove('flex');
+            resultScreen.classList.remove('hidden');
+
+            document.getElementById('final-score').textContent = score;
+            const resultMsgEl = document.getElementById('result-message');
+            const awardContainer = document.getElementById('award-container');
+
+            if (score >= 80) {
+                awardContainer.innerHTML = `
+                    <div class="relative inline-block animate-bounce">
+                        <div class="absolute -inset-2 bg-amber-500/30 rounded-full blur-xl"></div>
+                        <div class="relative bg-gradient-to-tr from-amber-500 to-yellow-400 text-slate-950 p-6 rounded-2xl shadow-xl border-2 border-amber-200">
+                            <i class="fa-solid fa-trophy text-4xl"></i>
+                        </div>
+                    </div>
+                `;
+                resultMsgEl.textContent = "¡Lo lograste!";
+                resultMsgEl.className = "text-base font-semibold px-5 py-2.5 rounded-xl mt-4 inline-block bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+            } else {
+                awardContainer.innerHTML = `
+                    <div class="relative inline-block">
+                        <div class="absolute -inset-2 bg-indigo-500/20 rounded-full blur-xl"></div>
+                        <div class="relative bg-indigo-950 text-indigo-400 p-6 rounded-2xl shadow-xl border border-indigo-700/60">
+                            <i class="fa-solid fa-book-open text-4xl"></i>
+                        </div>
+                    </div>
+                `;
+                resultMsgEl.textContent = "Sigue intentando, No te rindas";
+                resultMsgEl.className = "text-base font-semibold px-5 py-2.5 rounded-xl mt-4 inline-block bg-amber-500/10 text-amber-400 border border-amber-500/20";
+            }
+        }
+
+        function restartGame() {
+            currentQuestion = 0;
+            score = 0;
+            resultScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+        }
+    </script>
+</body>
+<div style="position: fixed; bottom: 10px; right: 10px; 
+font-family: sans-serif; font-size: 12px; background: rgba
+(0,0,0,0.5); color: white; padding: 5px 10px; border-radius: 
+5px;">
+    Juego creado por: Ander Asenjo
+</div> 
+</html>
