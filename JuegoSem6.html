@@ -1,0 +1,716 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego Educativo: Investigación Cuantitativa en Enfermería</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0b0f19',
+                        cardBg: '#131c31',
+                        accentEmerald: '#10b981',
+                        accentPurple: '#a855f7',
+                        accentCyan: '#06b6d4',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .glass-panel {
+            background: rgba(19, 28, 49, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(16, 185, 129, 0.6); }
+        }
+        .glow-effect { animation: pulseGlow 3s infinite; }
+    </style>
+</head>
+<body class="bg-darkBg text-slate-100 min-h-screen flex flex-col justify-between selection:bg-accentEmerald selection:text-black">
+
+    <!-- Header / Navbar -->
+    <header class="glass-panel border-b border-slate-800 py-4 px-6 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-accentEmerald to-accentCyan p-2.5 rounded-xl text-darkBg font-bold text-xl shadow-lg">
+                    🧪
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight text-white">Investigación Cuantitativa en Salud</h1>
+                    <p class="text-xs text-slate-400">Maestría en Enfermería y Gestión Integral del Cuidado</p>
+                </div>
+            </div>
+            <div id="game-stats" class="hidden flex items-center space-x-6 text-sm font-medium">
+                <div class="flex items-center space-x-2 bg-slate-900/60 px-4 py-1.5 rounded-full border border-slate-800">
+                    <span class="text-slate-400">Pregunta:</span>
+                    <span id="current-q-num" class="text-accentEmerald font-bold">1</span><span class="text-slate-500">/25</span>
+                </div>
+                <div class="flex items-center space-x-2 bg-slate-900/60 px-4 py-1.5 rounded-full border border-slate-800">
+                    <span class="text-slate-400">Puntaje:</span>
+                    <span id="current-score" class="text-accentCyan font-bold">0</span><span class="text-slate-500">/100</span>
+                </div>
+                <div id="timer-container" class="flex items-center space-x-2 bg-slate-900/60 px-4 py-1.5 rounded-full border border-slate-800">
+                    <span class="text-slate-400">⏱️ Tiempo:</span>
+                    <span id="timer-display" class="text-amber-400 font-bold">60s</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow flex items-center justify-center p-4 sm:p-6">
+        <div class="w-full max-w-4xl mx-auto">
+
+            <!-- Pantalla de Inicio -->
+            <section id="screen-start" class="glass-panel p-8 sm:p-12 rounded-3xl shadow-2xl text-center space-y-6 glow-effect">
+                <div class="inline-block p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-4xl mb-2">
+                    🩺📊
+                </div>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+                    Simulador Evaluativo Metodológico
+                </h2>
+                <p class="text-slate-300 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+                    Fortalece la competencia <strong class="text-accentEmerald">«Indaga mediante métodos científicos para construir sus conocimientos»</strong>. Pon a prueba tus saberes avanzados en diseños cuantitativos, variables, instrumentos y análisis de datos en salud.
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left max-w-2xl mx-auto py-2">
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <span class="text-accentEmerald font-bold text-lg">25</span>
+                        <p class="text-xs text-slate-400">Preguntas rigurosas de posgrado</p>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <span class="text-accentCyan font-bold text-lg">60 Seg</span>
+                        <p class="text-xs text-slate-400">Límite por cada reactivo</p>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <span class="text-purple-400 font-bold text-lg">4 Pts</span>
+                        <p class="text-xs text-slate-400">Valor individual (Máx 100)</p>
+                    </div>
+                </div>
+                <button onclick="startGame()" class="mt-4 px-8 py-4 bg-gradient-to-r from-accentEmerald to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-darkBg font-bold text-lg rounded-2xl shadow-xl transition transform hover:scale-105 active:scale-95">
+                    Iniciar Desafío Cuantitativo 🚀
+                </button>
+            </section>
+
+            <!-- Pantalla del Juego / Preguntas -->
+            <section id="screen-game" class="hidden glass-panel p-6 sm:p-10 rounded-3xl shadow-2xl space-y-6">
+                <!-- Barra de progreso del tiempo -->
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div id="timer-bar" class="bg-accentEmerald h-full transition-all duration-1000" style="width: 100%;"></div>
+                </div>
+
+                <!-- Contenedor Visual Opcional (Organizador / SVG) -->
+                <div id="question-visual" class="hidden bg-slate-900/80 p-4 rounded-2xl border border-slate-800 flex justify-center items-center">
+                    <!-- Dinámico vía JS -->
+                </div>
+
+                <!-- Enunciado de la Pregunta -->
+                <div>
+                    <span id="question-category" class="text-xs font-semibold uppercase tracking-wider px-3 py-1 bg-purple-500/10 text-purple-400 rounded-full border border-purple-500/20"></span>
+                    <h3 id="question-text" class="text-lg sm:text-xl font-semibold text-white mt-3 leading-snug"></h3>
+                </div>
+
+                <!-- Opciones de Respuesta -->
+                <div id="options-container" class="space-y-3">
+                    <!-- Dinámico vía JS -->
+                </div>
+
+                <!-- Panel de Retroalimentación -->
+                <div id="feedback-panel" class="hidden p-4 sm:p-5 rounded-2xl border transition-all">
+                    <div id="feedback-title" class="font-bold text-base mb-1"></div>
+                    <p id="feedback-text" class="text-sm text-slate-300 leading-relaxed"></p>
+                    <button id="next-btn" onclick="nextQuestion()" class="mt-4 px-6 py-2.5 bg-slate-100 hover:bg-white text-darkBg font-bold rounded-xl text-sm transition shadow">
+                        Siguiente Pregunta ➡️
+                    </button>
+                </div>
+            </section>
+
+            <!-- Pantalla de Resultados Finales -->
+            <section id="screen-result" class="hidden glass-panel p-8 sm:p-12 rounded-3xl shadow-2xl text-center space-y-6">
+                <div id="result-icon-container" class="inline-block p-6 rounded-3xl bg-slate-900/80 border border-slate-800 text-6xl shadow-inner">
+                    <!-- Icono o Copa -->
+                </div>
+                <h2 id="result-title" class="text-2xl sm:text-3xl font-extrabold text-white"></h2>
+                <div class="text-4xl sm:text-5xl font-black text-accentEmerald" id="final-score-text">0 / 100</div>
+                <p id="result-message" class="text-base sm:text-lg text-slate-300 max-w-md mx-auto"></p>
+                <div class="pt-4">
+                    <button onclick="restartGame()" class="px-8 py-3.5 bg-gradient-to-r from-accentEmerald to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-darkBg font-bold rounded-2xl shadow-xl transition transform hover:scale-105">
+                        Volver a Intentar 🔄
+                    </button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-900">
+        Maestría en Enfermería y Gestión Integral del Cuidado • Módulo de Investigación Cuantitativa
+    </footer>
+
+    <!-- Script Principal del Juego -->
+    <script>
+        const questionsData = [
+            {
+                category: "Materiales y Métodos",
+                text: "¿Qué elemento fundamental debe describirse obligatoriamente en la redacción de los materiales y métodos de un ensayo clínico controlado en enfermería para garantizar la replicabilidad?",
+                visualType: "svg-methods",
+                options: [
+                    { text: "La lista de agradecimientos a los directores de hospital.", correct: false },
+                    { text: "Los criterios estrictos de elegibilidad (inclusión y exclusión) junto con la intervención detallada.", correct: true },
+                    { text: "Las opiniones personales de los investigadores sobre el cuidado.", correct: false },
+                    { text: "Las conclusiones preliminares obtenidas en la discusión.", correct: false }
+                ],
+                feedback: "Correcto. La sección de materiales y métodos cuantitativos exige transparencia total en los criterios de selección (elegibilidad) y la operacionalización de la intervención."
+            },
+            {
+                category: "Diseños Cuantitativos",
+                text: "En un estudio donde se evalúa el impacto de un protocolo de movilización temprana en pacientes críticos, midiendo la incidencia de úlceras por presión antes y después de aplicar la intervención sin asignación aleatoria pura, ¿ante qué diseño nos encontramos?",
+                visualType: "svg-design",
+                options: [
+                    { text: "Diseño experimental puro (Ensayo Clínico Aleatorizado).", correct: false },
+                    { text: "Diseño cuasiexperimental de un solo grupo con medición pre y post-intervención.", correct: true },
+                    { text: "Estudio transversal descriptivo.", correct: false },
+                    { text: "Estudio ecológico retrospectivo.", correct: false }
+                ],
+                feedback: "Correcto. Los diseños cuasiexperimentales implementan intervenciones pero carecen de aleatorización completa, siendo muy comunes en gestión clínica del cuidado."
+            },
+            {
+                category: "Población y Muestra",
+                text: "Para calcular el tamaño muestral adecuado en una investigación cuantitativa que busca estimar la prevalencia de burnout en enfermeras hospitalarias con un nivel de confianza del 95% y un margen de error del 5%, ¿qué parámetro estadístico previo es indispensable conocer o estimar?",
+                visualType: "svg-sample",
+                options: [
+                    { text: "La varianza o proporción esperada del evento en la población.", correct: true },
+                    { text: "El promedio de sueldo del personal de salud.", correct: false },
+                    { text: "El número total de publicaciones científicas del año pasado.", correct: false },
+                    { text: "La mediana de edad de los pacientes atendidos.", correct: false }
+                ],
+                feedback: "Correcto. El cálculo del tamaño muestral para proporciones requiere conocer la varianza esperada (p y q) o una estimación basada en literatura previa."
+            },
+            {
+                category: "Variables del Estudio",
+                text: "En una investigación sobre el efecto de la duración del turno laboral nocturno sobre la ocurrencia de errores de medicación en servicios de urgencias, ¿cómo se clasifica técnicamente 'la ocurrencia de errores de medicación'?",
+                visualType: "svg-variables",
+                options: [
+                    { text: "Variable independiente o de exposición.", correct: false },
+                    { text: "Variable confundidora o de control.", correct: false },
+                    { text: "Variable desenlace de interés (dependiente).", correct: true },
+                    { text: "Variable modificadora de efecto.", correct: false }
+                ],
+                feedback: "Correcto. El desenlace de interés o variable dependiente es el evento clínico que se busca explicar o predecir a partir de la exposición."
+            },
+            {
+                category: "Validez y Confiabilidad",
+                text: "¿Qué procedimiento psicométrico evalúa el grado en que los reactivos de un instrumento miden coherentemente el mismo constructo teórico (consistencia interna), utilizando comúnmente el coeficiente alfa de Cronbach?",
+                visualType: "svg-validity",
+                options: [
+                    { text: "Confiabilidad de consistencia interna.", correct: true },
+                    { text: "Validez de criterio predictivo.", correct: false },
+                    { text: "Validez externa de generalización.", correct: false },
+                    { text: "Confiabilidad test-retest temporal.", correct: false }
+                ],
+                feedback: "Correcto. El alfa de Cronbach mide la consistencia interna correlacionando los ítems dentro de la misma escala."
+            },
+            {
+                category: "Procedimiento de Recolección",
+                text: "Al utilizar cuestionarios estructurados autoadministrados mediante plataformas digitales para medir el nivel de estrés laboral en profesionales de enfermería, ¿cuál es una principal limitación cuantitativa que debe controlarse en el diseño metodológico?",
+                visualType: "none",
+                options: [
+                    { text: "La imposibilidad de aplicar pruebas de laboratorio complementarias.", correct: false },
+                    { text: "El sesgo de información derivado de la deseabilidad social o baja tasa de respuesta.", correct: true },
+                    { text: "La excesiva aleatorización de la muestra.", correct: false },
+                    { text: "La alteración de la variable independiente por manipulación directa.", correct: false }
+                ],
+                feedback: "Correcto. Las encuestas en línea pueden presentar sesgos de respuesta y autoevaluación subjetiva."
+            },
+            {
+                category: "Variables: Confusores",
+                text: "En un estudio sobre la asociación entre el uso de catéteres centrales y la bacteriemia, la edad avanzada del paciente altera la relación estimada si no se controla adecuadamente. ¿Cómo se denomina estadísticamente a esta variable edad?",
+                visualType: "none",
+                options: [
+                    { text: "Variable desenlace principal.", correct: false },
+                    { text: "Variable modificadora de efecto puro.", correct: false },
+                    { text: "Variable confundidora (confounder).", correct: true },
+                    { text: "Variable instrumental ciega.", correct: false }
+                ],
+                feedback: "Correcto. Un confusor se asocia tanto con la exposición como con el desenlace sin ser parte de la cadena causal intermedia."
+            },
+            {
+                category: "Diseños Cuantitativos",
+                text: "¿Cuál es la característica principal de un estudio de cohorte prospectivo en investigación epidemiológica de enfermería?",
+                visualType: "none",
+                options: [
+                    { text: "Se parte de los enfermos y se compara con los sanos hacia el pasado.", correct: false },
+                    { text: "Se seleccionan individuos libres de la enfermedad según su exposición y se les sigue en el tiempo para ver la aparición del desenlace.", correct: true },
+                    { text: "Se analiza la correlación poblacional en un solo momento sin seguimiento.", correct: false },
+                    { text: "Se manipulan activamente las condiciones clínicas del paciente.", correct: false }
+                ],
+                feedback: "Correcto. Las cohortes prospectivas siguen a grupos expuestos y no expuestos longitudinalmente hacia el futuro."
+            },
+            {
+                category: "Materiales y Métodos",
+                text: "¿Qué apartado ético y legal es indispensable redactar en los materiales y métodos de cualquier estudio cuantitativo con seres humanos en el ámbito de la salud?",
+                visualType: "none",
+                options: [
+                    { text: "El presupuesto detallado de compra de suministros.", correct: false },
+                    { text: "La aprobación por un Comité de Ética en Investigación y el consentimiento informado.", correct: true },
+                    { text: "La lista de los nombres de los pacientes participantes para acceso público.", correct: false },
+                    { text: "El contrato comercial con la empresa farmacéutica patrocinadora.", correct: false }
+                ],
+                feedback: "Correcto. Toda investigación clínica requiere la aprobación ética institucional y el resguardo de los derechos de los participantes."
+            },
+            {
+                category: "Validez y Confiabilidad",
+                text: "Si un investigador aplica un instrumento de medición de presión arterial y compara sus lecturas con un estándar de oro (esfigmomanómetro mercurial calibrado), ¿qué tipo de validez está evaluando?",
+                visualType: "none",
+                options: [
+                    { text: "Validez de criterio (concurrente o predictiva).", correct: true },
+                    { text: "Validez de constructo factorial.", correct: false },
+                    { text: "Confiabilidad inter-observador exclusiva.", correct: false },
+                    { text: "Validez de contenido por juicio de expertos.", correct: false }
+                ],
+                feedback: "Correcto. La validez de criterio contrasta las mediciones del instrumento frente a un estándar de referencia validado (estándar de oro)."
+            },
+            {
+                category: "Procedimiento de Recolección",
+                text: "En un estudio cuantitativo sobre eficacia de desinfección de superficies hospitalarias, se emplean cultivos microbiológicos mediante torundas estériles. Este procedimiento corresponde a:",
+                visualType: "none",
+                options: [
+                    { text: "Una técnica de recolección basada en pruebas de laboratorio / biológicas objetivas.", correct: true },
+                    { text: "Una entrevista estructurada de opinión.", correct: false },
+                    { text: "Una escala psicométrica de percepción.", correct: false },
+                    { text: "Un muestreo probabilístico aleatorio simple.", correct: false }
+                ],
+                feedback: "Correcto. Las pruebas de laboratorio y microbiológicas son instrumentos cuantitativos objetivos de recolección de datos."
+            },
+            {
+                category: "Diseños Cuantitativos",
+                text: "Un estudio transversal (cross-sectional) en gestión de enfermería se caracteriza fundamentalmente por:",
+                visualType: "none",
+                options: [
+                    { text: "Medir la exposición y el desenlace de forma simultánea en un único momento temporal.", correct: true },
+                    { text: "Hacer un seguimiento durante 5 años a pacientes hipertensos.", correct: false },
+                    { text: "Asignar aleatoriamente un tratamiento farmacológico.", correct: false },
+                    { text: "Reconstruir historias clínicas del siglo pasado hacia el presente.", correct: false }
+                ],
+                feedback: "Correcto. Los estudios transversales evalúan la presencia de exposición y efecto de manera simultánea en un corte temporal."
+            },
+            {
+                category: "Variables: Modificador de Efecto",
+                text: "Cuando el efecto de una variable independiente sobre el desenlace difiere según los estratos de una tercera variable (por ejemplo, si la intervención funciona diferente en hombres que en mujeres), a esta tercera variable se le denomina:",
+                visualType: "none",
+                options: [
+                    { text: "Modificador de efecto (interacción).", correct: true },
+                    { text: "Variable de confusión residual.", correct: false },
+                    { text: "Muestra probabilística estratificada.", correct: false },
+                    { text: "Error aleatorio de muestreo.", correct: false }
+                ],
+                feedback: "Correcto. Un modificador de efecto indica que la magnitud de la asociación cambia dependiendo del nivel de dicha variable."
+            },
+            {
+                category: "Población y Muestra",
+                text: "¿A qué tipo de procedimiento de muestreo corresponde cuando se seleccionan pacientes ingresados consecutivamente a urgencias hasta completar la cuota muestral requerida?",
+                visualType: "none",
+                options: [
+                    { text: "Muestreo no probabilístico consecutivo.", correct: true },
+                    { text: "Muestreo aleatorio simple por tómbola.", correct: false },
+                    { text: "Muestreo aleatorio estratificado proporcional.", correct: false },
+                    { text: "Muestreo por conglomerados bietápico.", correct: false }
+                ],
+                feedback: "Correcto. El muestreo consecutivo es una técnica no probabilística muy útil en investigación clínica cuando los casos llegan de forma continua."
+            },
+            {
+                category: "Materiales y Métodos",
+                text: "En la redacción cuantitativa, el apartado operativo que especifica los criterios bajo los cuales un paciente ya incluido en la muestra debe ser retirado del estudio por seguridad se denomina:",
+                visualType: "none",
+                options: [
+                    { text: "Criterios de eliminación o discontinuación.", correct: true },
+                    { text: "Criterios de exclusión inicial.", correct: false },
+                    { text: "Hipótesis nula bilateral.", correct: false },
+                    { text: "Operacionalización de variables independientes.", correct: false }
+                ],
+                feedback: "Correcto. Los criterios de eliminación se aplican a sujetos ya seleccionados que durante el estudio presentan condiciones que impiden continuar su seguimiento."
+            },
+            {
+                category: "Diseños Cuantitativos",
+                text: "¿Qué diseño cuantitativo retrospectivo compara un grupo de pacientes con una enfermedad específica (casos) con un grupo sin la enfermedad (controles) para evaluar exposiciones pasadas?",
+                visualType: "none",
+                options: [
+                    { text: "Estudio de casos y controles.", correct: true },
+                    { text: "Ensayo clínico controlado.", correct: false },
+                    { text: "Estudio de cohorte prospectivo.", correct: false },
+                    { text: "Estudio ecológico descriptivo.", correct: false }
+                ],
+                feedback: "Correcto. Los estudios de casos y controles parten del desenlace hacia atrás para indagar exposiciones previas."
+            },
+            {
+                category: "Validez y Confiabilidad",
+                text: "¿Qué tipo de validez busca asegurar que las dimensiones teóricas de un cuestionario de clima organizacional reflejen adecuadamente el marco conceptual propuesto?",
+                visualType: "none",
+                options: [
+                    { text: "Validez de constructo (análisis factorial).", correct: true },
+                    { text: "Confiabilidad test-retest.", correct: false },
+                    { text: "Validez de criterio externo.", correct: false },
+                    { text: "Validez aparente superficial.", correct: false }
+                ],
+                feedback: "Correcto. La validez de constructo examina si el instrumento mide el concepto teórico subyacente según el marco conceptual."
+            },
+            {
+                category: "Instrumentos Cuantitativos",
+                text: "En enfermería, el uso de escalas Likert validadas para medir la satisfacción del paciente pertenece a la categoría de instrumentos:",
+                visualType: "none",
+                options: [
+                    { text: "Escalas psicométricas / sociométricas estructuradas.", correct: true },
+                    { text: "Pruebas bioquímicas de laboratorio.", correct: false },
+                    { text: "Registros de observación no participante abierta.", correct: false },
+                    { text: "Entrevistas biográficas narrativas desestructuradas.", correct: false }
+                ],
+                feedback: "Correcto. Las escalas Likert son instrumentos cuantitativos estandarizados para medir actitudes, percepciones o satisfacción."
+            },
+            {
+                category: "Variables del Estudio",
+                text: "Si en un modelo de regresión multivariante ajustamos el resultado por la 'edad' y el 'sexo' para aislar el verdadero efecto de la intervención de enfermería, estamos controlando estadísticamente variables de tipo:",
+                visualType: "none",
+                options: [
+                    { text: "Confusoras.", correct: true },
+                    { text: "Dependientes principales.", correct: false },
+                    { text: "Independientes experimentales.", correct: false },
+                    { text: "Variables instrumentales ciegas.", correct: false }
+                ],
+                feedback: "Correcto. El ajuste multivariante permite controlar estadísticamente el efecto de variables confusoras conocidas."
+            },
+            {
+                category: "Diseños Cuantitativos",
+                text: "¿Cuál es la principal ventaja de un ensayo clínico aleatorizado frente a los estudios observacionales en investigación en salud?",
+                visualType: "none",
+                options: [
+                    { text: "Permite establecer relaciones de causalidad robustas al minimizar sesgos y factores de confusión mediante la aleatorización.", correct: true },
+                    { text: "Requiere menor presupuesto y tiempo de ejecución.", correct: false },
+                    { text: "Está exento de cualquier requisito de comité de ética.", correct: false },
+                    { text: "Permite estudiar poblaciones infinitas sin marco muestral.", correct: false }
+                ],
+                feedback: "Correcto. La aleatorización distribuye equitativamente las variables confusoras conocidas y desconocidas, otorgando alta evidencia de causalidad."
+            },
+            {
+                category: "Materiales y Métodos",
+                text: "El proceso mediante el cual se transforman las variables teóricas complejas (ej. calidad de vida) en indicadores empíricos medibles y cuantificables se denomina:",
+                visualType: "none",
+                options: [
+                    { text: "Operacionalización de variables.", correct: true },
+                    { text: "Aleatorización de bloques.", correct: false },
+                    { text: "Saturación teórica de datos.", correct: false },
+                    { text: "Validación por triangulación hermenéutica.", correct: false }
+                ],
+                feedback: "Correcto. La operacionalización define dimensiones, indicadores, escalas y valores para medir cuantitativamente conceptos abstractos."
+            },
+            {
+                category: "Población y Muestra",
+                text: "¿Qué tipo de muestreo probabilístico garantiza que cada miembro de la población tenga exactamente la misma probabilidad conocida y distinta de cero de ser seleccionado?",
+                visualType: "none",
+                options: [
+                    { text: "Muestreo aleatorio simple.", correct: true },
+                    { text: "Muestreo por conveniencia clínica.", correct: false },
+                    { text: "Muestreo bola de nieve.", correct: false },
+                    { text: "Muestreo consecutivo por cuotas.", correct: false }
+                ],
+                feedback: "Correcto. El muestreo aleatorio simple es el pilar de la inferencia estadística probabilística."
+            },
+            {
+                category: "Validez y Confiabilidad",
+                text: "Cuando un instrumento de medición arroja resultados estables y consistentemente similares al ser aplicado al mismo grupo de sujetos en dos momentos diferentes bajo condiciones similares, se comprueba su:",
+                visualType: "none",
+                options: [
+                    { text: "Confiabilidad test-retest (estabilidad temporal).", correct: true },
+                    { text: "Validez de contenido por expertos.", correct: false },
+                    { text: "Validez de constructo divergente.", correct: false },
+                    { text: "Sensibilidad diagnóstica clínica.", correct: false }
+                ],
+                feedback: "Correcto. La confiabilidad test-retest evalúa la estabilidad de las mediciones a lo largo del tiempo."
+            },
+            {
+                category: "Procedimiento de Recolección",
+                text: "En un estudio cuantitativo sobre higiene de manos, un observador entrenado registra el cumplimiento del personal utilizando una pauta de cotejo estructurada estandarizada. Este método corresponde a:",
+                visualType: "none",
+                options: [
+                    { text: "Observación estructurada cuantitativa.", correct: true },
+                    { text: "Entrevista en profundidad fenomenológica.", correct: false },
+                    { text: "Grupo focal cualitativo.", correct: false },
+                    { text: "Revisión documental autobiográfica.", correct: false }
+                ],
+                feedback: "Correcto. La observación estructurada utiliza pautas y listas de cotejo cuantitativas para registrar conductas objetivas en campo."
+            },
+            {
+                category: "Diseños Cuantitativos",
+                text: "¿Cómo se define un estudio cuasiexperimental de series temporales interrumpidas en la gestión de cuidados?",
+                visualType: "none",
+                options: [
+                    { text: "Aquel que evalúa múltiples mediciones antes y después de una intervención para observar cambios en la tendencia temporal.", correct: true },
+                    { text: "Un estudio donde no se mide ninguna variable antes de la intervención.", correct: false },
+                    { text: "Una encuesta transversal sin seguimiento longitudinal.", correct: false },
+                    { text: "Un ensayo clínico con enmascaramiento triple ciego.", correct: false }
+                ],
+                feedback: "Correcto. Las series temporales interrumpidas analizan tendencias a lo largo de múltiples periodos antes y después de instaurar una política o intervención."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timer = 60;
+        let timerInterval = null;
+        let answered = false;
+
+        // Elementos DOM
+        const screenStart = document.getElementById('screen-start');
+        const screenGame = document.getElementById('screen-game');
+        const screenResult = document.getElementById('screen-result');
+        const gameStats = document.getElementById('game-stats');
+        const currentQNum = document.getElementById('current-q-num');
+        const currentScore = document.getElementById('current-score');
+        const timerDisplay = document.getElementById('timer-display');
+        const timerBar = document.getElementById('timer-bar');
+        const questionCategory = document.getElementById('question-category');
+        const questionText = document.getElementById('question-text');
+        const questionVisual = document.getElementById('question-visual');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackPanel = document.getElementById('feedback-panel');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackText = document.getElementById('feedback-text');
+        const nextBtn = document.getElementById('next-btn');
+
+        function startGame() {
+            screenStart.classList.add('hidden');
+            screenResult.classList.add('hidden');
+            screenGame.classList.remove('hidden');
+            gameStats.classList.remove('hidden');
+            
+            currentQuestionIndex = 0;
+            score = 0;
+            updateStats();
+            loadQuestion();
+        }
+
+        function updateStats() {
+            currentQNum.textContent = currentQuestionIndex + 1;
+            currentScore.textContent = score;
+        }
+
+        function loadQuestion() {
+            answered = false;
+            feedbackPanel.classList.add('hidden');
+            optionsContainer.innerHTML = '';
+            
+            const q = questionsData[currentQuestionIndex];
+            questionCategory.textContent = q.category;
+            questionText.textContent = q.text;
+
+            // Manejo de organizadores visuales SVG según la pregunta
+            if (q.visualType && q.visualType !== 'none') {
+                questionVisual.classList.remove('hidden');
+                questionVisual.innerHTML = getSvgVisual(q.visualType);
+            } else {
+                questionVisual.classList.add('hidden');
+                questionVisual.innerHTML = '';
+            }
+
+            // Mezclar opciones aleatoriamente para evitar patrones predecibles
+            let shuffledOptions = [...q.options];
+            shuffledOptions.sort(() => Math.random() - 0.5);
+
+            shuffledOptions.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-accentEmerald/50 text-slate-200 transition text-sm sm:text-base flex items-center justify-between group";
+                
+                const letterSpan = document.createElement('span');
+                letterSpan.className = "w-7 h-7 rounded-lg bg-slate-800 text-slate-400 font-bold flex items-center justify-center mr-3 group-hover:bg-accentEmerald group-hover:text-darkBg transition flex-shrink-0";
+                letterSpan.textContent = String.fromCharCode(65 + idx); // A, B, C, D
+
+                const textSpan = document.createElement('span');
+                textSpan.className = "flex-grow";
+                textSpan.textContent = opt.text;
+
+                btn.appendChild(letterSpan);
+                btn.appendChild(textSpan);
+
+                btn.onclick = () => selectAnswer(opt.correct, q.feedback, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        function getSvgVisual(type) {
+            if (type === 'svg-methods') {
+                return `<svg class="w-full max-w-md h-24" viewBox="0 0 400 100">
+                    <rect x="10" y="30" width="110" height="40" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+                    <text x="65" y="55" fill="#10b981" font-size="12" text-anchor="middle" font-weight="bold">Elegibilidad</text>
+                    <line x1="120" y1="50" x2="140" y2="50" stroke="#64748b" stroke-width="2"/>
+                    <rect x="140" y="30" width="120" height="40" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="2"/>
+                    <text x="200" y="55" fill="#06b6d4" font-size="12" text-anchor="middle" font-weight="bold">Intervención</text>
+                    <line x1="260" y1="50" x2="280" y2="50" stroke="#64748b" stroke-width="2"/>
+                    <rect x="280" y="30" width="110" height="40" rx="8" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
+                    <text x="335" y="55" fill="#a855f7" font-size="12" text-anchor="middle" font-weight="bold">Desenlace</text>
+                </svg>`;
+            } else if (type === 'svg-design') {
+                return `<svg class="w-full max-w-md h-24" viewBox="0 0 400 100">
+                    <circle cx="80" cy="50" r="30" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
+                    <text x="80" y="55" fill="#a855f7" font-size="12" text-anchor="middle" font-weight="bold">Pre-test</text>
+                    <path d="M 115 50 Q 150 20 185 50" fill="none" stroke="#10b981" stroke-width="2"/>
+                    <text x="150" y="25" fill="#10b981" font-size="10" text-anchor="middle">Intervención</text>
+                    <circle cx="220" cy="50" r="30" fill="#1e293b" stroke="#06b6d4" stroke-width="2"/>
+                    <text x="220" y="55" fill="#06b6d4" font-size="12" text-anchor="middle" font-weight="bold">Post-test</text>
+                </svg>`;
+            } else if (type === 'svg-sample') {
+                return `<svg class="w-full max-w-md h-24" viewBox="0 0 400 100">
+                    <ellipse cx="120" cy="50" rx="60" ry="35" fill="#1e293b" stroke="#06b6d4" stroke-width="2"/>
+                    <text x="120" y="55" fill="#06b6d4" font-size="12" text-anchor="middle" font-weight="bold">Población N</text>
+                    <line x1="185" y1="50" x2="225" y2="50" stroke="#10b981" stroke-width="2" stroke-dasharray="4"/>
+                    <ellipse cx="280" cy="50" rx="40" ry="25" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+                    <text x="280" y="55" fill="#10b981" font-size="12" text-anchor="middle" font-weight="bold">Muestra n</text>
+                </svg>`;
+            } else if (type === 'svg-variables') {
+                return `<svg class="w-full max-w-md h-24" viewBox="0 0 400 100">
+                    <rect x="20" y="30" width="110" height="40" rx="6" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
+                    <text x="75" y="55" fill="#a855f7" font-size="11" text-anchor="middle" font-weight="bold">Exposición (X)</text>
+                    <line x1="135" y1="50" x2="265" y2="50" stroke="#10b981" stroke-width="2"/>
+                    <rect x="265" y="30" width="110" height="40" rx="6" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+                    <text x="320" y="55" fill="#10b981" font-size="11" text-anchor="middle" font-weight="bold">Desenlace (Y)</text>
+                </svg>`;
+            } else if (type === 'svg-validity') {
+                return `<svg class="w-full max-w-md h-24" viewBox="0 0 400 100">
+                    <circle cx="120" cy="50" r="30" fill="none" stroke="#a855f7" stroke-width="4"/>
+                    <circle cx="120" cy="50" r="10" fill="#a855f7"/>
+                    <text x="120" y="90" fill="#a855f7" font-size="11" text-anchor="middle">Confiabilidad</text>
+                    <circle cx="280" cy="50" r="30" fill="none" stroke="#10b981" stroke-width="4"/>
+                    <circle cx="280" cy="50" r="3" fill="#10b981"/>
+                    <text x="280" y="90" fill="#10b981" font-size="11" text-anchor="middle">Validez (Centro)</text>
+                </svg>`;
+            }
+            return '';
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timer = 60;
+            timerDisplay.textContent = timer + 's';
+            timerBar.style.width = '100%';
+            timerBar.className = "bg-accentEmerald h-full transition-all duration-1000";
+
+            timerInterval = setInterval(() => {
+                timer--;
+                timerDisplay.textContent = timer + 's';
+                let percentage = (timer / 60) * 100;
+                timerBar.style.width = percentage + '%';
+
+                if (timer <= 20) {
+                    timerBar.className = "bg-amber-500 h-full transition-all duration-1000";
+                }
+                if (timer <= 10) {
+                    timerBar.className = "bg-rose-500 h-full transition-all duration-1000";
+                }
+
+                if (timer <= 0) {
+                    clearInterval(timerInterval);
+                    if (!answered) {
+                        handleTimeOut();
+                    }
+                }
+            }, 1000);
+        }
+
+        function handleTimeOut() {
+            answered = true;
+            disableAllOptions();
+            feedbackPanel.classList.remove('hidden', 'bg-emerald-950/40', 'border-emerald-500/40', 'bg-rose-950/40', 'border-rose-500/40');
+            feedbackPanel.classList.add('bg-rose-950/40', 'border-rose-500/40');
+            feedbackTitle.className = "font-bold text-base mb-1 text-rose-400";
+            feedbackTitle.textContent = "⏱️ ¡Tiempo agotado!";
+            feedbackText.textContent = "Se agotaron los 60 segundos para este reactivo. Recuerda que la gestión del tiempo es clave en la investigación científica.";
+            nextBtn.focus();
+        }
+
+        function selectAnswer(isCorrect, feedbackMsg, selectedBtn) {
+            if (answered) return;
+            answered = true;
+            clearInterval(timerInterval);
+
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+
+            feedbackPanel.classList.remove('hidden', 'bg-emerald-950/40', 'border-emerald-500/40', 'bg-rose-950/40', 'border-rose-500/40');
+
+            if (isCorrect) {
+                score += 4;
+                updateStats();
+                selectedBtn.classList.remove('bg-slate-900/80', 'border-slate-800');
+                selectedBtn.classList.add('bg-emerald-950/60', 'border-emerald-500', 'text-emerald-300');
+                
+                feedbackPanel.classList.add('bg-emerald-950/40', 'border-emerald-500/40');
+                feedbackTitle.className = "font-bold text-base mb-1 text-emerald-400";
+                feedbackTitle.textContent = "🎉 ¡Excelente respuesta!";
+                feedbackText.textContent = "¡Felicitaciones! Demuestras gran dominio metodológico. " + feedbackMsg;
+            } else {
+                selectedBtn.classList.remove('bg-slate-900/80', 'border-slate-800');
+                selectedBtn.classList.add('bg-rose-950/60', 'border-rose-500', 'text-rose-300');
+
+                feedbackPanel.classList.add('bg-rose-950/40', 'border-rose-500/40');
+                feedbackTitle.className = "font-bold text-base mb-1 text-rose-400";
+                feedbackTitle.textContent = "💡 Respuesta incorrecta";
+                feedbackText.textContent = "Revisión conceptual: " + feedbackMsg;
+            }
+            nextBtn.focus();
+        }
+
+        function disableAllOptions() {
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questionsData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            screenGame.classList.add('hidden');
+            gameStats.classList.add('hidden');
+            screenResult.classList.remove('hidden');
+
+            const finalScoreText = document.getElementById('final-score-text');
+            const resultTitle = document.getElementById('result-title');
+            const resultMessage = document.getElementById('result-message');
+            const resultIconContainer = document.getElementById('result-icon-container');
+
+            finalScoreText.textContent = score + " / 100";
+
+            if (score >= 80) {
+                resultIconContainer.innerHTML = "🏆✨";
+                resultTitle.textContent = "¡Excelente Desempeño Científico!";
+                resultMessage.innerHTML = "Has obtenido una calificación sobresaliente.<br><br><span class='text-2xl font-bold text-accentEmerald'>«¡Lo lograste!»</span>";
+            } else {
+                resultIconContainer.innerHTML = "📚💪";
+                resultTitle.textContent = "Sigue Fortaleciendo Tus Competencias";
+                resultMessage.innerHTML = "Has completado el simulador. Continúa repasando los fundamentos metodológicos cuantitativos.<br><br><span class='text-xl font-semibold text-amber-400'>«Sigue intentando, No te rindas»</span>";
+            }
+        }
+
+        function restartGame() {
+            startGame();
+        }
+    </script>
+</body>
+ <div style="position: fixed; bottom: 10px; right: 10px; font-family: sans-serif; font-size: 12px; background: rgba(0,0,0,0.5); color: white; padding: 5px 10px; border-radius: 5px;">
+    Juego creado por : Ander Asenjo
+</div></html>
