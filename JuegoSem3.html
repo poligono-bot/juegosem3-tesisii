@@ -1,0 +1,650 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+ 
+ <script>
+      var clave = "1234"; // CAMBIA 1234 POR TU CLAVE
+      var intento = prompt("Ingrese la contraseña:4321");
+      if (intento !== clave) {
+        alert("Contraseña incorrecta");
+        document.write("<h1 style='color:white;text-align:center;'>Acceso denegado</h1>");
+        window.stop();
+      }
+    </script>
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Interactivo: Estándares Internacionales de Investigación en Enfermería</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-teal-500 selection:text-white">
+
+    <header class="bg-slate-800 border-b border-slate-700 py-4 px-6 shadow-md">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-teal-600 text-white p-2.5 rounded-xl shadow-inner">
+                    <i class="fa-solid fa-stethoscope text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-tight text-teal-400">Maestría en Enfermería</h1>
+                    <p class="text-xs text-slate-400">Gestión Integral del Cuidado e Investigación</p>
+                </div>
+            </div>
+            <div id="score-container" class="hidden items-center space-x-4 bg-slate-700/50 px-4 py-2 rounded-xl border border-slate-600">
+                <div class="text-xs text-slate-300">Pregunta: <span id="current-q-num" class="font-bold text-white">1</span>/25</div>
+                <div class="h-4 w-[1px] bg-slate-600"></div>
+                <div class="text-xs text-slate-300">Puntaje: <span id="current-score" class="font-bold text-teal-400">0</span> pts</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-4 sm:p-6">
+        <div class="w-full max-w-3xl bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden">
+            
+            <div id="start-screen" class="p-8 sm:p-12 text-center">
+                <div class="inline-block bg-teal-500/10 text-teal-400 p-4 rounded-full mb-6 border border-teal-500/20">
+                    <i class="fa-solid fa-microscope text-4xl"></i>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold mb-3 tracking-tight">Estándares Internacionales de Redacción Científica</h2>
+                <p class="text-slate-400 text-sm sm:text-base mb-8 max-w-xl mx-auto leading-relaxed">
+                    Evalúa tus competencias en estudios observacionales (STROBE) y experimentales (CONSORT). Cuentas con 60 segundos por cada una de las 25 preguntas.
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 text-left max-w-xl mx-auto bg-slate-900/60 p-4 rounded-xl border border-slate-700/50">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-list-check text-teal-400"></i>
+                        <span class="text-xs text-slate-300">25 Preguntas Clínicas</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-clock text-teal-400"></i>
+                        <span class="text-xs text-slate-300">60s por Pregunta</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-trophy text-teal-400"></i>
+                        <span class="text-xs text-slate-300">Premio Metodológico</span>
+                    </div>
+                </div>
+                <button onclick="startGame()" class="bg-teal-600 hover:bg-teal-500 text-white font-semibold px-8 py-3.5 rounded-xl shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer flex items-center justify-center mx-auto space-x-2">
+                    <span>Iniciar Simulación</span>
+                    <i class="fa-solid fa-arrow-right text-sm"></i>
+                </button>
+            </div>
+
+            <div id="quiz-screen" class="hidden p-6 sm:p-8">
+                <div class="flex justify-between items-center mb-4">
+                    <span id="question-tag" class="inline-block bg-teal-500/10 text-teal-400 text-xs font-semibold px-3 py-1 rounded-full border border-teal-500/20"></span>
+                    <div id="timer-badge" class="flex items-center space-x-2 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-700 text-amber-400 font-semibold text-sm">
+                        <i class="fa-regular fa-clock"></i>
+                        <span id="time-left">60</span>s
+                    </div>
+                </div>
+
+                <h3 id="question-text" class="text-lg sm:text-xl font-semibold text-slate-100 leading-snug mb-6"></h3>
+                
+                <div id="options-container" class="space-y-3 mb-6"></div>
+
+                <div id="feedback-box" class="hidden p-4 rounded-xl mb-6 border transition-all">
+                    <div class="flex items-start space-x-3">
+                        <div id="feedback-icon" class="text-xl mt-0.5"></div>
+                        <div>
+                            <h4 id="feedback-title" class="font-semibold text-sm mb-1"></h4>
+                            <p id="feedback-text" class="text-xs sm:text-sm text-slate-300 leading-relaxed"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <button id="next-btn" onclick="nextQuestion()" class="hidden bg-teal-600 hover:bg-teal-500 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md transition-all cursor-pointer flex items-center space-x-2">
+                        <span>Siguiente Pregunta</span>
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="result-screen" class="hidden p-8 sm:p-12 text-center">
+                <div id="award-container" class="mb-6 flex justify-center"></div>
+                <h2 class="text-2xl sm:text-3xl font-bold mb-2">Simulación Finalizada</h2>
+                <p class="text-slate-400 text-sm mb-6">Evaluación de Estándares de Redacción Científica en Enfermería</p>
+                
+                <div class="bg-slate-900/80 p-6 rounded-2xl max-w-sm mx-auto mb-8 border border-slate-700">
+                    <div class="text-sm text-slate-400 mb-1">Puntuación Final</div>
+                    <div class="text-4xl font-extrabold text-teal-400 mb-2"><span id="final-score">0</span> <span class="text-lg font-normal text-slate-400">/ 100</span></div>
+                    <div id="result-message" class="text-base font-medium px-4 py-2 rounded-xl mt-4 inline-block"></div>
+                </div>
+
+                <button onclick="restartGame()" class="bg-teal-600 hover:bg-teal-500 text-white font-semibold px-8 py-3.5 rounded-xl shadow-lg transition-all cursor-pointer flex items-center justify-center mx-auto space-x-2">
+                    <i class="fa-solid fa-rotate-right text-sm"></i>
+                    <span>Volver a Intentar</span>
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-800">
+        Gestión Integral del Cuidado e Investigación Basada en Evidencia &copy; 2026
+    </footer>
+
+    <script>
+        const rawQuestions = [
+            {
+                tag: "Estudio Transversal (STROBE)",
+                question: "En un estudio transversal sobre prevalencia de burnout en personal de enfermería, qué apartado del estándar STROBE exige especificar explícitamente los criterios de elegibilidad y fuentes de selección de los participantes?",
+                options: [
+                    "Apartado de Resultados (Tabla 1 sociodemográfica)",
+                    "Apartado de Participantes (Métodos)",
+                    "Apartado de Discusión y limitaciones",
+                    "Apartado de Financiación y conflictos de interés"
+                ],
+                correctIndex: 1,
+                feedback: "Correcto. El estándar STROBE, en su sección de Métodos (Participantes), exige detallar con precisión los criterios de inclusión, exclusión y el método de muestreo para garantizar la validez externa."
+            },
+            {
+                tag: "Casos y Controles (STROBE)",
+                question: "Al redactar un estudio de casos y controles sobre factores de riesgo de úlceras por presión, qué directriz STROBE es crucial para la sección de Métodos respecto a la selección?",
+                options: [
+                    "Justificar la razón de selección de los controles y los métodos de emparejamiento",
+                    "Detallar la tasa de pérdida de seguimiento a 5 años",
+                    "Describir la asignación aleatoria a la intervención quirúrgica",
+                    "Presentar el diagrama de flujo CONSORT de asignación de pacientes"
+                ],
+                correctIndex: 0,
+                feedback: "Muy bien. STROBE indica que en estudios de casos y controles se debe explicar claramente cómo se definieron y seleccionaron los casos y los controles, minimizando sesgos de selección."
+            },
+            {
+                tag: "Cohorte Retrospectiva (STROBE)",
+                question: "Analizando una tabla de resultados de una cohorte retrospectiva sobre eventos adversos en administración de fármacos, se observa un RR = 2.4 (IC 95%: 1.2 - 4.8). Según STROBE, cómo debe reportarse la precisión estadística?",
+                options: [
+                    "Omitiendo los intervalos de confianza si el valor p es significativo",
+                    "Indicando claramente las estimaciones de riesgo y sus intervalos de confianza del 95%",
+                    "Presentando únicamente las frecuencias absolutas sin porcentajes",
+                    "Modificando el alfa de confiabilidad al 90% para mejorar la significancia"
+                ],
+                correctIndex: 1,
+                feedback: "Excelente. El estándar STROBE enfatiza la obligatoriedad de reportar estimaciones de riesgo precisas acompañadas de sus intervalos de confianza, evitando depender exclusivamente del valor p."
+            },
+            {
+                tag: "Cohorte Prospectiva (STROBE)",
+                question: "En una cohorte prospectiva sobre seguimiento postquirúrgico, el diagrama de flujo según STROBE debe reportar de forma transparente:",
+                options: [
+                    "El número total de pacientes evaluados inicialmente, pérdidas de seguimiento y analizados",
+                    "Las fórmulas matemáticas empleadas para calcular el tamaño de muestra poblacional",
+                    "El análisis de varianza de medidas repetidas en formato gráfico exclusivamente",
+                    "La aprobación ética institucional sin detalles numéricos de cohorte"
+                ],
+                correctIndex: 0,
+                feedback: "Correcto. STROBE recomienda un flujo claro de participantes en estudios de cohortes prospectivos para evidenciar las pérdidas y retiros a lo largo del tiempo."
+            },
+            {
+                tag: "Interpretación de Tablas (STROBE)",
+                question: "Dada una Tabla 1 típica de un artículo STROBE que compara características basales entre grupos expuestos y no expuestos, qué error metodológico se debe evitar en la redacción?",
+                options: [
+                    "Incluir pruebas de significancia estadística (valores p) para comparar las características basales",
+                    "Describir las medias y desviaciones estándar de variables cuantitativas",
+                    "Incluir porcentajes válidos redondeados a un decimal",
+                    "Aclarar el tamaño muestral (n) total en la cabecera de la columna"
+                ],
+                correctIndex: 0,
+                feedback: "Así es. Las guías metodológicas modernas sugieren no usar pruebas de hipótesis (valores p) en la Tabla 1 de características basales, ya que el desbalance es producto del azar en estudios no aleatorizados."
+            },
+            {
+                tag: "Ensayos Clínicos (CONSORT)",
+                question: "Para la redacción de un Ensayo Clínico Aleatorizado (ECA) en intervenciones de enfermería avanzada, qué directriz exige el estándar CONSORT en el título del artículo?",
+                options: [
+                    "Identificar explícitamente el estudio como un ensayo aleatorizado",
+                    "Mencionar el nombre completo de los autores principales y su afiliación hospitalaria",
+                    "Detalar el análisis estadístico multivariado utilizado",
+                    "Incluir las conclusiones principales del estudio de forma resumida"
+                ],
+                correctIndex: 0,
+                feedback: "Correcto. El checklist CONSORT estipula que el título debe identificar inequívocamente el diseño como un ensayo aleatorizado para facilitar su recuperación en bases de datos."
+            },
+            {
+                tag: "Asignación Aleatoria (CONSORT)",
+                question: "En un ECA evaluando el uso de musicoterapia vs. placebo para el dolor crónico, CONSORT exige detallar el método utilizado para generar la secuencia de asignación aleatoria. Cuál es un ejemplo válido?",
+                options: [
+                    "Asignar según el orden de llegada de los pacientes al turno de mañana",
+                    "Emplear una tabla de números aleatorios generados por ordenador",
+                    "Dejar que el investigador decida según la gravedad clínica del paciente",
+                    "Alternar un paciente para el grupo experimental y otro para el control"
+                ],
+                correctIndex: 1,
+                feedback: "Excelente. La generación de secuencia mediante software o tabla aleatoria asegura la ocultación de la asignación y previene el sesgo de selección en ensayos clínicos."
+            },
+            {
+                tag: "Diagrama de Flujo (CONSORT)",
+                question: "Cuál es el propósito central del diagrama de flujo de participantes exigido por CONSORT en los ensayos clínicos?",
+                options: [
+                    "Demostrar el flujo a través de las fases de enrolamiento, asignación, seguimiento y análisis",
+                    "Exponer los costos financieros de la intervención aplicada",
+                    "Ilustrar los gráficos de caja y bigotes de las variables primarias",
+                    "Presentar los perfiles profesionales del personal de enfermería participante"
+                ],
+                correctIndex: 0,
+                feedback: "Muy bien. El diagrama CONSORT es obligatorio para visualizar claramente las pérdidas, exclusiones y pacientes analizados en cada brazo del estudio."
+            },
+            {
+                tag: "Estudios Preexperimentales",
+                question: "Un diseño preexperimental de un solo grupo con preprueba y posprueba aplicado en enfermería comunitaria se caracteriza principalmente por:",
+                options: [
+                    "Carecer de un grupo de control concurrente o aleatorización",
+                    "Garantizar el más alto nivel de evidencia científica causal",
+                    "Utilizar doble ciego estricto entre pacientes y evaluadores",
+                    "Eliminar por completo las amenazas a la validez interna"
+                ],
+                correctIndex: 0,
+                feedback: "Correcto. Los diseños preexperimentales no poseen grupo de control ni aleatorización, por lo que su validez interna es limitada frente a factores externos o maduración."
+            },
+            {
+                tag: "Estudios Cuasiexperimentales",
+                question: "En un estudio cuasiexperimental sobre la efectividad de una guía clínica de cuidados, se utiliza un grupo control no equivalente. Según las pautas de redacción científica, qué aspecto se debe discutir críticamente?",
+                options: [
+                    "El uso exclusivo de estadística no paramétrica obligatoria",
+                    "La imposibilidad de asegurar la equivalencia basal total entre grupos debido a la falta de aleatorización",
+                    "La prohibición de medir variables de resultado cuantitativas",
+                    "El cálculo del tamaño de muestra basado en modelos bayesianos"
+                ],
+                correctIndex: 1,
+                feedback: "Nota metodológica: Al no haber aleatorización pura, la falta de equivalencia basal es la principal amenaza que debe abordarse en la discusión de un estudio cuasiexperimental."
+            },
+            {
+                tag: "Análisis de Gráficos (CONSORT / STROBE)",
+                question: "Al interpretar un gráfico de curvas de supervivencia de Kaplan-Meier en un estudio de salud, el eje vertical (Y) típicamente representa:",
+                options: [
+                    "La probabilidad acumulada de supervivencia o ausencia del evento",
+                    "El tiempo transcurrido en meses o años desde el inicio del estudio",
+                    "El número absoluto de pacientes que ingresaron al hospital",
+                    "La densidad de incidencia corregida por factores de confusión"
+                ],
+                correctIndex: 0,
+                feedback: "Exacto. El eje Y muestra la probabilidad de supervivencia (de 0 a 1 o 0% a 100%), mientras que el eje X representa el tiempo de seguimiento."
+            },
+            {
+                tag: "Método Científico en Enfermería",
+                question: "En qué etapa del método científico se fundamenta la formulación de la pregunta PICO (Población, Intervención, Comparación, Resultado) en la investigación del cuidado?",
+                options: [
+                    "En la formulación del problema y planteamiento de la pregunta de investigación",
+                    "En la redacción de las conclusiones de la discusión",
+                    "En la ejecución de las pruebas estadísticas paramétricas",
+                    "En el cálculo de los costos operativos del proyecto"
+                ],
+                correctIndex: 0,
+                feedback: "Muy bien. La estructura PICO nace en la fase inicial del método científico para delimitar rigurosamente el problema de investigación clínica."
+            },
+            {
+                tag: "Análisis de Tablas (Regresión)",
+                question: "En una tabla de regresión logística multivariada (STROBE), un Odds Ratio (OR) ajustado de 3.2 (IC 95%: 1.5 - 6.8) para infección nosocomial indica que:",
+                options: [
+                    "El factor evaluado multiplica por 3.2 el riesgo u oportunidad de presentar la infección, controlando confusores",
+                    "El factor protege contra la infección de forma estadísticamente significativa",
+                    "El tamaño de la muestra fue insuficiente para calcular el riesgo real",
+                    "Existe un error de sesgo de información en la medición de la variable dependiente"
+                ],
+                correctIndex: 0,
+                feedback: "Correcto. El OR ajustado muestra la asociación independiente de la variable tras controlar estadísticamente las variables de confusión incluidas en el modelo."
+            },
+            {
+                tag: "Ensayos Clínicos (Análisis Intención de Tratar)",
+                question: "El principio de 'Intención de Tratar' (Intention-to-Treat) recomendado por CONSORT dicta que los participantes deben ser analizados:",
+                options: [
+                    "En el grupo al que fueron aleatorizados inicialmente, independientemente de si recibieron o completaron la intervención",
+                    "Unicamente si completaron el 100% del protocolo sin desviaciones",
+                    "Reasignándolos al grupo control si abandonaron la intervención experimental",
+                    "Excluyendo los datos perdidos mediante imputación lineal simple obligatoria"
+                ],
+                correctIndex: 0,
+                feedback: "Excelente. El análisis por intención de tratar preserva los beneficios de la aleatorización y evita sesgos derivados de deserciones selectivas."
+            },
+            {
+                tag: "Estudios Observacionales vs Experimentales",
+                question: "Cuál es la diferencia metodológica fundamental entre un ensayo clínico aleatorizado y una cohorte prospectiva?",
+                options: [
+                    "En el ensayo clínico el investigador manipula activamente la asignación de la intervención; en la cohorte solo observa la exposición natural",
+                    "La cohorte evalúa más de 1000 pacientes, mientras que el ensayo clínico es siempre piloto",
+                    "El ensayo clínico no requiere comité de ética, la cohorte sí",
+                    "La cohorte calcula riesgo relativo y el ensayo clínico no permite medirlo"
+                ],
+                correctIndex: 0,
+                feedback: "Muy bien. La intervención activa (manipulación del factor de estudio) es el sello distintivo del diseño experimental frente al observacional."
+            },
+            {
+                tag: "Interpretación de Figuras (Forest Plot)",
+                question: "En un Forest Plot (gráfico de bosque) de una revisión sistemática, qué significa que el diamante que resume el metaanálisis cruce la línea vertical de no efecto (OR = 1 o RR = 1)?",
+                options: [
+                    "Que no existe diferencia estadísticamente significativa entre las intervenciones evaluadas",
+                    "Que la heterogeneidad entre los estudios es exactamente igual a cero",
+                    "Que el estudio posee un sesgo de publicación severo e inaceptable",
+                    "Que la potencia estadística superó el 99% de confianza"
+                ],
+                correctIndex: 0,
+                feedback: "Correcto. Si el diamante o intervalo cruza la línea de nulidad (1 para razones), indica que el resultado no es estadísticamente significativo."
+            },
+            {
+                tag: "Estándares STROBE (Sesgos)",
+                question: "Según STROBE, cómo debe abordarse el control de los factores de confusión en la sección de Métodos de un estudio observacional?",
+                options: [
+                    "Describiendo las variables de confusión consideradas y las estrategias de control (pareo, estratificación o análisis multivariado)",
+                    "Omitiendo su mención para evitar cuestionamientos metodológicos",
+                    "Asumiendo que la aleatorización neutraliza automáticamente todos los confusores",
+                    "Limitándose a presentar frecuencias simples sin ajustes"
+                ],
+                correctIndex: 0,
+                feedback: "Así es. Los estudios observacionales son altamente vulnerables a confusores, por lo que STROBE exige detallar cómo se midieron y controlaron."
+            },
+            {
+                tag: "Ensayos Clínicos (Cegamiento - CONSORT)",
+                question: "El cegamiento (simple, doble o triple) en los ensayos clínicos controlados según CONSORT tiene como objetivo principal:",
+                options: [
+                    "Minimizar el sesgo de información y de realización/detección durante la ejecución del estudio",
+                    "Aumentar el número total de pacientes reclutados en los centros hospitalarios",
+                    "Reducir los costos económicos de los insumos farmacológicos",
+                    "Evitar la firma del consentimiento informado por parte de los pacientes"
+                ],
+                correctIndex: 0,
+                feedback: "Muy bien. El cegamiento previene que las expectativas de pacientes, tratantes o evaluadores alteren la medición de los resultados clínicos."
+            },
+            {
+                tag: "Validez Externa e Interna",
+                question: "En la redacción científica en enfermería, la validez interna se refiere principalmente a:",
+                options: [
+                    "La certeza de que los resultados observados se deben a la intervención o exposición y no a sesgos o variables extrañas",
+                    "La capacidad de generalizar los resultados a otras poblaciones y contextos asistenciales",
+                    "La precisión de los instrumentos de medición termométrica o de presión arterial",
+                    "El grado de aprobación del protocolo por parte del comité de ética local"
+                ],
+                correctIndex: 0,
+                feedback: "Correcto. La validez interna evalúa la rigurosidad metodológica causal dentro del estudio, requisito previo para considerar la validez externa."
+            },
+            {
+                tag: "Análisis de Tablas Cruzadas (Chi-cuadrada)",
+                question: "Al interpretar una tabla de contingencia de 2x2 en un estudio transversal de enfermería, se obtiene un valor p < 0.01 mediante la prueba de Chi-cuadrada. Esto permite concluir:",
+                options: [
+                    "Hay evidencia estadística suficiente para rechazar la hipótesis nula de independencia entre las variables",
+                    "La magnitud del efecto clínico es clínicamente relevante de forma automática",
+                    "La distribución de los datos sigue estrictamente una curva normal gaussiana",
+                    "No existe ningún tipo de error de muestreo en el estudio"
+                ],
+                correctIndex: 0,
+                feedback: "Excelente. Un valor p bajo rechaza la hipótesis nula, indicando asociación estadística, aunque siempre debe complementarse con la magnitud del efecto."
+            },
+            {
+                tag: "Ensayos Clínicos (Tamaño Muestral - CONSORT)",
+                question: "Qué exige la directriz CONSORT respecto al cálculo del tamaño de muestra en la sección de Métodos?",
+                options: [
+                    "Explicar cómo se determinó el tamaño de la muestra, incluyendo parámetros como poder estadístico, alfa y tamaño del efecto esperado",
+                    "Justificar que se incluyeron 'todos los pacientes posibles' sin fórmulas previas",
+                    "Establecer un tamaño estándar fijo de 30 pacientes por protocolo hospitalario",
+                    "Omitir el cálculo si el estudio es multicéntrico internacional"
+                ],
+                correctIndex: 0,
+                feedback: "Muy bien. El cálculo formal del tamaño muestral previene errores tipo II y garantiza la potencia adecuada del ensayo clínico."
+            },
+            {
+                tag: "Estudios Cuasiexperimentales (Series Temporales)",
+                question: "Un diseño cuasiexperimental de series temporales interrumpidas evaluando una política de higiene de manos se caracteriza por:",
+                options: [
+                    "Realizar múltiples mediciones antes y después de la intervención para observar cambios en la tendencia",
+                    "Medir el fenómeno en un solo momento del tiempo de forma transversal",
+                    "Asignar aleatoriamente los hospitales mediante tómbola electrónica",
+                    "Carecer por completo de mediciones previas a la intervención"
+                ],
+                correctIndex: 0,
+                feedback: "Correcto. Las series temporales permiten evaluar el impacto a largo plazo y la tendencia antes y después de una intervención en salud."
+            },
+            {
+                tag: "Redacción Científica (Sección Discusión)",
+                question: "Siguiendo los estándares internacionales, cuál es el orden lógico recomendado para redactar la sección de Discusión en un artículo de investigación?",
+                options: [
+                    "Resumen de hallazgos principales, comparación con literatura previa, limitaciones metodológicas y conclusiones/implicaciones",
+                    "Presentación detallada de tablas estadísticas, marco teórico y referencias bibliográficas",
+                    "Descripción de la muestra, cálculo de costos y agradecimientos institucionales",
+                    "Listado de hipótesis nulas rechazadas y fórmulas de regresión"
+                ],
+                correctIndex: 0,
+                feedback: "Muy bien. La estructura recomendada fluye desde los resultados propios hacia su contraste crítico, limitaciones y relevancia para la práctica de enfermería."
+            },
+            {
+                tag: "Ética y Declaraciones (STROBE / CONSORT)",
+                question: "Qué elemento ético y formal exigen tanto STROBE como CONSORT en la sección final del manuscrito antes de las referencias?",
+                options: [
+                    "Declaración de fuentes de financiación, conflictos de interés y aprobación por un comité de ética en investigación",
+                    "Listado de notas de agradecimiento personal a familiares de los investigadores",
+                    "Copia íntegra de las historias clínicas de los pacientes participantes",
+                    "Transcripción de las entrevistas cualitativas realizadas en formato audio"
+                ],
+                correctIndex: 0,
+                feedback: "Correcto. La transparencia sobre financiamiento y ética es un requisito universal ineludible en la redacción científica contemporánea."
+            },
+            {
+                tag: "Interpretación Crítica Integral",
+                question: "Si un estudio observacional reporta una asociación fuerte pero el análisis crítico según STROBE evidencia un alto sesgo de deserción y confusión residual no controlada, el investigador de maestría debe concluir:",
+                options: [
+                    "Que la causalidad debe interpretarse con extrema cautela debido a las amenazas identificadas a la validez interna",
+                    "Que los resultados son plenamente generalizables a cualquier entorno hospitalario global",
+                    "Que se debe transformar inmediatamente en un ensayo clínico aleatorizado sin piloto previo",
+                    "Que las pruebas estadísticas pierden validez matemática por completo"
+                ],
+                correctIndex: 0,
+                feedback: "Excelente. La interpretación crítica de maestría implica sopesar los sesgos metodológicos declarados según los estándares antes de emitir recomendaciones clínicas."
+            }
+        ];
+
+        // Mezclar las opciones de cada pregunta de forma aleatoria al iniciar
+        const questions = rawQuestions.map(q => {
+            const optionsWithMeta = q.options.map((opt, idx) => ({
+                text: opt,
+                isCorrect: idx === q.correctIndex
+            }));
+
+            // Algoritmo de mezcla Fisher-Yates
+            for (let i = optionsWithMeta.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [optionsWithMeta[i], optionsWithMeta[j]] = [optionsWithMeta[j], optionsWithMeta[i]];
+            }
+
+            const newCorrectIndex = optionsWithMeta.findIndex(opt => opt.isCorrect);
+
+            return {
+                tag: q.tag,
+                question: q.question,
+                options: optionsWithMeta.map(opt => opt.text),
+                correct: newCorrectIndex,
+                feedback: q.feedback
+            };
+        });
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+        let timeLeft = 60;
+        let timerInterval = null;
+
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const scoreContainer = document.getElementById('score-container');
+        
+        const currentQNumEl = document.getElementById('current-q-num');
+        const currentScoreEl = document.getElementById('current-score');
+        const questionTagEl = document.getElementById('question-tag');
+        const timeLeftEl = document.getElementById('time-left');
+        const timerBadge = document.getElementById('timer-badge');
+        const questionTextEl = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackBox = document.getElementById('feedback-box');
+        const feedbackIcon = document.getElementById('feedback-icon');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackText = document.getElementById('feedback-text');
+        const nextBtn = document.getElementById('next-btn');
+
+        function startGame() {
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            scoreContainer.classList.remove('hidden');
+            scoreContainer.classList.add('flex');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false;
+            nextBtn.classList.add('hidden');
+            feedbackBox.classList.add('hidden');
+            
+            timeLeft = 60;
+            timeLeftEl.textContent = timeLeft;
+            timerBadge.className = "flex items-center space-x-2 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-700 text-amber-400 font-semibold text-sm";
+            
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+
+            const q = questions[currentQuestion];
+            currentQNumEl.textContent = currentQuestion + 1;
+            currentScoreEl.textContent = score;
+            questionTagEl.textContent = q.tag;
+            questionTextEl.textContent = q.question;
+
+            optionsContainer.innerHTML = '';
+            q.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded-xl bg-slate-700/60 hover:bg-slate-700 border border-slate-600/60 hover:border-teal-500/50 transition-all text-sm sm:text-base text-slate-200 cursor-pointer flex items-center space-x-3";
+                btn.innerHTML = `<span class="bg-slate-800 text-teal-400 font-bold px-2.5 py-1 rounded-lg text-xs border border-slate-600">${String.fromCharCode(65 + index)}</span> <span>${option}</span>`;
+                btn.onclick = () => selectOption(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function updateTimer() {
+            if (timeLeft > 0) {
+                timeLeft--;
+                timeLeftEl.textContent = timeLeft;
+                if (timeLeft <= 10) {
+                    timerBadge.className = "flex items-center space-x-2 bg-rose-950/80 px-3 py-1.5 rounded-xl border border-rose-700 text-rose-400 font-semibold text-sm animate-pulse";
+                }
+            } else {
+                clearInterval(timerInterval);
+                timeOutAction();
+            }
+        }
+
+        function timeOutAction() {
+            if (answered) return;
+            answered = true;
+
+            const q = questions[currentQuestion];
+            const allBtns = optionsContainer.children;
+
+            allBtns[q.correct].classList.remove('bg-slate-700/60', 'hover:bg-slate-700', 'border-slate-600/60');
+            allBtns[q.correct].classList.add('bg-teal-900/40', 'border-teal-500/60', 'text-teal-200');
+
+            feedbackBox.className = "p-4 rounded-xl mb-6 border bg-amber-950/60 border-amber-500/30 text-amber-200";
+            feedbackIcon.innerHTML = '<i class="fa-solid fa-hourglass-end text-amber-400"></i>';
+            feedbackTitle.textContent = "¡Tiempo Agotado!";
+            feedbackText.textContent = "Se acabaron los 60 segundos. " + q.feedback;
+
+            for (let btn of allBtns) {
+                btn.style.pointerEvents = 'none';
+            }
+
+            feedbackBox.classList.remove('hidden');
+            nextBtn.classList.remove('hidden');
+        }
+
+        function selectOption(selectedIndex, selectedBtn) {
+            if (answered) return;
+            answered = true;
+            clearInterval(timerInterval);
+
+            const q = questions[currentQuestion];
+            const allBtns = optionsContainer.children;
+
+            if (selectedIndex === q.correct) {
+                score += 4;
+                currentScoreEl.textContent = score;
+                selectedBtn.classList.remove('bg-slate-700/60', 'hover:bg-slate-700', 'border-slate-600/60');
+                selectedBtn.classList.add('bg-teal-900/50', 'border-teal-500', 'text-teal-200');
+                
+                feedbackBox.className = "p-4 rounded-xl mb-6 border bg-teal-950/60 border-teal-500/30 text-teal-200";
+                feedbackIcon.innerHTML = '<i class="fa-solid fa-circle-check text-teal-400"></i>';
+                feedbackTitle.textContent = "¡Respuesta Correcta!";
+                feedbackText.textContent = q.feedback + " ¡Excelente dominio metodológico!";
+            } else {
+                selectedBtn.classList.remove('bg-slate-700/60', 'hover:bg-slate-700', 'border-slate-600/60');
+                selectedBtn.classList.add('bg-rose-950/50', 'border-rose-500/80', 'text-rose-200');
+                
+                allBtns[q.correct].classList.remove('bg-slate-700/60', 'hover:bg-slate-700', 'border-slate-600/60');
+                allBtns[q.correct].classList.add('bg-teal-900/40', 'border-teal-500/60', 'text-teal-200');
+
+                feedbackBox.className = "p-4 rounded-xl mb-6 border bg-rose-950/60 border-rose-500/30 text-rose-200";
+                feedbackIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-rose-400"></i>';
+                feedbackTitle.textContent = "Respuesta Incorrecta";
+                feedbackText.textContent = q.feedback;
+            }
+
+            for (let btn of allBtns) {
+                btn.style.pointerEvents = 'none';
+            }
+
+            feedbackBox.classList.remove('hidden');
+            nextBtn.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            if (timerInterval) clearInterval(timerInterval);
+            quizScreen.classList.add('hidden');
+            scoreContainer.classList.add('hidden');
+            scoreContainer.classList.remove('flex');
+            resultScreen.classList.remove('hidden');
+
+            document.getElementById('final-score').textContent = score;
+            const resultMsgEl = document.getElementById('result-message');
+            const awardContainer = document.getElementById('award-container');
+
+            if (score >= 80) {
+                awardContainer.innerHTML = `
+                    <div class="relative inline-block animate-bounce">
+                        <div class="absolute -inset-1 bg-amber-500/30 rounded-full blur-md"></div>
+                        <div class="relative bg-amber-500 text-slate-950 p-5 rounded-full shadow-lg border-2 border-amber-300">
+                            <i class="fa-solid fa-trophy text-4xl"></i>
+                        </div>
+                    </div>
+                `;
+                resultMsgEl.textContent = "¡Lo lograste!";
+                resultMsgEl.className = "text-base font-semibold px-4 py-2 rounded-xl mt-4 inline-block bg-teal-500/10 text-teal-400 border border-teal-500/20";
+            } else {
+                awardContainer.innerHTML = `
+                    <div class="inline-block bg-slate-700 text-slate-400 p-5 rounded-full shadow-inner border border-slate-600">
+                        <i class="fa-solid fa-book-open text-4xl"></i>
+                    </div>
+                `;
+                resultMsgEl.textContent = "Sigue intentando, No te rindas";
+                resultMsgEl.className = "text-base font-semibold px-4 py-2 rounded-xl mt-4 inline-block bg-amber-500/10 text-amber-400 border border-amber-500/20";
+            }
+        }
+
+        function restartGame() {
+            currentQuestion = 0;
+            score = 0;
+            resultScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+        }
+    </script>
+</body><div style="position: fixed; bottom: 10px; right: 10px; 
+font-family: sans-serif; font-size: 12px; background: rgba
+(0,0,0,0.5); color: white; padding: 5px 10px; border-radius: 
+5px;">
+    Juego creado por: Ander Asenjo
+</div> 
+
+</html>
