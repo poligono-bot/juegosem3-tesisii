@@ -1,7 +1,15 @@
 ﻿<!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
+ <script>
+      var clave = "531"; // CAMBIA 1234 POR TU CLAVE
+      var intento = prompt("Ingrese la contraseña:");
+      if (intento !== clave) {
+        alert("Contraseña incorrecta");
+        document.write("<h1 style='color:white;text-align:center;'>Acceso denegado</h1>");
+        window.stop();
+      }
+    </script>   <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Juego Educativo: Investigación Cuantitativa en Enfermería</title>
     <!-- Tailwind CSS CDN -->
