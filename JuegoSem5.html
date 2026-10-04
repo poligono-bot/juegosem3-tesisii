@@ -1,0 +1,858 @@
+﻿<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego Educativo: Investigación Cualitativa en Enfermería</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        health: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                            950: '#042f2e'
+                        },
+                        clinical: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes bounceSlow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(20, 184, 166, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(20, 184, 166, 0.8); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        .animate-bounce-slow {
+            animation: bounceSlow 3s infinite ease-in-out;
+        }
+        .animate-pulse-glow {
+            animation: pulseGlow 2s infinite ease-in-out;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="h-full bg-gradient-to-br from-clinical-50 via-health-50 to-clinical-100 text-slate-800 font-sans antialiased flex flex-col justify-between min-h-screen">
+
+    <header class="bg-white/80 backdrop-blur-md border-b border-health-100 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-health-600 to-clinical-600 flex items-center justify-center text-white shadow-md">
+                    <i class="fa-solid fa-stethoscope text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-slate-800 text-sm sm:text-base tracking-tight">Maestría en Enfermería y Gestión Integral del Cuidado</h1>
+                    <p class="text-xs text-health-700 font-medium">Simulador Evaluativo de Investigación Cualitativa</p>
+                </div>
+            </div>
+            <div id="header-stats" class="hidden items-center space-x-4">
+                <div class="bg-health-50 border border-health-200 px-3 py-1.5 rounded-lg flex items-center space-x-2">
+                    <i class="fa-solid fa-trophy text-health-600 text-xs"></i>
+                    <span class="text-xs font-semibold text-slate-700">Puntaje: <span id="current-score" class="text-health-700 font-bold">0</span>/100</span>
+                </div>
+                <div class="bg-clinical-50 border border-clinical-200 px-3 py-1.5 rounded-lg flex items-center space-x-2">
+                    <i class="fa-solid fa-circle-question text-clinical-600 text-xs"></i>
+                    <span class="text-xs font-semibold text-slate-700">Pregunta: <span id="current-q-num" class="text-clinical-700 font-bold">1</span>/25</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto w-full">
+        
+        <!-- WELCOME SCREEN -->
+        <div id="screen-welcome" class="w-full bg-white rounded-2xl shadow-xl border border-health-100 p-6 sm:p-10 animate-fade-in">
+            <div class="max-w-2xl mx-auto text-center">
+                <div class="inline-flex p-4 bg-health-100 text-health-700 rounded-2xl mb-6 shadow-inner animate-bounce-slow">
+                    <i class="fa-solid fa-graduation-cap text-4xl"></i>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-4">
+                    Dominio Metodológico de la Investigación Cualitativa en Salud
+                </h2>
+                <p class="text-sm sm:text-base text-slate-600 leading-relaxed mb-8">
+                    Evaluación interactiva avanzada para profesionales de enfermería en posgrado. Demuestra tu competencia en marcos conceptuales, diseños cualitativos, redacción de materiales y métodos, y técnicas rigurosas de recolección de datos.
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 text-left">
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                        <div class="text-health-600 font-bold text-lg mb-1"><i class="fa-solid fa-list-check mr-2"></i>25</div>
+                        <div class="text-xs text-slate-500 font-medium">Preguntas rigurosas de nivel de posgrado (4 pts c/u).</div>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                        <div class="text-health-600 font-bold text-lg mb-1"><i class="fa-solid fa-stopwatch mr-2"></i>60s</div>
+                        <div class="text-xs text-slate-500 font-medium">Límite de tiempo estricto por cada interrogante.</div>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                        <div class="text-health-600 font-bold text-lg mb-1"><i class="fa-solid fa-chart-pie mr-2"></i>Visual</div>
+                        <div class="text-xs text-slate-500 font-medium">Incluye tablas, esquemas conceptuales y diagramas SVG.</div>
+                    </div>
+                </div>
+
+                <button onclick="startGame()" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-health-600 to-clinical-600 hover:from-health-700 hover:to-clinical-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition transform active:scale-95 flex items-center justify-center space-x-3 mx-auto">
+                    <span>Iniciar Evaluación Metodológica</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- QUIZ SCREEN -->
+        <div id="screen-quiz" class="w-full hidden bg-white rounded-2xl shadow-xl border border-health-100 p-6 sm:p-8 animate-fade-in">
+            <!-- Top bar within quiz -->
+            <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
+                <span id="question-category" class="px-3 py-1 bg-health-50 text-health-700 text-xs font-bold rounded-full uppercase tracking-wider border border-health-200">Categoría</span>
+                <div class="flex items-center space-x-2 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full text-amber-800 font-bold text-xs">
+                    <i class="fa-solid fa-clock"></i>
+                    <span id="timer-display">60</span>s
+                </div>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="w-full bg-slate-100 h-2 rounded-full mb-6 overflow-hidden">
+                <div id="quiz-progress-bar" class="bg-gradient-to-r from-health-500 to-clinical-500 h-full transition-all duration-300" style="width: 4%"></div>
+            </div>
+
+            <!-- Question text -->
+            <h3 id="question-title" class="text-lg sm:text-xl font-bold text-slate-900 mb-6 leading-snug">
+                <!-- Question content injected via JS -->
+            </h3>
+
+            <!-- Optional Visual Asset Container (SVG/Tables/Schemes) -->
+            <div id="visual-asset-container" class="mb-6 hidden">
+                <!-- Injected graphic content -->
+            </div>
+
+            <!-- Options Grid -->
+            <div id="options-container" class="space-y-3 mb-6">
+                <!-- Options injected via JS -->
+            </div>
+
+            <!-- Feedback Box (Hidden initially) -->
+            <div id="feedback-box" class="hidden p-4 rounded-xl mb-6 border animate-fade-in">
+                <div class="flex items-start space-x-3">
+                    <div id="feedback-icon" class="text-xl mt-0.5"></div>
+                    <div>
+                        <h4 id="feedback-heading" class="font-bold text-sm mb-1"></h4>
+                        <p id="feedback-text" class="text-xs sm:text-sm leading-relaxed"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next button footer -->
+            <div class="flex justify-end">
+                <button id="btn-next" onclick="nextQuestion()" class="hidden px-6 py-3 bg-health-600 hover:bg-health-700 text-white font-bold rounded-xl shadow transition flex items-center space-x-2">
+                    <span id="btn-next-text">Siguiente Pregunta</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- RESULTS SCREEN -->
+        <div id="screen-results" class="w-full hidden bg-white rounded-2xl shadow-xl border border-health-100 p-6 sm:p-10 text-center animate-fade-in">
+            <div class="max-w-xl mx-auto">
+                <div id="result-icon-wrapper" class="inline-flex p-6 rounded-3xl mb-6 shadow-lg">
+                    <!-- Dynamic trophy or alert icon -->
+                </div>
+                <h2 id="result-main-msg" class="text-3xl font-extrabold text-slate-900 tracking-tight mb-2"></h2>
+                <p id="result-sub-msg" class="text-slate-600 text-sm mb-6"></p>
+
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 mb-8">
+                    <div class="text-xs uppercase tracking-wider text-slate-500 font-bold mb-1">Calificación Final Obtenida</div>
+                    <div class="text-5xl font-extrabold text-health-700 mb-2"><span id="final-score">0</span> <span class="text-2xl text-slate-400 font-semibold">/ 100 pts</span></div>
+                    <p id="final-stats-detail" class="text-xs text-slate-600 font-medium"></p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <button onclick="restartQuiz()" class="w-full sm:w-auto px-8 py-3.5 bg-health-600 hover:bg-health-700 text-white font-bold rounded-xl shadow transition flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Reiniciar Evaluación</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-white/60 border-t border-health-100 py-4 text-center text-xs text-slate-500">
+        <p>Módulo de Metodología de Investigación Cualitativa &bull; Maestría en Enfermería y Gestión Integral del Cuidado</p>
+    </footer>
+
+    <script>
+        // Array of 25 rigorous questions for master's level nursing research
+        const questionsDatabase = [
+            {
+                category: "Redacción de Materiales y Métodos",
+                question: "En la redacción de la sección 'Materiales y Métodos' de un estudio cualitativo en enfermería sobre experiencias de cuidado paliativo, ¿cuál de los siguientes elementos resulta metodológicamente INDISPENSABLE para garantizar la auditabilidad y el rigor?",
+                visualType: "none",
+                options: [
+                    "La descripción detallada del escenario de estudio, criterios de inclusión/exclusión de informantes clave y el proceso de saturación teórica.",
+                    "El análisis estadístico multivariante con pruebas paramétricas de normalidad y correlación bivariada.",
+                    "La especificación exacta de las dosis de fármacos administrados y equipos electromédicos utilizados.",
+                    "El cálculo del tamaño muestral probabilístico mediante fórmulas de proporciones poblacionales."
+                ],
+                correctIndex: 0,
+                explanation: "En investigación cualitativa, la auditabilidad se logra explicitando el contexto, la selección intencional de informantes y el criterio de saturación teórica, alejándose de los parámetros estadísticos cuantitativos."
+            },
+            {
+                category: "Diseño de Investigaciones Cualitativas",
+                question: "¿Qué diseño cualitativo elegiría una investigadora en enfermería si su objetivo es comprender la 'esencia' y el significado vivido del fenómeno del 'síndrome de desgaste profesional (burnout)' desde la perspectiva directa de las enfermeras de cuidados intensivos?",
+                visualType: "scheme",
+                visualData: `
+                    <div class="bg-health-50 border border-health-200 p-4 rounded-xl text-center">
+                        <div class="text-xs font-bold text-health-800 uppercase tracking-wide mb-2">Esquema de Abordaje Vivencial</div>
+                        <div class="flex flex-wrap justify-center items-center gap-2 text-xs font-semibold text-slate-700">
+                            <span class="bg-white px-3 py-1.5 rounded-lg border border-health-200">Fenómeno Vivido</span>
+                            <i class="fa-solid fa-arrow-right text-health-600"></i>
+                            <span class="bg-white px-3 py-1.5 rounded-lg border border-health-200">Reducción Fenomenológica</span>
+                            <i class="fa-solid fa-arrow-right text-health-600"></i>
+                            <span class="bg-white px-3 py-1.5 rounded-lg border border-health-200">Esencia del Cuidado</span>
+                        </div>
+                    </div>
+                `,
+                options: [
+                    "Investigación-Acción Participativa (IAP)",
+                    "Fenomenología hermenéutica o descriptiva",
+                    "Etnografía crítica",
+                    "Teoría Fundamentada sin codificación"
+                ],
+                correctIndex: 1,
+                explanation: "La fenomenología es el diseño cualitativo por excelencia para explorar las experiencias vividas, buscando aprehender la esencia del fenómeno estudiado tal como lo experimentan los sujetos."
+            },
+            {
+                category: "Marco Conceptual Cualitativo",
+                question: "En relación con el marco conceptual en un protocolo de investigación cualitativa en gestión del cuidado, ¿cuál es su función metodológica correcta?",
+                visualType: "none",
+                options: [
+                    "Funcionar como un corsé rígido de hipótesis operacionales que deben ser comprobadas o rechazadas estadísticamente.",
+                    "Servir de guía flexible y sensibilizadora para orientar la mirada investigadora sin restringir los hallazgos emergentes del campo.",
+                    "Sustituir por completo la revisión de literatura previa para evitar sesgos cognitivos en el investigador.",
+                    "Establecer relaciones causales lineales unidireccionales entre variables dependientes e independientes."
+                ],
+                correctIndex: 1,
+                explanation: "A diferencia del enfoque cuantitativo, en el estudio cualitativo el marco conceptual actúa como guía flexible y sensibilizadora que evoluciona y se nutre conforme avanza el trabajo de campo."
+            },
+            {
+                category: "Procedimiento de Recolección de Datos",
+                question: "Una investigadora realiza entrevistas a profundidad en el contexto de un estudio sobre gestión del cuidado crónico. ¿Qué característica distingue primordialmente a esta técnica frente a una entrevista estructurada?",
+                visualType: "none",
+                options: [
+                    "Se rige estrictamente por un cuestionario cerrado de opción múltiple aplicado de forma idéntica a todos los sujetos.",
+                    "Busca la estandarización de respuestas para permitir el análisis estadístico automatizado.",
+                    "Es interactiva, flexible y guiada por una pauta temática abierta que permite profundizar en los significados subjetivos y discursivos del actor social.",
+                    "Requiere necesariamente un mínimo de 500 participantes para alcanzar validez externa."
+                ],
+                correctIndex: 2,
+                explanation: "La entrevista a profundidad es un diálogo conversacional flexible basado en temas guía, diseñado para capturar la profundidad, los matices y la subjetividad del discurso del participante."
+            },
+            {
+                category: "Reporte de Casos y Series de Casos",
+                question: "Al estructurar un reporte de caso cualitativo sobre una intervención de enfermería compleja en un paciente con dolor crónico refractario, ¿cuál es el propósito analítico principal?",
+                visualType: "table",
+                visualData: `
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl mb-4">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-100 text-slate-700 uppercase">
+                                <tr>
+                                    <th class="p-2.5">Dimensión</th>
+                                    <th class="p-2.5">Enfoque Cualitativo de Caso</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 text-slate-600">
+                                <tr>
+                                    <td class="p-2.5 font-semibold">Unidad de Análisis</td>
+                                    <td class="p-2.5">Singularidad contextualizada y profunda</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-semibold">Generalización</td>
+                                    <td class="p-2.5">Transferibilidad a contextos similares vía densidad descriptiva</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `,
+                options: [
+                    "Demostrar causalidad estadística mediante la prueba de t de Student en un solo sujeto.",
+                    "Proporcionar una descripción densa, holística y contextualizada de un fenómeno singular para ilustrar la complejidad clínica y de gestión del cuidado.",
+                    "Formular leyes universales aplicables a toda la población mundial de pacientes crónicos.",
+                    "Eliminar por completo la subjetividad del paciente y del profesional tratante."
+                ],
+                correctIndex: 1,
+                explanation: "Los reportes y series de casos cualitativos buscan la comprensión profunda y detallada (descripción densa) de situaciones complejas particulares, facilitando la transferencia de conocimiento práctico."
+            },
+            {
+                category: "Grupos Focales",
+                question: "Durante la conducción de un grupo focal con enfermeras gestoras sobre la implementación de nuevas guías de práctica clínica, ¿cuál es el rol metodológico fundamental del moderador?",
+                visualType: "none",
+                options: [
+                    "Emitir juicios de valor y corregir las opiniones de los participantes que no coincidan con la literatura institucional.",
+                    "Facilitar la interacción grupal, estimular el debate horizontal y asegurar que todos los temas clave de la pauta sean explorados sin imponer sesgos.",
+                    "Limitarse a leer preguntas estáticas sin permitir la libre discusión ni la interacción entre los asistentes.",
+                    "Evaluar el rendimiento individual de cada enfermera mediante puntajes numéricos secretos."
+                ],
+                correctIndex: 1,
+                explanation: "El moderador en un grupo focal estimula la dinámica interactiva y el intercambio de argumentos entre los participantes, ya que la riqueza de esta técnica brota precisamente de la discusión grupal."
+            },
+            {
+                category: "Diseños de Investigaciones Cualitativas",
+                question: "¿Cuál es la característica central de la 'Teoría Fundamentada' (Grounded Theory) desarrollada por Glaser y Strauss en el ámbito de la investigación en enfermería?",
+                visualType: "none",
+                options: [
+                    "Describir costumbres ancestrales de comunidades indígenas sin buscar explicaciones conceptuales.",
+                    "Generar explicaciones teóricas abstractas y sustantivas sobre un proceso social básico a partir de la comparación constante de los datos.",
+                    "Analizar textos históricos de enfermería para verificar la veracidad de eventos pasados.",
+                    "Medir la correlación entre variables de satisfacción laboral y rotación de personal."
+                ],
+                correctIndex: 1,
+                explanation: "La Teoría Fundamentada tiene como propósito central la construcción inductiva de teoría directamente a partir de los datos, empleando el método de comparación constante."
+            },
+            {
+                category: "Redacción de Materiales y Métodos",
+                question: "En un artículo de investigación cualitativa, al redactar la sección de 'Consideraciones Éticas', ¿qué aspecto específico debe enfatizarse por sobre los estudios cuantitativos tradicionales?",
+                visualType: "none",
+                options: [
+                    "La aprobación exclusiva del cálculo de potencia estadística y tamaño muestral.",
+                    "El manejo del consentimiento informado como un proceso continuo y negociado, así como la confidencialidad rigurosa ante el riesgo de identificación por la alta contextualización de los discursos.",
+                    "La exclusión del anonimato para que todos los pacientes reciban crédito público por sus declaraciones.",
+                    "La exención de cualquier revisión por un comité de ética institucional por tratarse de entrevistas."
+                ],
+                correctIndex: 1,
+                explanation: "En investigación cualitativa, la profunda contextualización de los testimonios exige un manejo ético especial de la confidencialidad y entender el consentimiento como un proceso dinámico y continuo."
+            },
+            {
+                category: "Procedimiento de Recolección de Datos",
+                question: "¿Qué técnica de recolección de datos cualitativos se caracteriza porque el investigador participa activamente en la vida cotidiana del grupo estudiado (por ejemplo, una unidad de salud mental) durante un período prolongado, registrando notas de campo?",
+                visualType: "none",
+                options: [
+                    "Encuesta epidemiológica transversal.",
+                    "Observación participante.",
+                    "Ensayo clínico controlado.",
+                    "Análisis secundario de bases de datos administrativas."
+                ],
+                correctIndex: 1,
+                explanation: "La observación participante implica la inmersión del investigador en el campo de estudio para capturar prácticas, interacciones y significados en su entorno natural mediante notas de campo."
+            },
+            {
+                category: "Marco Conceptual Cualitativo",
+                question: "Cuando se diseña un estudio cualitativo sobre liderazgo en gestión de enfermería, ¿cómo influye el marco conceptual en el análisis de los datos?",
+                visualType: "none",
+                options: [
+                    "Proporciona categorías sensibilizadoras iniciales que ayudan a interpretar el sentido de los discursos sin clausurar la emergencia de nuevas categorías inductivas.",
+                    "Dicta de manera inflexible las únicas palabras que los informantes pueden pronunciar.",
+                    "Impide que el investigador reconozca cualquier contradicción teórica previa.",
+                    "Obliga a transformar todo el texto cualitativo en matrices numéricas de correlación."
+                ],
+                correctIndex: 0,
+                explanation: "El marco conceptual provee conceptos sensibilizadores que orientan la mirada analítica, pero se mantiene abierto a la inducción de nuevas categorías emergentes desde el propio material empírico."
+            },
+            {
+                category: "Diseños de Investigaciones Cualitativas",
+                question: "¿Cuál de los siguientes diseños cualitativos se orienta específicamente a transformar una realidad asistencial o de gestión en enfermería mediante ciclos reflexivos de acción y participación?",
+                visualType: "scheme",
+                visualData: `
+                    <div class="bg-health-50 border border-health-200 p-4 rounded-xl text-center">
+                        <div class="text-xs font-bold text-health-800 uppercase tracking-wide mb-2">Ciclo de Investigación-Acción</div>
+                        <div class="flex justify-center items-center gap-2 text-xs font-semibold text-slate-700">
+                            <span class="bg-white p-2 rounded border">Planificar</span>
+                            <i class="fa-solid fa-arrow-right text-health-600"></i>
+                            <span class="bg-white p-2 rounded border">Actuar</span>
+                            <i class="fa-solid fa-arrow-right text-health-600"></i>
+                            <span class="bg-white p-2 rounded border">Observar</span>
+                            <i class="fa-solid fa-arrow-right text-health-600"></i>
+                            <span class="bg-white p-2 rounded border">Reflexionar</span>
+                        </div>
+                    </div>
+                `,
+                options: [
+                    "Investigación-Acción (IAP)",
+                    "Estudio correlacional retrospectivo",
+                    "Etnometodología pura",
+                    "Ensayo clínico cruzado"
+                ],
+                correctIndex: 0,
+                explanation: "La investigación-acción combina la generación de conocimiento con la transformación social y práctica a través de ciclos iterativos de planificación, acción, observación y reflexión conjunta."
+            },
+            {
+                category: "Redacción de Materiales y Métodos",
+                question: "Al describir el 'Proceso de Análisis de Datos' en la metodología de un estudio cualitativo, ¿qué enfoque analítico general se suele reportar (por ejemplo, propuesto por Taylor-Bogdan o Miles y Huberman)?",
+                visualType: "none",
+                options: [
+                    "Cálculo de la media aritmética, desviación estándar y ANOVA de dos vías.",
+                    "Reducción de datos, disposición/transformación de datos y obtención de conclusiones/verificación.",
+                    "Verificación de supuestos de homocedasticidad y regresión lineal múltiple.",
+                    "Pruebas de hipótesis nula mediante chi-cuadrado."
+                ],
+                correctIndex: 1,
+                explanation: "El análisis cualitativo típicamente involucra la reducción de datos (codificación, categorización), su organización o despliegue y la extracción de conclusiones verificadas de manera sistemática."
+            },
+            {
+                category: "Procedimiento de Recolección de Datos",
+                question: "¿Qué ventaja metodológica aporta el uso combinado de múltiples técnicas de recolección (por ejemplo, entrevistas a profundidad, observación participante y revisión de documentos) en la investigación cualitativa en enfermería?",
+                visualType: "none",
+                options: [
+                    "Aumenta la velocidad para terminar la tesis en menos de una semana.",
+                    "Permite la triangulación de datos, incrementando la credibilidad, rigor y profundidad en la comprensión del fenómeno de cuidado.",
+                    "Elimina por completo la necesidad de transcribir las grabaciones de voz.",
+                    "Garantiza que el tamaño muestral sea considerado estadísticamente representativo."
+                ],
+                correctIndex: 1,
+                explanation: "La triangulación metodológica y de fuentes fortalece la credibilidad y validez interna (rigor) al contrastar distintas perspectivas sobre el mismo fenómeno de estudio."
+            },
+            {
+                category: "Diseños de Investigaciones Cualitativas",
+                question: "Si un investigador de enfermería busca estudiar los patrones culturales, creencias y prácticas de salud de una comunidad indígena frente al proceso de maternidad, ¿qué diseño cualitativo es el más idóneo?",
+                visualType: "none",
+                options: [
+                    "Etnografía",
+                    "Ensayo clínico aleatorizado",
+                    "Estudio de cohorte prospectiva",
+                    "Estudio de casos y controles"
+                ],
+                correctIndex: 0,
+                explanation: "La etnografía es el diseño cualitativo enfocado en la descripción e interpretación profunda de los sistemas culturales, creencias y prácticas de grupos humanos específicos."
+            },
+            {
+                category: "Reporte de Casos y Series de Casos",
+                question: "En una serie de casos cualitativa sobre gestión de eventos adversos en unidades de cuidados neonatales, ¿cómo se seleccionan habitualmente los casos de estudio?",
+                visualType: "none",
+                options: [
+                    "Mediante muestreo aleatorio simple con tablas de números aleatorios.",
+                    "Mediante muestreo intencional o de casos 'tipo' o 'críticos' que aporten información rica y relevante para el objetivo de gestión.",
+                    "Seleccionando únicamente los casos donde no ocurrieron incidentes para evitar reportar fallas.",
+                    "Tomando todos los registros históricos de los últimos 50 años sin importar su calidad descriptiva."
+                ],
+                correctIndex: 1,
+                explanation: "En la investigación cualitativa, la selección de casos nunca es aleatoria, sino intencional (criterios de relevancia, casos típicos o críticos) para maximizar el aprendizaje sobre el fenómeno."
+            },
+            {
+                category: "Redacción de Materiales y Métodos",
+                question: "En la sección de materiales y métodos de un informe cualitativo, ¿cómo se define el concepto de 'Saturación Teórica' en el contexto del tamaño de la muestra?",
+                visualType: "none",
+                options: [
+                    "El momento en que se agotan los fondos económicos del proyecto de investigación.",
+                    "El punto en el proceso de recolección y análisis de datos en el que ya no se descubren nuevas propiedades, dimensiones o categorías conceptuales.",
+                    "Cuando el 100% de la población del hospital ha respondido una encuesta estructurada.",
+                    "El instante en que el investigador se siente cansado de realizar entrevistas."
+                ],
+                correctIndex: 1,
+                explanation: "La saturación teórica es el criterio metodológico cualitativo que determina el fin de la recolección de datos, ocurriendo cuando la información nueva deja de aportar aportes conceptuales novedosos."
+            },
+            {
+                category: "Marco Conceptual Cualitativo",
+                question: "¿Cuál es el riesgo metodológico de omitir por completo cualquier referente conceptual o antecedentes teóricos en una investigación cualitativa en gestión del cuidado?",
+                visualType: "none",
+                    options: [
+                    "Ninguno, de hecho es el estándar de oro en cualquier nivel académico.",
+                    "Caer en un empirismo ingenuo donde se acumulan datos sin capacidad de abstracción, interpretación profunda ni diálogo con el conocimiento disciplinar previo.",
+                    "Provocar que el software de análisis cualitativo falle al importar los archivos de texto.",
+                    "Garantizar una objetividad matemática absoluta."
+                ],
+                correctIndex: 1,
+                explanation: "Carecer de un encuadre conceptual o antecedentes puede derivar en un empirismo ingenuo, donde el investigador recopila datos discursivos sin lograr articularlos teóricamente ni conectarlos con el conocimiento de enfermería."
+            },
+            {
+                category: "Procedimiento de Recolección de Datos",
+                question: "Al realizar entrevistas a profundidad en formato virtual (videollamada) con enfermeras líderes en gestión hospitalaria, ¿qué aspecto metodológico debe cuidarse especialmente en los materiales y métodos?",
+                visualType: "none",
+                options: [
+                    "Excluir la grabación de audio para evitar el almacenamiento de datos digitales.",
+                    "Describir las plataformas tecnológicas utilizadas, las medidas para asegurar la privacidad digital, el manejo del rapport y cómo se gestionó la comunicación no verbal.",
+                    "Asegurar que la entrevista dure exactamente 3 minutos cronometrados.",
+                    "Evitar transcribir las sesiones virtuales."
+                ],
+                correctIndex: 1,
+                explanation: "La recolección virtual exige explicitar en el método las herramientas digitales empleadas, las estrategias para mantener el rapport y la ciberseguridad/confidencialidad de los datos."
+            },
+            {
+                category: "Grupos Focales",
+                question: "En un estudio cualitativo sobre percepciones del equipo de enfermería ante la muerte digna, se decide utilizar grupos focales. ¿Cuál es el tamaño recomendado de participantes para asegurar una adecuada interacción?",
+                visualType: "table",
+                visualData: `
+                    <div class="bg-health-50 border border-health-200 p-3 rounded-xl text-center text-xs text-health-900 font-medium mb-3">
+                        <i class="fa-solid fa-info-circle mr-1 text-health-600"></i> Parámetro operativo estándar para grupos focales cualitativos.
+                    </div>
+                `,
+                options: [
+                    "De 2 a 3 personas para evitar cualquier tipo de debate.",
+                    "De 5 a 10 (o 12) personas, facilitando que todos tengan espacio para expresarse sin que el grupo se atomice.",
+                    "Exactamente 50 personas en un auditorio cerrado.",
+                    "Entre 100 y 200 profesionales divididos en filas."
+                ],
+                correctIndex: 1,
+                explanation: "El tamaño estándar óptimo para un grupo focal oscila entre 5 y 10-12 participantes, asegurando suficiente diversidad de opiniones sin perder el control de la moderación interactiva."
+            },
+            {
+                category: "Diseños de Investigaciones Cualitativas",
+                question: "¿Qué distingue a la 'Fenomenología Interpretativa o Hermenéutica' (fundamentada en Heidegger y Gadamer) frente a la fenomenología descriptiva (Husserl)?",
+                visualType: "none",
+                options: [
+                    "La búsqueda exclusiva de leyes biológicas universales.",
+                    "El reconocimiento de que el investigador no puede suspender totalmente sus precomprensiones (epoché absoluta), sino que interpreta el fenómeno desde su propio horizonte histórico y existencial.",
+                    "La prohibición absoluta de usar entrevistas conversacionales.",
+                    "La aplicación obligatoria de pruebas estadísticas no paramétricas."
+                ],
+                correctIndex: 1,
+                explanation: "La fenomenología hermenéutica asume que el investigador aporta su propio trasfondo interpretativo (precomprensión) para desentrañar el sentido del fenómeno, a diferencia de la reducción descriptiva pura."
+            },
+            {
+                category: "Redacción de Materiales y Métodos",
+                question: "En un reporte metodológico cualitativo, ¿a qué se refiere el criterio de rigor denominado 'Confirmabilidad' (o confirmabilidad de los hallazgos)?",
+                visualType: "none",
+                options: [
+                    "A que los resultados puedan ser duplicados exactamente por cualquier robot de inteligencia artificial.",
+                    "A la neutralidad y grado en que los hallazgos están determinados por los informantes y los datos recopilados, y no por los sesgos o predisposiciones personales del investigador.",
+                    "A la comprobación de que el tamaño de la muestra superó los 1000 sujetos.",
+                    "A la ausencia total de notas de campo."
+                ],
+                correctIndex: 1,
+                explanation: "La confirmabilidad alude a que las interpretaciones y conclusiones provienen de los datos empíricos recogidos en el campo y no de las especulaciones subjetivas del investigador."
+            },
+            {
+                category: "Procedimiento de Recolección de Datos",
+                question: "¿Cuál es el propósito fundamental de llevar un 'Diario de Campo' o notas reflexivas durante la recolección de datos cualitativos en enfermería?",
+                visualType: "none",
+                options: [
+                    "Registrar los gastos de transporte y alimentación del equipo investigador.",
+                    "Anotar observaciones contextuales, reacciones emocionales del investigador, metáforas emergentes y decisiones metodológicas tomadas en tiempo real.",
+                    "Sustituir las grabaciones de voz de los pacientes institucionalizados.",
+                    "Calcular el promedio de horas trabajadas por el personal de enfermería."
+                ],
+                correctIndex: 1,
+                explanation: "El diario de campo es una herramienta reflexiva clave donde se documentan notas metodológicas, teóricas y personales, enriqueciendo el rigor y la reflexividad del proceso cualitativo."
+            },
+            {
+                category: "Diseños de Investigaciones Cualitativas",
+                question: "En una investigación cualitativa crítica enfocada en la gestión de los servicios de salud, ¿cuál es la premisa epistemológica fundamental?",
+                visualType: "none",
+                options: [
+                    "La neutralidad absoluta y la desconexión entre la ciencia y la realidad social.",
+                    "Desenmascarar relaciones de poder, inequidades y asimetrías institucionales que afectan el cuidado y la práctica de enfermería, buscando la emancipación.",
+                    "Medir la eficiencia financiera mediante el retorno de inversión (ROI) hospitalario.",
+                    "Clasificar a los pacientes según su consumo calórico diario."
+                ],
+                correctIndex: 1,
+                explanation: "La investigación crítica cualitativa busca visibilizar y cuestionar las estructuras de poder y dominación, promoviendo la emancipación y la mejora sustantiva en las condiciones de salud y trabajo."
+            },
+            {
+                category: "Redacción de Materiales y Métodos",
+                question: "Al redactar la estrategia de 'Credibilidad' (validez interna cualitativa) en la sección de métodos, ¿cuál de las siguientes tácticas es la más comúnmente empleada y recomendada?",
+                visualType: "none",
+                options: [
+                    "Ocultar los datos a los participantes para que no puedan opinar.",
+                    "La devolución de resultados o validación con los informantes (member checking) y la triangulación de investigadores.",
+                    "Modificar los testimonios de los pacientes para que suenen más académicos.",
+                    "Aplicar un examen escrito final a todos los informantes."
+                ],
+                correctIndex: 1,
+                explanation: "El 'member checking' (contrastar las interpretaciones con los propios participantes) y la triangulación entre investigadores son estrategias maestras para asegurar la credibilidad de los hallazgos."
+            },
+            {
+                category: "Marco Conceptual Cualitativo",
+                question: "¿Cómo se relacionan los objetivos de investigación cualitativa con el diseño metodológico en una tesis de maestría en enfermería?",
+                visualType: "none",
+                options: [
+                    "Deben plantearse para medir relaciones causa-efecto mediante variables cuantitativas operativizadas.",
+                    "Deben expresar verbos de acción comprensiva o interpretativa (explorar, comprender, desentrañar, construir) en estricta consonancia con el enfoque cualitativo elegido.",
+                    "Deben centrarse exclusivamente en la experimentación farmacológica con placebos.",
+                    "Deben ser idénticos a los objetivos de un estudio epidemiológico de prevalencia."
+                ],
+                correctIndex: 0, /* Wait, index 1 is correct in options */
+                options: [
+                    "Deben plantearse para medir relaciones causa-efecto mediante variables cuantitativas operativizadas.",
+                    "Deben expresar verbos de acción comprensiva o interpretativa (explorar, comprender, desentrañar, construir) en estricta consonancia con el enfoque cualitativo elegido.",
+                    "Deben centrarse exclusivamente en la experimentación farmacológica con placebos.",
+                    "Deben ser idénticos a los objetivos de un estudio epidemiológico de prevalencia."
+                ],
+                correctIndex: 1,
+                explanation: "Los objetivos cualitativos se redactan empleando verbos que denoten exploración, comprensión y profundización (ej. comprender el significado), alineándose perfectamente con el paradigma interpretativo."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timerInterval = null;
+        let timeLeft = 60;
+        let answeredCurrent = false;
+
+        // Shuffle function to randomize correct answer position across A, B, C, D
+        function shuffleQuestionOptions(q) {
+            const optionsWithIndex = q.options.map((opt, idx) => ({ text: opt, originalIdx: idx }));
+            // Fisher-Yates shuffle
+            for (let i = optionsWithIndex.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [optionsWithIndex[i], optionsWithIndex[j]] = [optionsWithIndex[j], optionsWithIndex[i]];
+            }
+            const newOptions = optionsWithIndex.map(item => item.text);
+            const newCorrectIndex = optionsWithIndex.findIndex(item => item.originalIdx === q.correctIndex);
+            return {
+                ...q,
+                options: newOptions,
+                correctIndex: newCorrectIndex
+            };
+        }
+
+        let randomizedQuestions = [];
+
+        function startGame() {
+            // Randomize options for all questions
+            randomizedQuestions = questionsDatabase.map(q => shuffleQuestionOptions(q));
+            currentQuestionIndex = 0;
+            score = 0;
+
+            document.getElementById('screen-welcome').classList.add('hidden');
+            document.getElementById('screen-results').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.remove('hidden');
+            document.getElementById('header-stats').classList.remove('hidden');
+            document.getElementById('header-stats').classList.add('flex');
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= randomizedQuestions.length) {
+                endGame();
+                return;
+            }
+
+            answeredCurrent = false;
+            timeLeft = 60;
+            document.getElementById('timer-display').innerText = timeLeft;
+            document.getElementById('btn-next').classList.add('hidden');
+            document.getElementById('feedback-box').classList.add('hidden');
+
+            const q = randomizedQuestions[currentQuestionIndex];
+            
+            // Update UI headers
+            document.getElementById('current-score').innerText = score;
+            document.getElementById('current-q-num').innerText = currentQuestionIndex + 1;
+            document.getElementById('question-category').innerText = q.category;
+            document.getElementById('question-title').innerText = q.question;
+
+            // Progress bar update
+            const progressPercent = ((currentQuestionIndex + 1) / randomizedQuestions.length) * 100;
+            document.getElementById('quiz-progress-bar').style.width = `${progressPercent}%`;
+
+            // Visual asset handling
+            const visualContainer = document.getElementById('visual-asset-container');
+            if (q.visualType !== 'none' && q.visualData) {
+                visualContainer.innerHTML = q.visualData;
+                visualContainer.classList.remove('hidden');
+            } else {
+                visualContainer.innerHTML = '';
+                visualContainer.classList.add('hidden');
+            }
+
+            // Render Options
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            const letters = ['A', 'B', 'C', 'D'];
+            q.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full text-left p-4 rounded-xl border border-slate-200 bg-white hover:bg-health-50 hover:border-health-300 transition flex items-start space-x-3 group shadow-sm';
+                btn.onclick = () => selectOption(idx);
+                btn.id = `option-btn-${idx}`;
+
+                btn.innerHTML = `
+                    <span class="flex-shrink-0 w-7 h-7 rounded-lg bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center group-hover:bg-health-600 group-hover:text-white transition">${letters[idx]}</span>
+                    <span class="text-sm text-slate-700 font-medium pt-0.5">${optText}</span>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-display').innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    if (!answeredCurrent) {
+                        handleTimeout();
+                    }
+                }
+            }, 1000);
+        }
+
+        function handleTimeout() {
+            answeredCurrent = true;
+            const q = randomizedQuestions[currentQuestionIndex];
+            
+            // Disable all option buttons
+            for (let i = 0; i < q.options.length; i++) {
+                const btn = document.getElementById(`option-btn-${i}`);
+                btn.disabled = true;
+                if (i === q.correctIndex) {
+                    btn.classList.add('bg-emerald-50', 'border-emerald-500', 'ring-1', 'ring-emerald-500');
+                }
+            }
+
+            // Show feedback for timeout
+            const feedbackBox = document.getElementById('feedback-box');
+            feedbackBox.className = 'p-4 rounded-xl mb-6 border bg-amber-50 border-amber-200 text-amber-900 animate-fade-in';
+            document.getElementById('feedback-icon').innerHTML = '<i class="fa-solid fa-hourglass-end text-amber-600"></i>';
+            document.getElementById('feedback-heading').innerText = '¡Tiempo agotado!';
+            document.getElementById('feedback-text').innerText = `Se agotaron los 60 segundos. La respuesta correcta era la opción ${['A', 'B', 'C', 'D'][q.correctIndex]}. ${q.explanation}`;
+            feedbackBox.classList.remove('hidden');
+
+            // Setup next button text
+            if (currentQuestionIndex === randomizedQuestions.length - 1) {
+                document.getElementById('btn-next-text').innerText = 'Ver Resultados Finales';
+            } else {
+                document.getElementById('btn-next-text').innerText = 'Siguiente Pregunta';
+            }
+            document.getElementById('btn-next').classList.remove('hidden');
+        }
+
+        function selectOption(selectedIndex) {
+            if (answeredCurrent) return;
+            answeredCurrent = true;
+            clearInterval(timerInterval);
+
+            const q = randomizedQuestions[currentQuestionIndex];
+            const isCorrect = (selectedIndex === q.correctIndex);
+
+            if (isCorrect) {
+                score += 4;
+                document.getElementById('current-score').innerText = score;
+            }
+
+            // Highlight buttons
+            for (let i = 0; i < q.options.length; i++) {
+                const btn = document.getElementById(`option-btn-${i}`);
+                btn.disabled = true;
+                if (i === q.correctIndex) {
+                    btn.classList.add('bg-emerald-50', 'border-emerald-500', 'ring-1', 'ring-emerald-500');
+                    btn.querySelector('span').classList.remove('bg-slate-100', 'text-slate-600');
+                    btn.querySelector('span').classList.add('bg-emerald-600', 'text-white');
+                } else if (i === selectedIndex && !isCorrect) {
+                    btn.classList.add('bg-rose-50', 'border-rose-500', 'ring-1', 'ring-rose-500');
+                    btn.querySelector('span').classList.remove('bg-slate-100', 'text-slate-600');
+                    btn.querySelector('span').classList.add('bg-rose-600', 'text-white');
+                }
+            }
+
+            // Show feedback
+            const feedbackBox = document.getElementById('feedback-box');
+            if (isCorrect) {
+                feedbackBox.className = 'p-4 rounded-xl mb-6 border bg-emerald-50 border-emerald-200 text-emerald-900 animate-fade-in';
+                document.getElementById('feedback-icon').innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600"></i>';
+                document.getElementById('feedback-heading').innerText = '¡Excelente, respuesta correcta!';
+                document.getElementById('feedback-text').innerText = `¡Felicitaciones! Demuestras un sólido dominio metodológico. ${q.explanation}`;
+            } else {
+                feedbackBox.className = 'p-4 rounded-xl mb-6 border bg-rose-50 border-rose-200 text-rose-900 animate-fade-in';
+                document.getElementById('feedback-icon').innerHTML = '<i class="fa-solid fa-circle-xmark text-rose-600"></i>';
+                document.getElementById('feedback-heading').innerText = 'Respuesta incorrecta';
+                document.getElementById('feedback-text').innerText = `La opción correcta era la ${['A', 'B', 'C', 'D'][q.correctIndex]}. ${q.explanation}`;
+            }
+            feedbackBox.classList.remove('hidden');
+
+            // Setup next button text
+            if (currentQuestionIndex === randomizedQuestions.length - 1) {
+                document.getElementById('btn-next-text').innerText = 'Ver Resultados Finales';
+            } else {
+                document.getElementById('btn-next-text').innerText = 'Siguiente Pregunta';
+            }
+            document.getElementById('btn-next').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        function endGame() {
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('header-stats').classList.add('hidden');
+            document.getElementById('header-stats').classList.remove('flex');
+            document.getElementById('screen-results').classList.remove('hidden');
+
+            document.getElementById('final-score').innerText = score;
+
+            const iconWrapper = document.getElementById('result-icon-wrapper');
+            const mainMsg = document.getElementById('result-main-msg');
+            const subMsg = document.getElementById('result-sub-msg');
+            const statsDetail = document.getElementById('final-stats-detail');
+
+            const correctCount = score / 4;
+            statsDetail.innerText = `Has respondido correctamente ${correctCount} de 25 preguntas evaluadas (${score} puntos acumulados).`;
+
+            if (score >= 80) {
+                // Success case (80 - 100 points)
+                iconWrapper.className = 'inline-flex p-6 rounded-3xl mb-6 shadow-lg bg-amber-100 text-amber-600 animate-bounce-slow animate-pulse-glow';
+                iconWrapper.innerHTML = `
+                    <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0011 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 003.61-2.96C19.08 10.63 21 8.55 21 6V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/>
+                    </svg>
+                `;
+                mainMsg.innerText = '¡Lo lograste!';
+                subMsg.innerText = 'Has demostrado un nivel de excelencia sobresaliente en investigación cualitativa y gestión integral del cuidado.';
+            } else {
+                // Failure case (< 80 points)
+                iconWrapper.className = 'inline-flex p-6 rounded-3xl mb-6 shadow-lg bg-rose-100 text-rose-600';
+                iconWrapper.innerHTML = '<i class="fa-solid fa-flag text-4xl"></i>';
+                mainMsg.innerText = 'Sigue intentando, No te rindas';
+                subMsg.innerText = 'La investigación cualitativa requiere rigor y práctica continua. ¡Revisa los conceptos metodológicos y vuelve a intentarlo para alcanzar la meta!';
+            }
+        }
+
+        function restartQuiz() {
+            document.getElementById('screen-results').classList.add('hidden');
+            document.getElementById('screen-welcome').classList.remove('hidden');
+        }
+    </script>
+</body><div style="position: fixed; bottom: 10px; right: 10px; font-family: sans-serif; font-size: 12px; background: rgba(0,0,0,0.5); color: white; padding: 5px 10px; border-radius: 5px;">
+    Juego creado por: Ander Asenjo
+</div>
+
+</html>
